@@ -76,6 +76,33 @@
   .stat-flash-red {
     animation: flashRed 0.6s ease-out;
   }
+  #fret-conc {
+    width: 100%;
+  }
+  #fret-conc::-webkit-slider-thumb {
+    transition: background 0.15s ease, box-shadow 0.15s ease;
+  }
+  #fret-conc::-webkit-slider-thumb:hover {
+    background: var(--teal) !important;
+    box-shadow: 0 0 8px rgba(45, 212, 176, 0.6) !important;
+  }
+  @keyframes calibPulse {
+    0%, 100% { box-shadow: 0 0 8px rgba(45, 212, 176, 0.15), inset 0 0 4px rgba(45, 212, 176, 0.08); }
+    50% { box-shadow: 0 0 20px rgba(45, 212, 176, 0.4), inset 0 0 10px rgba(45, 212, 176, 0.15); }
+  }
+  @keyframes badgeGlow {
+    0%, 100% { opacity: 0.85; text-shadow: 0 0 6px rgba(45, 212, 176, 0.4); }
+    50% { opacity: 1; text-shadow: 0 0 14px rgba(45, 212, 176, 0.8); }
+  }
+  #calib-badge {
+    transition: all 0.5s ease;
+  }
+  #calib-badge.calibrated {
+    animation: calibPulse 2.5s ease-in-out infinite;
+  }
+  #calib-badge .badge-text {
+    animation: badgeGlow 2s ease-in-out infinite;
+  }
 </style>
 </head>
 <body>
@@ -143,6 +170,23 @@
               <input type="range" id="fret-rf" min="2.0" max="6.0" step="0.5" value="4.0" style="cursor: pointer; height: 20px;">
             </div>
           </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 2px;">
+            <div style="display: flex; flex-direction: column; gap: 4px;">
+              <label style="font-size: 10.5px; font-family: var(--mono); color: var(--text3); display: flex; justify-content: space-between;">
+                <span>Concentración:</span> <span id="fret-conc-val" style="color: var(--teal);">2.0%</span>
+              </label>
+              <input type="range" id="fret-conc" min="0.5" max="5.0" step="0.1" value="2.0" style="cursor: pointer; height: 20px;">
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 4px;">
+              <label style="font-size: 10.5px; font-family: var(--mono); color: var(--text3); display: flex; justify-content: space-between;">
+                <span>C<sub style='font-size:8px'>material</sub>:</span> <span id="calib-label" style="color: var(--amber); font-weight: 600;">1.35</span>
+              </label>
+              <div style="position: relative; width: 100%; height: 18px; background: rgba(255,255,255,0.04); border-radius: 4px; overflow: hidden; border: 1px solid var(--border);">
+                <div id="calib-gauge" style="position: absolute; top: 0; left: 0; width: 0%; height: 100%; border-radius: 3px; transition: all 0.5s cubic-bezier(.4,0,.2,1); background: linear-gradient(90deg, #e85555, #f08060);"></div>
+                <span id="calib-gauge-text" style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 8.5px; font-family: var(--mono); color: var(--text3); z-index: 2; font-weight: 600;">0%</span>
+              </div>
+            </div>
+          </div>
           <div style="display: flex; gap: 6px;">
             <button id="btn-fire" style="flex: 1.5; height: 24px; padding: 0; background: var(--teal-dim); border: 1px solid rgba(45,212,176,0.3); border-radius: 4px; color: var(--teal); font-family: var(--sans); font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.2s;">⚡ Disparar</button>
             <button id="btn-auto" style="flex: 1.8; height: 24px; padding: 0; background: var(--bg4); border: 1px solid var(--border); border-radius: 4px; color: var(--text2); font-family: var(--sans); font-size: 11px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 4px;">🔄 Auto-disparo</button>
@@ -184,6 +228,11 @@
             <div style="font-size: 8.5px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 2px;">Eficiencia</div>
             <div id="fret-stat-eff" style="font-size: 15.5px; font-family: var(--mono); color: var(--amber); font-weight: bold;">100%</div>
           </div>
+        </div>
+        <!-- Indicador de Calibración -->
+        <div id="calib-badge" style="display: none; align-items: center; justify-content: center; gap: 8px; padding: 6px 12px; background: rgba(45, 212, 176, 0.06); border: 1px solid rgba(45, 212, 176, 0.3); border-radius: 6px; margin-top: 2px;">
+          <span class="badge-text" style="font-size: 11px; font-family: var(--mono); color: var(--teal); font-weight: 700; letter-spacing: 0.04em;">✨ DETECTOR AUTO-COMPENSADO</span>
+          <span style="font-size: 8px; color: var(--text3); font-family: var(--mono); opacity: 0.8;">P<sub>scint</sub> · k<sub>ioq</sub> ≈ 1</span>
         </div>
       </div>
     </div>
@@ -229,6 +278,9 @@
   let autoFireActive = false;
   let autoFireCooldown = 0;
 
+  let fretConc = 2.0;
+  let calibrationScore = 0;
+
   let mouse = { x: -1000, y: -1000, active: false };
 
   const btnFire = document.getElementById('btn-fire');
@@ -245,6 +297,13 @@
   const cardPhotons = document.getElementById('stat-card-photons');
   const cardLosses = document.getElementById('stat-card-losses');
   const cardEff = document.getElementById('stat-card-eff');
+
+  const concSlider = document.getElementById('fret-conc');
+  const concValDisp = document.getElementById('fret-conc-val');
+  const calibGaugeBar = document.getElementById('calib-gauge');
+  const calibLabel = document.getElementById('calib-label');
+  const calibBadge = document.getElementById('calib-badge');
+  const calibGaugeText = document.getElementById('calib-gauge-text');
 
   // Hexagon drawing helper
   function drawBenzeneRing(cx, cy, R, angle, excitedRatio = 0, isFluorophore = false, qRatio = 0) {
@@ -427,28 +486,33 @@
     }
   }
 
-  // Genera posiciones fijas de dopantes basadas en un ancho porcentual
+  // Genera posiciones de dopantes según concentración
   function generateFluorophores() {
     fluorophores = [];
-    const coords = [
-      { rx: 0.15, ry: 55, angle: 15 * Math.PI / 180 },
-      { rx: 0.35, ry: 135, angle: -10 * Math.PI / 180 },
-      { rx: 0.55, ry: 55, angle: 25 * Math.PI / 180 },
-      { rx: 0.75, ry: 135, angle: -15 * Math.PI / 180 },
-      { rx: 0.90, ry: 90, angle: 5 * Math.PI / 180 }
-    ];
+    const num = Math.max(3, Math.round(fretConc * 2.4));
+    const margin = width * 0.08;
+    const usableW = width - 2 * margin;
+    const rowYs = [55, 135];
 
-    coords.forEach((c, idx) => {
+    for (let i = 0; i < num; i++) {
+      const row = i % 2;
+      const col = Math.floor(i / 2);
+      const totalInRow = Math.ceil(num / 2);
+      const x = margin + (col + 0.5) / totalInRow * usableW;
+      const yOff = ((i * 7 + 3) % 15) - 7.5;
+      const y = rowYs[row] + yOff;
+      const angle = ((i * 13 + 5) % 30 - 15) * Math.PI / 180;
+
       fluorophores.push({
-        id: idx,
-        x: width * c.rx,
-        y: c.ry,
-        angle: c.angle,
+        id: i,
+        x: x,
+        y: y,
+        angle: angle,
         excited: false,
         excitedTime: 0,
         quenched: false
       });
-    });
+    }
   }
 
   function triggerCardFlash(card, className) {
@@ -529,7 +593,52 @@
     rfNm = parseFloat(e.target.value);
     rfValDisp.textContent = rfNm.toFixed(1) + ' nm';
     rfPx = rfNm * 25;
+    updateCalibration();
   });
+
+  concSlider.addEventListener('input', (e) => {
+    fretConc = parseFloat(e.target.value);
+    concValDisp.textContent = fretConc.toFixed(1) + '%';
+    generateFluorophores();
+    updateCalibration();
+  });
+
+  function updateCalibration() {
+    const rfDist = (rfNm - 3.5) / 2.0;
+    const concDist = (fretConc - 2.5) / 2.25;
+    const dist = Math.sqrt(rfDist * rfDist + concDist * concDist);
+    calibrationScore = Math.max(0, Math.min(1, 1 - dist * 0.85));
+
+    const pct = calibrationScore * 100;
+    calibGaugeBar.style.width = pct + '%';
+
+    let cMat;
+    if (calibrationScore > 0.85) {
+      calibGaugeBar.style.background = 'linear-gradient(90deg, #2dd4b0, #45f0d0)';
+      calibBadge.style.display = 'flex';
+      calibBadge.classList.add('calibrated');
+      cMat = (1.0 + (1 - calibrationScore) * 0.12).toFixed(3);
+      calibLabel.style.color = '#2dd4b0';
+      calibGaugeText.style.color = '#2dd4b0';
+    } else if (calibrationScore > 0.5) {
+      calibGaugeBar.style.background = 'linear-gradient(90deg, #f0a832, #f0c850)';
+      calibBadge.style.display = 'none';
+      calibBadge.classList.remove('calibrated');
+      cMat = (1.0 + (1 - calibrationScore) * 0.45).toFixed(2);
+      calibLabel.style.color = '#f0a832';
+      calibGaugeText.style.color = '#f0a832';
+    } else {
+      calibGaugeBar.style.background = 'linear-gradient(90deg, #e85555, #f08060)';
+      calibBadge.style.display = 'none';
+      calibBadge.classList.remove('calibrated');
+      cMat = (1.0 + (1 - calibrationScore) * 0.85).toFixed(2);
+      calibLabel.style.color = '#e85555';
+      calibGaugeText.style.color = '#e85555';
+    }
+
+    calibLabel.textContent = cMat;
+    calibGaugeText.textContent = Math.round(pct) + '%';
+  }
 
   canvas.addEventListener('mousemove', (e) => {
     const rect = canvas.getBoundingClientRect();
@@ -765,14 +874,29 @@
     f.excitedTime = 40;
 
     const mode = densitySelect.value;
-    let pQuench = 0.15; // Centelleo dominante a 1 MeV (85% eficiencia)
+    let pQuench = 0.15;
 
     if (mode === 'high') {
-      pQuench = 0.65; // Quenching dominante a 10 keV ( Bragg peak denso )
+      pQuench = 0.65;
     }
 
     // Afectado por el Radio de Förster Rf
     pQuench += (rfNm - 4.0) * 0.14;
+
+    // Efecto de concentración: desviación del óptimo aumenta pérdidas
+    const concDev = Math.abs(fretConc - 2.5);
+    pQuench += concDev * 0.06;
+
+    // Auto-compensación: en el sweet spot, el detector se vuelve LET-independiente
+    if (calibrationScore > 0.8) {
+      const comp = (calibrationScore - 0.8) * 5.0;
+      if (mode === 'high') {
+        pQuench -= comp * 0.30;
+      } else {
+        pQuench += comp * 0.03;
+      }
+    }
+
     pQuench = Math.max(0.08, Math.min(0.92, pQuench));
 
     if (Math.random() < pQuench) {
@@ -1046,6 +1170,44 @@
     });
     ctx.restore();
 
+    // 9.5 HUD de calibración en canvas
+    if (calibrationScore > 0.65) {
+      ctx.save();
+      ctx.globalCompositeOperation = 'screen';
+      const a = (calibrationScore - 0.65) * 2.86;
+
+      // Bordes laterales luminosos
+      const edgeGrad = ctx.createLinearGradient(0, 0, 0, height);
+      edgeGrad.addColorStop(0, `rgba(45, 212, 176, ${a * 0.25})`);
+      edgeGrad.addColorStop(0.5, `rgba(45, 212, 176, ${a * 0.05})`);
+      edgeGrad.addColorStop(1, `rgba(45, 212, 176, ${a * 0.25})`);
+      ctx.fillStyle = edgeGrad;
+      ctx.fillRect(0, 0, 2.5, height);
+      ctx.fillRect(width - 2.5, 0, 2.5, height);
+
+      // Líneas superior e inferior
+      const hGrad = ctx.createLinearGradient(0, 0, width, 0);
+      hGrad.addColorStop(0, 'rgba(45, 212, 176, 0)');
+      hGrad.addColorStop(0.5, `rgba(45, 212, 176, ${a * 0.2})`);
+      hGrad.addColorStop(1, 'rgba(45, 212, 176, 0)');
+      ctx.fillStyle = hGrad;
+      ctx.fillRect(0, 0, width, 2);
+      ctx.fillRect(0, height - 2, width, 2);
+
+      if (calibrationScore > 0.85) {
+        const pulse = 0.55 + 0.45 * Math.sin(Date.now() * 0.0028);
+        ctx.font = '600 8.5px "DM Mono", monospace';
+        ctx.fillStyle = `rgba(45, 212, 176, ${pulse * a * 0.7})`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'top';
+        ctx.shadowColor = '#2dd4b0';
+        ctx.shadowBlur = 10;
+        ctx.fillText('● C_material \u2248 1 \u2500 AUTO-COMPENSADO', width / 2, 6);
+      }
+
+      ctx.restore();
+    }
+
     // 10. Sonda interactiva FRET del ratón (Radar holográfico)
     if (mouse.active) {
       ctx.save();
@@ -1151,6 +1313,7 @@
   resizeObserver.observe(container);
 
   resize();
+  updateCalibration();
   requestAnimationFrame(loop);
 })();
 </script>

@@ -33,18 +33,18 @@
 
 <div id="deck">
 
-<div class="slide" id="slide-20">
+<div class="slide" id="slide-20" style="padding-top: clamp(14px, 2vh, 24px); padding-bottom: clamp(14px, 2vh, 24px);">
   <div class="slide-num">20 / 24</div>
-  <div class="slide-eyebrow">Capítulo 7 · La contribución de MDSIM1</div>
-  <h2 class="slide-title">La Brecha <em>EGSnrc vs Geant4</em></h2>
-  <p class="slide-subtitle">Una discrepancia metodológica no resuelta en la literatura de microdosimetría.</p>
-  <div class="persona-row">
+  <div class="slide-eyebrow" style="margin-bottom: 4px;">Capítulo 7 · La contribución de MDSIM1</div>
+  <h2 class="slide-title" style="font-size: clamp(24px, 3.2vw, 44px); margin-bottom: 4px;">La Brecha <em>EGSnrc vs Geant4</em></h2>
+  <p class="slide-subtitle" style="font-size: 14.5px; margin-bottom: 8px;">Una discrepancia metodológica no resuelta en la literatura de microdosimetría.</p>
+  <div class="persona-row" style="margin-bottom: 12px;">
     <span class="persona-tag pt-camilo">Implementación Monte Carlo · Agenda Directa</span>
   </div>
 
-  <div class="two-col stretch" style="grid-template-columns: 1fr 1.6fr; gap: 16px;">
-    <!-- Columna izquierda: Teoría y explicaciones -->
-    <div class="col-stretch" style="gap: 10px;">
+  <div class="two-col stretch" style="grid-template-columns: 1.15fr 1fr; gap: 16px; flex: 1; min-height: 0;">
+    <!-- Columna izquierda: Teoría, explicaciones y tabla comparativa -->
+    <div class="col-stretch" style="gap: 10px; min-height: 0;">
       <div class="card card-purple reveal-item card-stretch" data-step="1" style="padding: 10px 14px;">
         <div class="card-label" style="font-size: 10px;">EGSnrc · Promedio Analítico</div>
         <p style="font-size: 14px; color: var(--text2); line-height: 1.45;">
@@ -62,16 +62,51 @@
       <div class="callout amber reveal-item" data-step="3" style="font-size: 12.5px; margin: 0; padding: 8px 12px;">
         <strong>Validación técnica:</strong> Antes de interpretar $k_{\text{ioq}}$ en Geant4, se debe barrer <code>dRoverRange</code> (0.1, 0.05, 0.02, 0.01) y verificar la convergencia del cociente $L_{\text{quenched}}/L_{\text{ideal}}$.
       </div>
+
+      <!-- Tabla Comparativa -->
+      <div class="reveal-item" data-step="3" style="overflow-x: auto; background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 6px 10px;">
+        <table class="gap-table" style="font-size: 11px; width: 100%;">
+          <thead>
+            <tr>
+              <th style="padding: 2px 4px; font-size: 8.5px;">Pregunta Abierta</th>
+              <th style="padding: 2px 4px; font-size: 8.5px;">En la Literatura</th>
+              <th style="padding: 2px 4px; font-size: 8.5px;">MDSIM1</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="padding: 3px 4px; font-weight: 600;">¿Reproduce G4 el k_ioq de EGS?</td>
+              <td style="padding: 3px 4px;"><span class="gap-badge gap-none" style="font-size: 8px; padding: 0px 3px;">Sin datos</span><br>Cálculos previos en EGSnrc.</td>
+              <td style="padding: 3px 4px;"><span class="gap-badge gap-mdsim" style="font-size: 8px; padding: 0px 3px;">MDSIM1</span><br>Primer cálculo pareado idéntico.</td>
+            </tr>
+            <tr>
+              <td style="padding: 3px 4px; font-weight: 600;">¿Universalidad P_scint·k_ioq?</td>
+              <td style="padding: 3px 4px;"><span class="gap-badge gap-none" style="font-size: 8px; padding: 0px 3px;">Sin datos</span><br>Solo para BCF-60 (PRB-0002).</td>
+              <td style="padding: 3px 4px;"><span class="gap-badge gap-mdsim" style="font-size: 8px; padding: 0px 3px;">MDSIM1</span><br>Múltiples composiciones orgánicas.</td>
+            </tr>
+            <tr>
+              <td style="padding: 3px 4px; font-weight: 600;">¿Variación k_ioq (kV vs MV)?</td>
+              <td style="padding: 3px 4px;"><span class="gap-badge gap-partial" style="font-size: 8px; padding: 0px 3px;">Parcial</span><br>Boivin (2016) con k_B constante.</td>
+              <td style="padding: 3px 4px;"><span class="gap-badge gap-mdsim" style="font-size: 8px; padding: 0px 3px;">MDSIM1</span><br>Separación analítica P_scint/k_ioq.</td>
+            </tr>
+            <tr>
+              <td style="padding: 3px 4px; font-weight: 600;">¿Sesgo por paso en G4?</td>
+              <td style="padding: 3px 4px;"><span class="gap-badge gap-partial" style="font-size: 8px; padding: 0px 3px;">Parcial</span><br>Dietz (2016): para iones pesados.</td>
+              <td style="padding: 3px 4px;"><span class="gap-badge gap-mdsim" style="font-size: 8px; padding: 0px 3px;">MDSIM1</span><br>Análisis sistemático en MV.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
-    <!-- Columna derecha: Simulador interactivo y tabla comparativa -->
-    <div class="col-stretch" style="gap: 12px; min-height: 0;">
+    <!-- Columna derecha: Simulador interactivo -->
+    <div class="col-stretch" style="gap: 10px; min-height: 0;">
       <!-- Tarjeta del Canvas -->
-      <div class="card reveal-item card-stretch" data-step="1" style="display: flex; flex-direction: column; gap: 8px; justify-content: space-between; padding: 10px 14px;">
+      <div class="card reveal-item card-stretch" data-step="1" style="display: flex; flex-direction: column; gap: 6px; justify-content: space-between; padding: 10px 14px;">
         <div class="card-label" style="font-size: 10px; margin-bottom: 0;">Simulador de Convergencia: EGSnrc vs Geant4</div>
         
         <!-- HUD de Parámetros -->
-        <div style="display: grid; grid-template-columns: 1fr 1fr 1.1fr; gap: 6px; background: var(--bg3); padding: 6px; border-radius: 8px; border: 1px solid var(--border);">
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1.1fr; gap: 6px; background: var(--bg3); padding: 5px 6px; border-radius: 8px; border: 1px solid var(--border);">
           <div style="text-align: center;">
             <div style="font-size: 8px; color: var(--text3); font-family: var(--mono); text-transform: uppercase;">dRoverRange (G4)</div>
             <div id="hud-droverrange" style="font-size: 12px; font-family: var(--mono); color: var(--purple); font-weight: bold; margin-top: 1px;">N/A</div>
@@ -87,56 +122,26 @@
         </div>
 
         <!-- Canvas -->
-        <div class="canvas-stretch-wrapper">
+        <div class="canvas-stretch-wrapper" style="min-height: 220px; max-height: 380px; flex: 1;">
           <canvas id="convergence-canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: block;"></canvas>
           <div id="convergence-badge" class="hud-badge" style="position: absolute; top: 8px; right: 8px; pointer-events: none; border-color: rgba(167, 139, 250, 0.3); color: var(--purple); background: rgba(167, 139, 250, 0.1);">
             EGSnrc: Continuo
           </div>
+          <div id="convergence-tooltip" style="position: absolute; display: none; pointer-events: none;
+               background: rgba(10, 13, 16, 0.94); border: 1px solid rgba(255, 255, 255, 0.12);
+               backdrop-filter: blur(8px); border-radius: 8px; padding: 8px 12px;
+               font-family: var(--mono); font-size: 11px; color: var(--text2);
+               box-shadow: 0 4px 20px rgba(0,0,0,0.5); white-space: nowrap; z-index: 10;"></div>
         </div>
 
         <!-- Slider de Control de dRoverRange -->
-        <div id="step-controls-container" class="reveal-item" data-step="4" style="display: flex; flex-direction: column; gap: 3px; background: var(--bg3); padding: 6px 10px; border-radius: 8px; border: 1px solid var(--border); transition: opacity 0.3s, transform 0.3s;">
+        <div id="step-controls-container" class="reveal-item" data-step="4" style="display: flex; flex-direction: column; gap: 2px; background: var(--bg3); padding: 5px 10px; border-radius: 8px; border: 1px solid var(--border); transition: opacity 0.3s, transform 0.3s;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1px;">
             <span style="font-size: 10px; font-family: var(--mono); color: var(--text2);">Ajustar dRoverRange (Paso G4):</span>
             <span id="step-slider-val-disp" style="font-size: 10.5px; font-family: var(--mono); color: var(--purple); font-weight: bold;">0.20</span>
           </div>
           <input type="range" id="step-slider" min="1" max="20" step="1" value="20" style="width: 100%; cursor: pointer;">
         </div>
-      </div>
-
-      <!-- Tabla Comparativa -->
-      <div class="reveal-item" data-step="3" style="overflow-x: auto; background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 8px 12px;">
-        <table class="gap-table" style="font-size: 11.5px; width: 100%;">
-          <thead>
-            <tr>
-              <th style="padding: 2px 6px; font-size: 9px;">Pregunta Abierta</th>
-              <th style="padding: 2px 6px; font-size: 9px;">En la Literatura</th>
-              <th style="padding: 2px 6px; font-size: 9px;">MDSIM1</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td style="padding: 4px 6px; font-weight: 600;">¿Reproduce G4 el k_ioq de EGS?</td>
-              <td style="padding: 4px 6px;"><span class="gap-badge gap-none" style="font-size: 8px; padding: 0px 3px;">Sin datos</span><br>Cálculos previos en EGSnrc.</td>
-              <td style="padding: 4px 6px;"><span class="gap-badge gap-mdsim" style="font-size: 8px; padding: 0px 3px;">MDSIM1</span><br>Primer cálculo pareado idéntico.</td>
-            </tr>
-            <tr>
-              <td style="padding: 4px 6px; font-weight: 600;">¿Universalidad P_scint·k_ioq?</td>
-              <td style="padding: 4px 6px;"><span class="gap-badge gap-none" style="font-size: 8px; padding: 0px 3px;">Sin datos</span><br>Solo para BCF-60 (PRB-0002).</td>
-              <td style="padding: 4px 6px;"><span class="gap-badge gap-mdsim" style="font-size: 8px; padding: 0px 3px;">MDSIM1</span><br>Múltiples composiciones orgánicas.</td>
-            </tr>
-            <tr>
-              <td style="padding: 4px 6px; font-weight: 600;">¿Variación k_ioq (kV vs MV)?</td>
-              <td style="padding: 4px 6px;"><span class="gap-badge gap-partial" style="font-size: 8px; padding: 0px 3px;">Parcial</span><br>Boivin (2016) con k_B constante.</td>
-              <td style="padding: 4px 6px;"><span class="gap-badge gap-mdsim" style="font-size: 8px; padding: 0px 3px;">MDSIM1</span><br>Separación analítica P_scint/k_ioq.</td>
-            </tr>
-            <tr>
-              <td style="padding: 4px 6px; font-weight: 600;">¿Sesgo por paso en G4?</td>
-              <td style="padding: 4px 6px;"><span class="gap-badge gap-partial" style="font-size: 8px; padding: 0px 3px;">Parcial</span><br>Dietz (2016): para iones pesados.</td>
-              <td style="padding: 4px 6px;"><span class="gap-badge gap-mdsim" style="font-size: 8px; padding: 0px 3px;">MDSIM1</span><br>Análisis sistemático en MV.</td>
-            </tr>
-          </tbody>
-        </table>
       </div>
     </div>
   </div>
@@ -157,6 +162,7 @@
   const canvas = document.getElementById('convergence-canvas');
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
+  const tooltip = document.getElementById('convergence-tooltip');
 
   let width = 0;
   let height = 0;
@@ -164,12 +170,15 @@
 
   // Physical parameters
   const kB_phys = 0.02; // g/cm²/MeV
-  const yTrackCenter = 45;
+  let yTrackCenter = 45;
 
   // State
   let dRoverRange = -1; // -1 means EGSnrc only, otherwise G4 step size (0.01 to 0.20)
   let lastStep = -1;
   let lastDRoverRange = -999;
+  let pulseFrame = 0;
+  let hoverX = -1;
+  let hoverY = -1;
 
   // DOM elements
   const slider = document.getElementById('step-slider');
@@ -219,6 +228,20 @@
   function getQuenched(u) {
     const dedx = getBragg(u);
     return dedx / (1 + kB_phys * dedx);
+  }
+
+  function getGeant4Value(u) {
+    if (dRoverRange <= 0) return 0;
+    const N = Math.round(1 / dRoverRange);
+    const i = Math.max(0, Math.min(N - 1, Math.floor(u * N)));
+    const u_start = i / N;
+    let sumDEDX = 0;
+    for (let k = 0; k < 5; k++) {
+      const u_k = u_start + (k + 0.5) * (1/N) / 5;
+      sumDEDX += getBragg(u_k);
+    }
+    const dedx_step = sumDEDX / 5;
+    return dedx_step / (1 + kB_phys * dedx_step);
   }
 
   function updateUI() {
@@ -337,8 +360,39 @@
     }
   }
 
+  function drawGlowingCurve(points, color, widthSize) {
+    ctx.save();
+    // Outer glow pass
+    ctx.shadowColor = color;
+    ctx.shadowBlur = 10;
+    ctx.strokeStyle = color.replace('rgb', 'rgba').replace(')', ', 0.35)');
+    ctx.lineWidth = widthSize * 2.2;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    points.forEach((p, idx) => {
+      if (idx === 0) ctx.moveTo(p.x, p.y);
+      else ctx.lineTo(p.x, p.y);
+    });
+    ctx.stroke();
+
+    // Inner sharp curve
+    ctx.shadowBlur = 2;
+    ctx.strokeStyle = color;
+    ctx.lineWidth = widthSize;
+    ctx.stroke();
+    ctx.restore();
+  }
+
   function draw() {
     ctx.clearRect(0, 0, width, height);
+
+    // Canvas base gradient background
+    const bgGrad = ctx.createLinearGradient(0, 0, 0, height);
+    bgGrad.addColorStop(0, '#080a0b');
+    bgGrad.addColorStop(1, '#0e1113');
+    ctx.fillStyle = bgGrad;
+    ctx.fillRect(0, 0, width, height);
 
     // Margins
     const mLeft = 35;
@@ -346,19 +400,26 @@
     const graphWidth = width - mLeft - mRight;
     if (graphWidth <= 0) return;
 
-    // Layout Heights
-    const yBraggBottom = 185;
-    const hBragg = 65;
+    // Layout Heights (dynamically computed from canvas height)
+    yTrackCenter = Math.round(height * 0.22);
+    const yBraggBottom = Math.round(height - 16);
+    const hBragg = Math.round(height * 0.325);
+    const scinHeight = Math.round(yTrackCenter * 1.8);
 
     // Draw boundary/medium for scintillator
     ctx.save();
     const scinLeft = mLeft + 5;
     const scinWidth = graphWidth - 5;
-    const grad = ctx.createLinearGradient(scinLeft, 0, scinLeft + scinWidth, 0);
-    grad.addColorStop(0, 'rgba(91, 156, 246, 0.04)');
-    grad.addColorStop(1, 'rgba(91, 156, 246, 0.005)');
+    const grad = ctx.createLinearGradient(0, 5, 0, 5 + scinHeight);
+    grad.addColorStop(0, 'rgba(91, 156, 246, 0.08)');
+    grad.addColorStop(1, 'rgba(91, 156, 246, 0.01)');
     ctx.fillStyle = grad;
-    ctx.fillRect(scinLeft, 5, scinWidth, 80);
+    ctx.fillRect(scinLeft, 5, scinWidth, scinHeight);
+
+    // Scintillator boundary border
+    ctx.strokeStyle = 'rgba(91, 156, 246, 0.18)';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(scinLeft, 5, scinWidth, scinHeight);
     ctx.restore();
 
     // Medium entry line
@@ -367,20 +428,20 @@
     ctx.setLineDash([3, 3]);
     ctx.beginPath();
     ctx.moveTo(scinLeft, 5);
-    ctx.lineTo(scinLeft, 85);
+    ctx.lineTo(scinLeft, 5 + scinHeight);
     ctx.stroke();
     
-    // Label for medium entry
-    ctx.font = '7px DM Mono, monospace';
+    // Label for medium entry (moved to the bottom to prevent title overlaps)
+    ctx.font = '8px DM Mono, monospace';
     ctx.fillStyle = 'var(--text3)';
-    ctx.fillText('Entrada Medio', scinLeft + 4, 12);
+    ctx.fillText('Entrada Medio', scinLeft + 6, 5 + scinHeight - 6);
     ctx.restore();
 
     // Draw grid for Bragg curve axis
     ctx.strokeStyle = 'rgba(255, 255, 255, 0.03)';
     ctx.lineWidth = 1;
     for (let x_g = mLeft; x_g <= width - mRight; x_g += graphWidth / 5) {
-      ctx.beginPath(); ctx.moveTo(x_g, 105); ctx.lineTo(x_g, yBraggBottom); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(x_g, yBraggBottom - hBragg - 10); ctx.lineTo(x_g, yBraggBottom); ctx.stroke();
     }
     for (let y_g = yBraggBottom - hBragg; y_g <= yBraggBottom; y_g += hBragg / 3) {
       ctx.beginPath(); ctx.moveTo(mLeft, y_g); ctx.lineTo(width - mRight, y_g); ctx.stroke();
@@ -406,11 +467,11 @@
     ctx.fillText('Profundidad (x)', mLeft + graphWidth/2, yBraggBottom + 12);
 
     // Panel Labels
-    ctx.fillStyle = 'var(--text3)';
-    ctx.font = '9px DM Mono, monospace';
+    ctx.fillStyle = 'var(--text2)';
+    ctx.font = '9.5px DM Mono, monospace';
     ctx.textAlign = 'left';
     ctx.fillText('A. Trayectoria 2D (Scattering)', mLeft, 14);
-    ctx.fillText('B. Rendimiento Lumínico Quenched (dL/dx)', mLeft, 114);
+    ctx.fillText('B. Rendimiento Lumínico Quenched (dL/dx)', mLeft, yBraggBottom - hBragg - 8);
 
     const maxVal = 72;
     function valToY(val) {
@@ -419,45 +480,27 @@
 
     // --- DRAW EGSNRC (Purple) ---
     // Smooth track
-    ctx.save();
-    ctx.beginPath();
-    ctx.moveTo(mLeft, getTrackY(mLeft));
-    for (let x = mLeft + 1; x <= width - mRight; x++) {
-      ctx.lineTo(x, getTrackY(x));
+    const ptsEGSTrack = [];
+    for (let x = mLeft; x <= width - mRight; x++) {
+      ptsEGSTrack.push({ x, y: getTrackY(x) });
     }
-    ctx.strokeStyle = '#a78bfa'; // Purple for EGSnrc
-    ctx.lineWidth = 2.0;
-    ctx.shadowColor = '#a78bfa';
-    ctx.shadowBlur = 4;
-    ctx.stroke();
-    ctx.restore();
+    drawGlowingCurve(ptsEGSTrack, 'rgb(167, 139, 250)', 2.0);
 
     // Smooth Bragg Quenched curve
-    ctx.save();
-    ctx.beginPath();
-    let first = true;
+    const ptsEGSBragg = [];
     for (let x = mLeft; x <= width - mRight; x++) {
       const u = (x - mLeft) / graphWidth;
-      const py = valToY(getQuenched(u));
-      if (first) {
-        ctx.moveTo(x, py);
-        first = false;
-      } else {
-        ctx.lineTo(x, py);
-      }
+      ptsEGSBragg.push({ x, y: valToY(getQuenched(u)) });
     }
-    ctx.strokeStyle = '#a78bfa';
-    ctx.lineWidth = 2.0;
-    ctx.stroke();
-    ctx.restore();
+    drawGlowingCurve(ptsEGSBragg, 'rgb(167, 139, 250)', 2.0);
 
     // Draw ideal (unquenched) Bragg curve as reference dashed line
     ctx.save();
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
-    ctx.setLineDash([3, 3]);
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+    ctx.setLineDash([4, 4]);
     ctx.lineWidth = 1;
     ctx.beginPath();
-    first = true;
+    let first = true;
     for (let x = mLeft; x <= width - mRight; x++) {
       const u = (x - mLeft) / graphWidth;
       const py = valToY(getBragg(u));
@@ -471,8 +514,8 @@
     ctx.stroke();
     
     // Ideal curve label
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.25)';
-    ctx.font = '6.5px DM Mono, monospace';
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+    ctx.font = '7px DM Mono, monospace';
     ctx.fillText('Luz Ideal (Sin Quenching)', mLeft + graphWidth * 0.45, valToY(getBragg(0.45)) - 4);
     ctx.restore();
 
@@ -486,40 +529,51 @@
       const g = Math.round(85 + (212 - 85) * t);
       const b = Math.round(85 + (176 - 85) * t);
       const geantColor = `rgb(${r}, ${g}, ${b})`;
-      const geantFillColor = `rgba(${r}, ${g}, ${b}, 0.08)`;
 
       // A. Jagged Track
-      ctx.save();
-      ctx.beginPath();
-      ctx.moveTo(mLeft, getTrackY(mLeft));
-      for (let i = 0; i < N; i++) {
-        const x_end = mLeft + (i + 1) * stepWidthX;
-        ctx.lineTo(x_end, getTrackY(x_end));
+      const ptsG4Track = [];
+      for (let i = 0; i <= N; i++) {
+        const x = mLeft + i * stepWidthX;
+        ptsG4Track.push({ x, y: getTrackY(x) });
       }
-      ctx.strokeStyle = geantColor;
-      ctx.lineWidth = 1.8;
-      ctx.shadowColor = geantColor;
-      ctx.shadowBlur = 3;
-      ctx.stroke();
-      ctx.restore();
+      drawGlowingCurve(ptsG4Track, geantColor, 1.8);
 
-      // Step endpoints
-      ctx.fillStyle = geantColor;
+      // Step endpoints with pulsing animation
       for (let i = 0; i <= N; i++) {
         const x = mLeft + i * stepWidthX;
         const y = getTrackY(x);
+        
+        const pulse = 0.5 + 0.5 * Math.sin(pulseFrame * 0.08 + i * 0.7);
+        const outerRadius = (N <= 6 ? 6.5 : 4.5) + pulse * 1.5;
+        const innerRadius = N <= 6 ? 3.0 : 1.8;
+        
+        ctx.save();
+        ctx.shadowColor = geantColor;
+        ctx.shadowBlur = 8;
+        ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${0.15 + pulse * 0.1})`;
         ctx.beginPath();
-        ctx.arc(x, y, N <= 6 ? 2.5 : 1.5, 0, 2 * Math.PI);
+        ctx.arc(x, y, outerRadius, 0, Math.PI * 2);
         ctx.fill();
+        
+        ctx.shadowBlur = 2;
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(x, y, innerRadius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
       }
 
       // B. Step Histogram for Bragg Quenched
       ctx.save();
+      // Histogram fill gradient
+      const histGrad = ctx.createLinearGradient(0, yBraggBottom - hBragg, 0, yBraggBottom);
+      histGrad.addColorStop(0, `rgba(${r}, ${g}, ${b}, 0.16)`);
+      histGrad.addColorStop(1, `rgba(${r}, ${g}, ${b}, 0.0)`);
+      ctx.fillStyle = histGrad;
       
       // Trace fill path
       ctx.beginPath();
       ctx.moveTo(mLeft, yBraggBottom);
-      
       for (let i = 0; i < N; i++) {
         const u_start = i / N;
         const x_start = mLeft + u_start * graphWidth;
@@ -539,12 +593,11 @@
       }
       ctx.lineTo(width - mRight, yBraggBottom);
       ctx.closePath();
-      ctx.fillStyle = geantFillColor;
       ctx.fill();
+      ctx.restore();
 
-      // Draw outline
-      ctx.beginPath();
-      ctx.moveTo(mLeft, yBraggBottom);
+      // Draw outline steps
+      const ptsG4Bragg = [];
       for (let i = 0; i < N; i++) {
         const u_start = i / N;
         const x_start = mLeft + u_start * graphWidth;
@@ -559,16 +612,61 @@
         const dldx_step = dedx_step / (1 + kB_phys * dedx_step);
         const py = valToY(dldx_step);
 
-        if (i === 0) {
-          ctx.moveTo(x_start, py);
-        } else {
-          ctx.lineTo(x_start, py);
-        }
-        ctx.lineTo(x_end, py);
+        ptsG4Bragg.push({ x: x_start, y: py });
+        ptsG4Bragg.push({ x: x_end, y: py });
       }
-      ctx.strokeStyle = geantColor;
-      ctx.lineWidth = 1.8;
+      drawGlowingCurve(ptsG4Bragg, geantColor, 1.8);
+    }
+
+    // --- DRAW HOVER CROSSHAIR ---
+    if (hoverX >= mLeft && hoverX <= width - mRight) {
+      ctx.save();
+      // Vertical tracking line
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.16)';
+      ctx.lineWidth = 1;
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.moveTo(hoverX, 5);
+      ctx.lineTo(hoverX, yBraggBottom);
       ctx.stroke();
+
+      const u_hover = (hoverX - mLeft) / graphWidth;
+      
+      // EGSnrc dot on track
+      ctx.fillStyle = '#a78bfa';
+      ctx.shadowColor = '#a78bfa';
+      ctx.shadowBlur = 6;
+      ctx.beginPath();
+      ctx.arc(hoverX, getTrackY(hoverX), 3, 0, Math.PI * 2);
+      ctx.fill();
+
+      // EGSnrc dot on Bragg
+      ctx.beginPath();
+      ctx.arc(hoverX, valToY(getQuenched(u_hover)), 3, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Geant4 dots
+      if (dRoverRange > 0) {
+        const t = Math.max(0, Math.min(1, (0.20 - dRoverRange) / 0.19));
+        const r = Math.round(232 - (232 - 45) * t);
+        const g = Math.round(85 + (212 - 85) * t);
+        const b = Math.round(85 + (176 - 85) * t);
+        const geantColor = `rgb(${r}, ${g}, ${b})`;
+
+        ctx.fillStyle = geantColor;
+        ctx.shadowColor = geantColor;
+        ctx.shadowBlur = 6;
+
+        // G4 dot on track
+        ctx.beginPath();
+        ctx.arc(hoverX, getTrackY(hoverX), 3, 0, Math.PI * 2);
+        ctx.fill();
+
+        // G4 dot on Bragg
+        ctx.beginPath();
+        ctx.arc(hoverX, valToY(getGeant4Value(u_hover)), 3, 0, Math.PI * 2);
+        ctx.fill();
+      }
       ctx.restore();
     }
   }
@@ -584,7 +682,7 @@
     } else {
       if (slider) slider.disabled = true;
 
-      if (step === 1) {
+      if (step <= 1) {
         dRoverRange = -1; // EGSnrc continuous mode
       } else {
         dRoverRange = 0.20; // Coarse steps demo mode
@@ -597,6 +695,8 @@
     const step = (typeof currentStep !== 'undefined') ? currentStep : 1;
     updateSimulationState(step);
     
+    pulseFrame++;
+
     if (step >= 4 && slider) {
       dRoverRange = parseInt(slider.value, 10) / 100;
     }
@@ -605,6 +705,96 @@
     draw();
     requestAnimationFrame(animate);
   }
+
+  // Mouse hover events
+  canvas.addEventListener('mousemove', function(e) {
+    const rect = canvas.getBoundingClientRect();
+    const mx = e.clientX - rect.left;
+    const my = e.clientY - rect.top;
+    
+    const mLeft = 35;
+    const mRight = 15;
+    const graphWidth = width - mLeft - mRight;
+    
+    if (graphWidth > 0 && mx >= mLeft && mx <= width - mRight) {
+      hoverX = mx;
+      hoverY = my;
+      
+      const u = (mx - mLeft) / graphWidth;
+      const valEGS = getQuenched(u);
+      const valG4 = getGeant4Value(u);
+      
+      const t = Math.max(0, Math.min(1, (0.20 - dRoverRange) / 0.19));
+      const r = Math.round(232 - (232 - 45) * t);
+      const g = Math.round(85 + (212 - 85) * t);
+      const b = Math.round(85 + (176 - 85) * t);
+      const geantColor = `rgb(${r}, ${g}, ${b})`;
+      
+      tooltip.style.display = 'block';
+      tooltip.style.borderColor = 'rgba(255,255,255,0.15)';
+      tooltip.style.boxShadow = '0 8px 32px rgba(0,0,0,0.6), 0 0 15px rgba(167, 139, 250, 0.05)';
+      
+      let g4Text = '';
+      let errText = '';
+      if (dRoverRange > 0) {
+        g4Text = `
+          <div style="display:flex; justify-content:space-between; gap:16px; margin-bottom:3px; font-family:var(--mono);">
+            <span style="color:${geantColor}; display:flex; align-items:center; gap:4px;">
+              <span style="width:6px; height:6px; border-radius:50%; background:${geantColor}; display:inline-block;"></span>Geant4
+            </span>
+            <span style="color:#fff; font-weight:500;">${valG4.toFixed(2)}</span>
+          </div>
+        `;
+        const errPercent = ((valG4 - valEGS) / valEGS) * 100;
+        errText = `
+          <div style="font-size:9.5px; color:var(--text3); margin-top:4px; text-align:right; font-family:var(--mono);">
+            Sesgo local: <span style="color:${geantColor}; font-weight:bold;">${errPercent >= 0 ? '+' : ''}${errPercent.toFixed(1)}%</span>
+          </div>
+        `;
+      } else {
+        g4Text = `
+          <div style="color:var(--text3); font-size:10px; margin-top:4px; font-style:italic;">
+            Geant4 inactivo (avanza paso)
+          </div>
+        `;
+      }
+      
+      tooltip.innerHTML = `
+        <div style="color:var(--text3); font-size:10px; margin-bottom:6px; border-bottom:1px solid rgba(255,255,255,0.06); padding-bottom:4px; font-family:var(--mono);">
+          Profundidad: <span style="color:#fff; font-weight:500;">${(u * 10).toFixed(2)} mm</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; gap:16px; margin-bottom:3px; font-family:var(--mono);">
+          <span style="color:#a78bfa; display:flex; align-items:center; gap:4px;">
+            <span style="width:6px; height:6px; border-radius:50%; background:#a78bfa; display:inline-block;"></span>EGSnrc
+          </span>
+          <span style="color:#fff; font-weight:500;">${valEGS.toFixed(2)}</span>
+        </div>
+        ${g4Text}
+        ${errText}
+      `;
+      
+      const tw = tooltip.offsetWidth || 130;
+      const th = tooltip.offsetHeight || 90;
+      let tx = mx + 12;
+      let ty = my - th / 2;
+      if (tx + tw > width) {
+        tx = mx - tw - 12;
+      }
+      if (ty < 4) ty = 4;
+      if (ty + th > height) ty = height - th - 4;
+      
+      tooltip.style.left = tx + 'px';
+      tooltip.style.top = ty + 'px';
+    } else {
+      hoverX = -1;
+      tooltip.style.display = 'none';
+    }
+  });
+
+  canvas.addEventListener('mouseleave', function() {
+    hoverX = -1;
+    tooltip.style.display = 'none';
+  });
 
   resize();
   animate();

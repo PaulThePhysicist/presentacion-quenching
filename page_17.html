@@ -7,7 +7,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 </head>
 <body>
 
@@ -22,7 +21,7 @@
 
   <div class="two-col stretch">
     <div class="col-stretch" style="gap: 10px;">
-      <div class="comp-reveal reveal-item card-stretch" data-step="1">
+      <div class="comp-reveal reveal-item" data-step="1">
         <div class="comp-box blue">
           <div class="comp-name">P<sub>scint</sub></div>
           <div class="comp-trend">↘</div>
@@ -71,8 +70,13 @@
           </div>
         </div>
         
-        <div class="canvas-stretch-wrapper" style="border: none; background: transparent; padding: 0;">
-          <canvas id="gingrasChart"></canvas>
+        <div class="canvas-stretch-wrapper" style="border: none; background: transparent; padding: 0; position: relative;">
+          <canvas id="gingrasChart" style="position: absolute; inset: 0; width: 100%; height: 100%;"></canvas>
+          <div id="gingrasTooltip" style="position: absolute; display: none; pointer-events: none;
+               background: rgba(10, 13, 16, 0.94); border: 1px solid rgba(255, 255, 255, 0.12);
+               backdrop-filter: blur(8px); border-radius: 8px; padding: 8px 12px;
+               font-family: var(--mono); font-size: 11px; color: var(--text2);
+               box-shadow: 0 4px 20px rgba(0,0,0,0.5); white-space: nowrap; z-index: 10;"></div>
         </div>
         
         <div style="display: flex; gap: 10px; font-size: 10px; color: var(--text3); font-family: var(--mono); margin-top: 4px; justify-content: center;">
@@ -96,49 +100,386 @@
 
 <script src="navigation.js"></script>
 <script>
-Chart.defaults.color = '#dcd9d4';
-Chart.defaults.font.family = "'DM Mono', monospace";
-Chart.defaults.font.size = 10;
-const gridColor = 'rgba(255,255,255,0.05)';
+(function() {
+  /* ── DATA & FORMULAS ──────────────────────────────── */
+  const fieldSizes = [0.6, 1, 1.5, 2, 3, 4, 5, 6, 8, 10, 15, 20, 30];
+  const fsLabels = ['0.6','1','1.5','2','3','4','5','6','8','10','15','20','30'];
 
-const fieldSizes = [0.6, 1, 1.5, 2, 3, 4, 5, 6, 8, 10, 15, 20, 30];
-const fsLabels = ['0.6','1','1.5','2','3','4','5','6','8','10','15','20','30'];
-function pscint(f) { return 1.0062 - 0.00038 * Math.log(f + 0.8) * 7; }
-function kioqF(f) { return 0.9942 + 0.00038 * Math.log(f + 0.5) * 5; }
+  function pscint(f) { return 1.0062 - 0.00038 * Math.log(f + 0.8) * 7; }
+  function kioqF(f) { return 0.9942 + 0.00038 * Math.log(f + 0.5) * 5; }
+  function prodF(f) { return pscint(f) * kioqF(f); }
 
-const gCtx = document.getElementById('gingrasChart');
-if (gCtx) {
-  new Chart(gCtx, {
-    type: 'line',
-    data: {
-      labels: fsLabels,
-      datasets: [
-        { label: 'P_scint', data: fieldSizes.map(pscint), borderColor: '#5b9cf6', backgroundColor: 'transparent', borderWidth: 2, pointRadius: 3, pointBackgroundColor: '#5b9cf6', tension: 0.35 },
-        { label: 'k_ioq', data: fieldSizes.map(kioqF), borderColor: '#e85555', backgroundColor: 'transparent', borderWidth: 2, pointRadius: 3, pointBackgroundColor: '#e85555', tension: 0.35 },
-        { label: 'Producto', data: fieldSizes.map(f => pscint(f)*kioqF(f)), borderColor: '#2dd4b0', backgroundColor: 'transparent', borderWidth: 2, borderDash: [6,3], pointRadius: 3, pointBackgroundColor: '#2dd4b0', tension: 0.35 }
-      ]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => `${c.dataset.label}: ${c.parsed.y.toFixed(4)}` } } },
-      scales: {
-        x: { title: { display: true, text: 'Campo (cm × cm)', font: { size: 9 } }, grid: { color: gridColor }, ticks: { maxRotation: 0 } },
-        y: { title: { display: true, text: 'Factor de corrección', font: { size: 9 } }, min: 0.993, max: 1.007, grid: { color: gridColor }, ticks: { callback: v => v.toFixed(3) } }
+  const dataP = fieldSizes.map(pscint);
+  const dataK = fieldSizes.map(kioqF);
+  const dataProd = fieldSizes.map(prodF);
+
+  const yMin = 0.993;
+  const yMax = 1.007;
+
+  const colorP = { r: 91, g: 156, b: 246 };     // #5b9cf6 blue
+  const colorK = { r: 232, g: 85, b: 85 };      // #e85555 red
+  const colorProd = { r: 45, g: 212, b: 176 };  // #2dd4b0 teal
+
+  let animProgress = 0;   // 0→1 for draw-in animation
+  let animFrame;
+  let hoverIdx = -1;
+  let pulseFrame = 0;
+
+  const canvas  = document.getElementById('gingrasChart');
+  const tooltip = document.getElementById('gingrasTooltip');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let dpr = window.devicePixelRatio || 1;
+  let W = 0, H = 0;
+
+  /* ── RESIZE ─────────────────────────────────────── */
+  function resize() {
+    const rect = canvas.getBoundingClientRect();
+    W = rect.width; H = rect.height;
+    canvas.width  = Math.round(W * dpr);
+    canvas.height = Math.round(H * dpr);
+    ctx.scale(dpr, dpr);
+    drawAll();
+  }
+  window.addEventListener('resize', resize);
+
+  /* ── LAYOUT ─────────────────────────────────────── */
+  function layout() {
+    const mL = 52, mR = 20, mT = 20, mB = 42;
+    const gW = W - mL - mR;
+    const gH = H - mT - mB;
+    return { mL, mR, mT, mB, gW, gH };
+  }
+
+  /* ── DATA COORDS ─────────────────────────────────── */
+  function toXY(i, n, val, lay) {
+    const { mL, mT, gW, gH } = lay;
+    const x = mL + (n === 1 ? gW / 2 : (i / (n - 1)) * gW);
+    const t = (val - yMin) / (yMax - yMin);
+    const y = mT + gH * (1 - t);
+    return { x, y };
+  }
+
+  /* ── DRAW ALL ────────────────────────────────────── */
+  function drawAll() {
+    if (W === 0 || H === 0) return;
+    ctx.clearRect(0, 0, W, H);
+    
+    const lay = layout();
+    const { mL, mR, mT, mB, gW, gH } = lay;
+    const n = fieldSizes.length;
+
+    /* 1. BACKGROUND GRADIENT */
+    const bg = ctx.createLinearGradient(0, 0, 0, H);
+    bg.addColorStop(0, '#0a0d10');
+    bg.addColorStop(1, '#0e1217');
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    /* 2. GRIDLINES & Y-AXIS LABELS */
+    ctx.save();
+    const gridColor = 'rgba(255, 255, 255, 0.04)';
+    const yTicks = 7;
+    for (let i = 0; i <= yTicks; i++) {
+      const val = yMin + i * 0.002;
+      const py = mT + gH * (1 - i / yTicks);
+      
+      // Horizontal grid lines
+      ctx.strokeStyle = gridColor;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(mL, py);
+      ctx.lineTo(W - mR, py);
+      ctx.stroke();
+      
+      // Y tick labels
+      ctx.fillStyle = 'rgba(154, 150, 146, 0.7)';
+      ctx.font = '9px DM Mono, monospace';
+      ctx.textAlign = 'right';
+      ctx.fillText(val.toFixed(3), mL - 8, py + 3);
+    }
+
+    // Vertical grid lines at each index
+    for (let i = 0; i < n; i++) {
+      const px = mL + (n === 1 ? gW / 2 : (i / (n - 1)) * gW);
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.02)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(px, mT);
+      ctx.lineTo(px, mT + gH);
+      ctx.stroke();
+    }
+    ctx.restore();
+
+    /* 3. AXES */
+    ctx.save();
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(mL, mT); ctx.lineTo(mL, mT + gH); // Y axis
+    ctx.lineTo(W - mR, mT + gH); // X axis
+    ctx.stroke();
+    ctx.restore();
+
+    /* 4. REFERENCE LINE at y=1.000 */
+    const refY_t = (1.000 - yMin) / (yMax - yMin);
+    const refY = mT + gH * (1 - refY_t);
+    ctx.save();
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.16)';
+    ctx.lineWidth = 1.2;
+    ctx.setLineDash([5, 4]);
+    ctx.beginPath();
+    ctx.moveTo(mL, refY);
+    ctx.lineTo(W - mR, refY);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.font = '9px DM Mono, monospace';
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+    ctx.textAlign = 'left';
+    ctx.fillText('1.000 ideal', mL + 8, refY - 5);
+    ctx.restore();
+
+    /* 5. DRAW GLOWING CURVES */
+    const ptsP = dataP.map((v, i) => toXY(i, n, v, lay));
+    const ptsK = dataK.map((v, i) => toXY(i, n, v, lay));
+    const ptsProd = dataProd.map((v, i) => toXY(i, n, v, lay));
+    
+    const limit = Math.max(1, Math.round(animProgress * (n - 1)));
+
+    drawGlowingCurve(ptsP, colorP, limit, false);
+    drawGlowingCurve(ptsK, colorK, limit, false);
+    drawGlowingCurve(ptsProd, colorProd, limit, true);
+
+    /* 6. DATA POINTS & X-AXIS LABELS */
+    for (let i = 0; i < n; i++) {
+      const isHover = i === hoverIdx;
+      const showPt = i <= limit;
+      
+      if (showPt) {
+        drawPoint(ptsP[i].x, ptsP[i].y, colorP, isHover, i);
+        drawPoint(ptsK[i].x, ptsK[i].y, colorK, isHover, i);
+        drawPoint(ptsProd[i].x, ptsProd[i].y, colorProd, isHover, i);
       }
-    },
-    plugins: [{
-      id: 'gUnit',
-      afterDraw(c) {
-        const { ctx, chartArea: { left, right }, scales: { y } } = c;
-        const y1 = y.getPixelForValue(1.000);
-        ctx.save(); ctx.strokeStyle = 'rgba(255,255,255,0.12)'; ctx.lineWidth = 1; ctx.setLineDash([5,4]);
-        ctx.beginPath(); ctx.moveTo(left, y1); ctx.lineTo(right, y1); ctx.stroke();
-        ctx.setLineDash([]); ctx.fillStyle = '#9a9692'; ctx.font = '9px DM Mono, monospace';
-        ctx.fillText('1.000 ideal', left+4, y1-5); ctx.restore();
+      
+      // X-axis labels
+      ctx.save();
+      ctx.font = '9px DM Mono, monospace';
+      ctx.fillStyle = isHover ? 'rgba(255, 255, 255, 0.9)' : 'rgba(154, 150, 146, 0.55)';
+      ctx.textAlign = 'center';
+      const px = mL + (n === 1 ? gW / 2 : (i / (n - 1)) * gW);
+      ctx.fillText(fsLabels[i], px, mT + gH + 16);
+      ctx.restore();
+    }
+
+    /* 7. AXIS TITLES */
+    ctx.save();
+    ctx.font = '10px DM Mono, monospace';
+    ctx.fillStyle = 'rgba(154, 150, 146, 0.75)';
+    ctx.textAlign = 'center';
+    ctx.fillText('Campo (cm × cm)', mL + gW / 2, H - 6);
+    
+    // Y Title
+    ctx.save();
+    ctx.translate(14, mT + gH / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText('Factor de corrección', 0, 0);
+    ctx.restore();
+    ctx.restore();
+
+    /* 8. HOVER CROSSHAIR */
+    if (hoverIdx >= 0 && hoverIdx < n && animProgress > 0.9) {
+      const px = mL + (hoverIdx / (n - 1)) * gW;
+      ctx.save();
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.16)';
+      ctx.lineWidth = 1;
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.moveTo(px, mT);
+      ctx.lineTo(px, mT + gH);
+      ctx.stroke();
+      ctx.restore();
+    }
+  }
+
+  function _drawLine(ctx, pts, limit, isDashed) {
+    ctx.beginPath();
+    if (isDashed) {
+      ctx.setLineDash([6, 3]);
+    } else {
+      ctx.setLineDash([]);
+    }
+    for (let i = 0; i <= limit && i < pts.length; i++) {
+      if (i === 0) { ctx.moveTo(pts[i].x, pts[i].y); continue; }
+      const prev = pts[i - 1];
+      const cpx1 = prev.x + (pts[i].x - prev.x) * 0.5;
+      const cpx2 = pts[i].x - (pts[i].x - prev.x) * 0.5;
+      ctx.bezierCurveTo(cpx1, prev.y, cpx2, pts[i].y, pts[i].x, pts[i].y);
+    }
+  }
+
+  function drawGlowingCurve(pts, color, limit, isDashed) {
+    ctx.save();
+    // Outer glow pass
+    ctx.shadowColor = `rgb(${color.r},${color.g},${color.b})`;
+    ctx.shadowBlur = 12;
+    ctx.strokeStyle = `rgba(${color.r},${color.g},${color.b}, 0.3)`;
+    ctx.lineWidth = 4.5;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    _drawLine(ctx, pts, limit, isDashed);
+    ctx.stroke();
+
+    // Inner sharp curve
+    ctx.shadowBlur = 4;
+    ctx.strokeStyle = `rgba(${color.r},${color.g},${color.b}, 0.95)`;
+    ctx.lineWidth = 2.2;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    _drawLine(ctx, pts, limit, isDashed);
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  function drawPoint(x, y, color, isHover, i) {
+    const pulse = 0.5 + 0.5 * Math.sin(pulseFrame * 0.08 + i * 0.7);
+    const outerR = isHover ? 8.5 : 4.5 + pulse * 1.0;
+    const innerR = isHover ? 4.5 : 2.0;
+
+    ctx.save();
+    // Outer glowing ring
+    ctx.shadowColor = `rgb(${color.r},${color.g},${color.b})`;
+    ctx.shadowBlur = isHover ? 16 : 6;
+    ctx.fillStyle = `rgba(${color.r},${color.g},${color.b}, ${isHover ? 0.45 : 0.15 + pulse * 0.05})`;
+    ctx.beginPath();
+    ctx.arc(x, y, outerR, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Inner solid dot
+    ctx.shadowBlur = 4;
+    ctx.fillStyle = isHover ? '#ffffff' : `rgb(${color.r},${color.g},${color.b})`;
+    ctx.beginPath();
+    ctx.arc(x, y, innerR, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+
+  /* ── ANIMATION LOOP ─────────────────────────────── */
+  function startAnim() {
+    animProgress = 0;
+    cancelAnimationFrame(animFrame);
+    function step() {
+      pulseFrame++;
+      animProgress = Math.min(1, animProgress + 0.025);
+      drawAll();
+      if (animProgress < 1) {
+        animFrame = requestAnimationFrame(step);
+      } else {
+        pulseLoop();
       }
-    }]
+    }
+    animFrame = requestAnimationFrame(step);
+  }
+
+  function pulseLoop() {
+    cancelAnimationFrame(animFrame);
+    function tick() {
+      pulseFrame++;
+      drawAll();
+      animFrame = requestAnimationFrame(tick);
+    }
+    animFrame = requestAnimationFrame(tick);
+  }
+
+  /* ── HOVER / TOOLTIP ─────────────────────────────── */
+  canvas.addEventListener('mousemove', function(e) {
+    const rect = canvas.getBoundingClientRect();
+    const mx = e.clientX - rect.left;
+    const my = e.clientY - rect.top;
+    
+    const lay = layout();
+    const n = fieldSizes.length;
+    let best = -1, bestDist = 32;
+    
+    for (let i = 0; i < n; i++) {
+      const px = lay.mL + (i / (n - 1)) * lay.gW;
+      const d = Math.abs(mx - px);
+      if (d < bestDist) {
+        bestDist = d;
+        best = i;
+      }
+    }
+    
+    hoverIdx = best;
+    if (best >= 0 && animProgress > 0.9) {
+      const valP = dataP[best];
+      const valK = dataK[best];
+      const valProd = dataProd[best];
+      const lbl = fsLabels[best];
+      
+      tooltip.style.display = 'block';
+      tooltip.style.borderColor = 'rgba(255,255,255,0.15)';
+      tooltip.style.boxShadow = '0 8px 32px rgba(0,0,0,0.6), 0 0 15px rgba(45,212,176,0.05)';
+      
+      tooltip.innerHTML = `
+        <div style="color:var(--text3); font-size:10px; margin-bottom:6px; border-bottom:1px solid rgba(255,255,255,0.06); padding-bottom:4px; font-family:var(--mono);">
+          Campo: <span style="color:#fff; font-weight:500;">${lbl} × ${lbl} cm²</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; gap:16px; margin-bottom:3px; font-family:var(--mono);">
+          <span style="color:#5b9cf6; display:flex; align-items:center; gap:4px;">
+            <span style="width:6px; height:6px; border-radius:50%; background:#5b9cf6; display:inline-block;"></span>P<sub>scint</sub>
+          </span>
+          <span style="color:#fff; font-weight:500;">${valP.toFixed(4)}</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; gap:16px; margin-bottom:3px; font-family:var(--mono);">
+          <span style="color:#e85555; display:flex; align-items:center; gap:4px;">
+            <span style="width:6px; height:6px; border-radius:50%; background:#e85555; display:inline-block;"></span>k<sub>ioq</sub>
+          </span>
+          <span style="color:#fff; font-weight:500;">${valK.toFixed(4)}</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; gap:16px; border-top:1px solid rgba(255,255,255,0.06); padding-top:4px; margin-top:4px; font-family:var(--mono);">
+          <span style="color:#2dd4b0; display:flex; align-items:center; gap:4px;">
+            <span style="width:6px; height:2px; background:#2dd4b0; display:inline-block;"></span>Producto
+          </span>
+          <span style="color:#2dd4b0; font-weight:500;">${valProd.toFixed(4)}</span>
+        </div>
+        <div style="font-size:9.5px; color:var(--text3); margin-top:4px; text-align:right; font-family:var(--mono);">
+          Δ = ${((valProd - 1.000) * 100).toFixed(3)}%
+        </div>
+      `;
+      
+      const tw = tooltip.offsetWidth || 150;
+      const th = tooltip.offsetHeight || 120;
+      let tx = e.clientX - rect.left + 16;
+      let ty = e.clientY - rect.top - th / 2;
+      
+      if (tx + tw > W) {
+        tx = e.clientX - rect.left - tw - 16;
+      }
+      if (ty < 4) ty = 4;
+      if (ty + th > H) ty = H - th - 4;
+      
+      tooltip.style.left = tx + 'px';
+      tooltip.style.top  = ty + 'px';
+    } else {
+      tooltip.style.display = 'none';
+    }
   });
-}
+
+  canvas.addEventListener('mouseleave', function() {
+    hoverIdx = -1;
+    tooltip.style.display = 'none';
+  });
+
+  /* ── INIT ────────────────────────────────────────── */
+  setTimeout(() => { resize(); startAnim(); }, 80);
+  
+  document.addEventListener('slideChanged', () => {
+    const slide = document.getElementById('slide-17');
+    if (slide && slide.classList.contains('active')) {
+      setTimeout(() => { resize(); startAnim(); }, 80);
+    }
+  });
+})();
 </script>
 </body>
 </html>

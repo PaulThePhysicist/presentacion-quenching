@@ -7,56 +7,93 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  .chart-btn {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text2);
+    font-size: 12px;
+    padding: 4px 12px;
+    cursor: pointer;
+    font-family: var(--mono);
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+  .chart-btn.active-teal {
+    background: var(--teal-dim);
+    border-color: rgba(45,212,176,0.4);
+    color: var(--teal);
+    box-shadow: 0 0 8px rgba(45,212,176,0.2);
+  }
+  .chart-btn.active-amber {
+    background: var(--amber-dim);
+    border-color: rgba(240,168,50,0.4);
+    color: var(--amber);
+    box-shadow: 0 0 8px rgba(240,168,50,0.2);
+  }
+</style>
 </head>
 <body>
 
 <div id="deck">
 
-<div class="slide" id="slide-14">
+<div class="slide" id="slide-14" style="padding-top: clamp(14px,2vh,24px); padding-bottom: clamp(14px,2vh,24px);">
   <div class="slide-num">14 / 24</div>
-  <div class="slide-eyebrow">Capítulo 5 · El espectro que nadie miraba</div>
-  <h2 class="slide-title">Dependencia de Campo y <em>Calidad</em></h2>
-  <p class="slide-subtitle">La fracción de quenching no es una constante; varía sensiblemente según la configuración clínica.</p>
-  <div class="persona-row">
+
+  <div class="slide-eyebrow" style="margin-bottom:6px;">Capítulo 5 · El espectro que nadie miraba</div>
+  <h2 class="slide-title" style="font-size:clamp(24px,3.2vw,44px); margin-bottom:4px;">Dependencia de Campo y <em>Calidad</em></h2>
+  <p class="slide-subtitle" style="font-size:14px; margin-bottom:8px;">La fracción de quenching no es una constante; varía sensiblemente según la configuración clínica.</p>
+  <div class="persona-row" style="margin-bottom:10px;">
     <span class="persona-tag pt-mc">Contexto Clínico</span>
   </div>
 
-  <div class="two-col stretch">
-    <div class="col-stretch" style="gap: 12px;">
-      <div class="card card-teal reveal-item card-stretch" data-step="1">
-        <div class="card-label">Variabilidad con el Tamaño de Campo</div>
-        <p style="font-size: 15px; color: var(--text2); line-height: 1.5;">
-          Al agrandar el campo, la cantidad de radiación dispersa de baja energía que incide en el detector crece. Esto aumenta la población de electrones lentos por debajo del umbral de quenching. **$k_{\text{ioq}}$ varía un 0.6% entre campos de $0.5\times0.5\text{ cm}^2$ y $10\times10\text{ cm}^2$.**
+  <div class="two-col stretch" style="gap:14px; flex:1; min-height:0;">
+    <!-- Left column -->
+    <div class="col-stretch" style="gap:10px;">
+      <div class="card card-teal reveal-item card-stretch" data-step="1" style="padding:10px 14px;">
+        <div class="card-label" style="margin-bottom:6px;">Variabilidad con el Tamaño de Campo</div>
+        <p style="font-size:13px; color:var(--text2); line-height:1.45;">
+          Al agrandar el campo, la cantidad de radiación dispersa de baja energía que incide en el detector crece. Esto aumenta la población de electrones lentos por debajo del umbral de quenching. <strong style="color:var(--teal);">k<sub>ioq</sub> varía un 0.6%</strong> entre campos de 0.5×0.5 cm² y 10×10 cm².
         </p>
       </div>
 
-      <div class="card card-amber reveal-item card-stretch" data-step="2">
-        <div class="card-label">Variabilidad con la Calidad de Haz</div>
-        <p style="font-size: 15px; color: var(--text2); line-height: 1.5;">
-          La energía del haz de fotones determina directamente el espectro del depósito de energía secundario. **$k_{\text{ioq}}$ varía un 2.0% entre 4 MV y 15 MV.**
+      <div class="card card-amber reveal-item card-stretch" data-step="2" style="padding:10px 14px;">
+        <div class="card-label" style="margin-bottom:6px;">Variabilidad con la Calidad de Haz</div>
+        <p style="font-size:13px; color:var(--text2); line-height:1.45;">
+          La energía del haz de fotones determina directamente el espectro del depósito de energía secundario. <strong style="color:var(--amber);">k<sub>ioq</sub> varía un 2.0%</strong> entre 4 MV y 15 MV.
         </p>
       </div>
 
-      <div class="callout reveal-item" data-step="3" style="font-size: 14px;">
+      <div class="callout reveal-item" data-step="3" style="font-size:13px; flex-shrink:0;">
         <strong>Implicancia clínica:</strong> El efecto del tamaño de campo (~0.6%) está dentro de la incertidumbre típica de medida, pero la dependencia con la calidad (~2%) ya no es despreciable si se persigue trazabilidad metrológica exacta.
       </div>
     </div>
 
-    <!-- Gráfica interactiva de k_ioq -->
-    <div class="reveal-item col-stretch" data-step="4" style="display: flex; flex-direction: column; gap: 10px;">
-      <div class="card card-stretch" style="padding: 10px 14px; display: flex; flex-direction: column; justify-content: space-between;">
-        <div class="ctrl-row" style="margin: 0 0 10px 0; justify-content: flex-start; gap: 8px;">
-          <span class="ctrl-label" style="font-size: 12.5px; font-family: var(--mono);">Eje X:</span>
-          <button id="btn-kioq" onclick="showKioq()" style="background: var(--teal-dim); border: 1px solid rgba(45,212,176,0.3); border-radius: 6px; color: var(--teal); font-size: 12.5px; padding: 4px 10px; cursor: pointer; font-family: var(--mono); font-weight: 500;">k_ioq vs campo</button>
-          <button id="btn-kq" onclick="showKq()" style="background: var(--bg3); border: 1px solid var(--border); border-radius: 6px; color: var(--text2); font-size: 12.5px; padding: 4px 10px; cursor: pointer; font-family: var(--mono); font-weight: 500;">k_ioq vs calidad</button>
+    <!-- Right column: custom canvas chart -->
+    <div class="reveal-item col-stretch" data-step="4" style="gap:8px;">
+      <div class="card card-stretch" style="padding:12px 14px; display:flex; flex-direction:column; min-height:0;">
+
+        <!-- Toolbar -->
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px; flex-shrink:0;">
+          <span style="font-size:11px; color:var(--text3); font-family:var(--mono);">Vista:</span>
+          <button id="btn-campo" class="chart-btn active-teal" onclick="setMode('campo')">k<sub>ioq</sub> vs Campo</button>
+          <button id="btn-calidad" class="chart-btn" onclick="setMode('calidad')">k<sub>ioq</sub> vs Calidad</button>
         </div>
-        
-        <div class="canvas-stretch-wrapper" style="border: none; background: transparent; padding: 0;">
-          <canvas id="specChart"></canvas>
+
+        <!-- Canvas -->
+        <div style="position:relative; flex:1; min-height:0;">
+          <canvas id="kChart" style="position:absolute; inset:0; width:100%; height:100%;"></canvas>
+          <!-- Tooltip -->
+          <div id="kTooltip" style="position:absolute; display:none; pointer-events:none;
+               background:rgba(10,13,16,0.92); border:1px solid rgba(255,255,255,0.12);
+               backdrop-filter:blur(8px); border-radius:8px; padding:7px 12px;
+               font-family:var(--mono); font-size:11px; color:var(--text2);
+               box-shadow:0 4px 20px rgba(0,0,0,0.5); white-space:nowrap;"></div>
         </div>
-        
-        <div style="font-size: 11px; color: var(--text3); font-family: var(--mono); margin-top: 6px; text-align: center;">
+
+        <!-- Footer -->
+        <div style="font-size:10px; color:var(--text3); font-family:var(--mono); margin-top:6px; text-align:center; flex-shrink:0;">
           Datos: Valdes Santurio &amp; Andersen (2019) · BCF-60, EGSnrc, TrueBeam
         </div>
       </div>
@@ -75,75 +112,374 @@
 
 <script src="navigation.js"></script>
 <script>
-Chart.defaults.color = '#dcd9d4';
-Chart.defaults.font.family = "'DM Mono', monospace";
-Chart.defaults.font.size = 11;
-const gridColor = 'rgba(255,255,255,0.05)';
+(function() {
+  /* ── DATA ─────────────────────────────────────────── */
+  const dataCampo = {
+    labels:  ['0.6','1','1.5','2','3','4','5','6','8','10'],
+    values:  [0.9936,0.9940,0.9944,0.9947,0.9952,0.9956,0.9959,0.9961,0.9964,0.9966],
+    xTitle:  'Tamaño de campo (cm)',
+    yMin:    0.9930,
+    yMax:    1.0012,
+    color:   { r:240, g:168, b:50 },   // amber
+    refLabel:'0.6 cm'
+  };
+  const dataCalidad = {
+    labels:  ['4 MV','6 MV','10 MV','15 MV'],
+    values:  [0.9944,0.9960,0.9972,0.9984],
+    xTitle:  'Calidad de haz',
+    yMin:    0.9930,
+    yMax:    1.0012,
+    color:   { r:45, g:212, b:176 },   // teal
+    refLabel:'4 MV'
+  };
 
-const fields = [0.6, 1, 1.5, 2, 3, 4, 5, 6, 8, 10];
-const fieldL = ['0.6','1','1.5','2','3','4','5','6','8','10'];
-const kioqVals = [0.9936, 0.9940, 0.9944, 0.9947, 0.9952, 0.9956, 0.9959, 0.9961, 0.9964, 0.9966];
-const qualities = ['4 MV','6 MV','10 MV','15 MV'];
-const kioqQuals = [0.9944, 0.9960, 0.9972, 0.9984];
+  let currentMode = 'campo';
+  let animProgress = 0;   // 0→1 for draw-in animation
+  let animFrame;
+  let hoverIdx = -1;
+  let pulseFrame = 0;
 
-let specChart;
-const specCtx = document.getElementById('specChart');
-if (specCtx) {
-  specChart = new Chart(specCtx, {
-    type: 'line',
-    data: {
-      labels: fieldL,
-      datasets: [{ label: 'k_ioq', data: kioqVals, borderColor: '#f0a832', backgroundColor: 'rgba(240,168,50,0.08)', fill: true, borderWidth: 2.5, pointRadius: 4, pointBackgroundColor: '#f0a832', tension: 0.3 }]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => `k_ioq = ${c.parsed.y.toFixed(4)}` } } },
-      scales: {
-        x: { title: { display: true, text: 'Tamaño de campo (cm)' }, grid: { color: gridColor } },
-        y: { title: { display: true, text: 'k_ioq' }, min: 0.991, max: 1.001, grid: { color: gridColor }, ticks: { callback: v => v.toFixed(3) } }
+  const canvas  = document.getElementById('kChart');
+  const tooltip = document.getElementById('kTooltip');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let dpr = window.devicePixelRatio || 1;
+  let W = 0, H = 0;
+
+  /* ── RESIZE ─────────────────────────────────────── */
+  function resize() {
+    const rect = canvas.getBoundingClientRect();
+    W = rect.width; H = rect.height;
+    canvas.width  = Math.round(W * dpr);
+    canvas.height = Math.round(H * dpr);
+    ctx.scale(dpr, dpr);
+    drawAll();
+  }
+  window.addEventListener('resize', resize);
+
+  /* ── LAYOUT ─────────────────────────────────────── */
+  function layout() {
+    const mL = 52, mR = 18, mT = 24, mB = 46;
+    const gW = W - mL - mR;
+    const gH = H - mT - mB;
+    return { mL, mR, mT, mB, gW, gH };
+  }
+
+  /* ── DATA COORDS ─────────────────────────────────── */
+  function toXY(i, n, val, data, lay) {
+    const { mL, mT, gW, gH } = lay;
+    const x = mL + (n === 1 ? gW / 2 : (i / (n - 1)) * gW);
+    const t = (val - data.yMin) / (data.yMax - data.yMin);
+    const y = mT + gH * (1 - t);
+    return { x, y };
+  }
+
+  /* ── DRAW ALL ────────────────────────────────────── */
+  function drawAll() {
+    if (W === 0 || H === 0) return;
+    ctx.clearRect(0, 0, W, H);
+    const data = currentMode === 'campo' ? dataCampo : dataCalidad;
+    const lay  = layout();
+    const { mL, mR, mT, mB, gW, gH } = lay;
+    const { r, g, b } = data.color;
+    const n = data.values.length;
+
+    /* 1. BACKGROUND */
+    const bg = ctx.createLinearGradient(0, 0, 0, H);
+    bg.addColorStop(0, '#08090c');
+    bg.addColorStop(1, '#0c0f14');
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+
+    /* 2. SCANLINE GRID */
+    ctx.save();
+    const gridY = 5;
+    const gridColor = 'rgba(255,255,255,0.035)';
+    // Horizontal grid + Y tick labels
+    const yTicks = 6;
+    for (let i = 0; i <= yTicks; i++) {
+      const val = data.yMin + (i / yTicks) * (data.yMax - data.yMin);
+      const py  = mT + gH * (1 - i / yTicks);
+      ctx.strokeStyle = gridColor;
+      ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(mL, py); ctx.lineTo(W - mR, py); ctx.stroke();
+      ctx.fillStyle = 'rgba(154,150,146,0.7)';
+      ctx.font = '9px DM Mono, monospace';
+      ctx.textAlign = 'right';
+      ctx.fillText(val.toFixed(3), mL - 5, py + 3);
+    }
+    // Vertical grid lines
+    for (let i = 0; i < n; i++) {
+      const px = mL + (n === 1 ? gW / 2 : (i / (n - 1)) * gW);
+      ctx.strokeStyle = 'rgba(255,255,255,0.025)';
+      ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(px, mT); ctx.lineTo(px, mT + gH); ctx.stroke();
+    }
+    ctx.restore();
+
+    /* 3. AXES */
+    ctx.save();
+    ctx.strokeStyle = 'rgba(255,255,255,0.12)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(mL, mT); ctx.lineTo(mL, mT + gH); // Y axis
+    ctx.lineTo(W - mR, mT + gH); // X axis
+    ctx.stroke();
+    ctx.restore();
+
+    /* 4. REFERENCE LINE at y=1.000 */
+    const refY_t = (1.000 - data.yMin) / (data.yMax - data.yMin);
+    const refY = mT + gH * (1 - refY_t);
+    ctx.save();
+    ctx.shadowColor = 'rgba(255,255,255,0.3)';
+    ctx.shadowBlur = 4;
+    ctx.strokeStyle = 'rgba(255,255,255,0.22)';
+    ctx.lineWidth = 1.2;
+    ctx.setLineDash([6, 5]);
+    ctx.beginPath(); ctx.moveTo(mL, refY); ctx.lineTo(W - mR, refY); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.shadowBlur = 0;
+    ctx.font = '9px DM Mono, monospace';
+    ctx.fillStyle = 'rgba(255,255,255,0.4)';
+    ctx.textAlign = 'left';
+    ctx.fillText('1.000 (sin quenching)', mL + 6, refY - 5);
+    ctx.restore();
+
+    /* 5. ANIMATED FILL AREA */
+    const pts = data.values.map((v, i) => toXY(i, n, v, data, lay));
+    const limit = Math.max(1, Math.round(animProgress * (n - 1)));
+
+    ctx.save();
+    ctx.beginPath();
+    // Start at baseline left
+    ctx.moveTo(pts[0].x, mT + gH);
+    // Build curve up to animated limit
+    for (let i = 0; i <= limit && i < pts.length; i++) {
+      if (i === 0) ctx.lineTo(pts[i].x, pts[i].y);
+      else {
+        const prev = pts[i - 1];
+        const cp1x = prev.x + (pts[i].x - prev.x) * 0.5;
+        const cp2x = pts[i].x - (pts[i].x - prev.x) * 0.5;
+        ctx.bezierCurveTo(cp1x, prev.y, cp2x, pts[i].y, pts[i].x, pts[i].y);
       }
-    },
-    plugins: [{
-      id: 'unitL',
-      afterDraw(c) {
-        const { ctx, chartArea: { left, right }, scales: { y } } = c;
-        const y1 = y.getPixelForValue(1.000);
-        ctx.save(); ctx.strokeStyle = 'rgba(255,255,255,0.15)'; ctx.lineWidth = 1; ctx.setLineDash([5,4]);
-        ctx.beginPath(); ctx.moveTo(left, y1); ctx.lineTo(right, y1); ctx.stroke();
-        ctx.setLineDash([]); ctx.fillStyle = '#9a9692'; ctx.font = '9px DM Mono, monospace';
-        ctx.fillText('1.000 (sin quenching)', left+4, y1-5); ctx.restore();
-      }
-    }]
+    }
+    // Close down to baseline
+    ctx.lineTo(pts[Math.min(limit, pts.length - 1)].x, mT + gH);
+    ctx.closePath();
+
+    const fillGrad = ctx.createLinearGradient(0, mT, 0, mT + gH);
+    fillGrad.addColorStop(0, `rgba(${r},${g},${b},0.28)`);
+    fillGrad.addColorStop(0.5, `rgba(${r},${g},${b},0.10)`);
+    fillGrad.addColorStop(1, `rgba(${r},${g},${b},0.01)`);
+    ctx.fillStyle = fillGrad;
+    ctx.fill();
+    ctx.restore();
+
+    /* 6. GLOWING LINE */
+    ctx.save();
+    // Outer glow pass
+    ctx.shadowColor = `rgb(${r},${g},${b})`;
+    ctx.shadowBlur = 16;
+    ctx.strokeStyle = `rgba(${r},${g},${b},0.35)`;
+    ctx.lineWidth = 5;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    _drawLine(ctx, pts, limit);
+    ctx.stroke();
+    // Inner bright line
+    ctx.shadowBlur = 8;
+    ctx.strokeStyle = `rgba(${r},${g},${b},0.9)`;
+    ctx.lineWidth = 2.5;
+    _drawLine(ctx, pts, limit);
+    ctx.stroke();
+    ctx.restore();
+
+    /* 7. DATA POINTS */
+    for (let i = 0; i <= limit && i < pts.length; i++) {
+      const { x, y } = pts[i];
+      const isHover = i === hoverIdx;
+      const pulse = 0.5 + 0.5 * Math.sin(pulseFrame * 0.06 + i * 0.8);
+      const outerR = isHover ? 9 : 5 + pulse * 1.5;
+      const innerR = isHover ? 5 : 3;
+
+      ctx.save();
+      // Outer glow ring
+      ctx.shadowColor = `rgb(${r},${g},${b})`;
+      ctx.shadowBlur = isHover ? 20 : 10;
+      ctx.fillStyle = `rgba(${r},${g},${b},${isHover ? 0.4 : 0.18 + pulse * 0.1})`;
+      ctx.beginPath();
+      ctx.arc(x, y, outerR, 0, Math.PI * 2);
+      ctx.fill();
+      // Inner bright dot
+      ctx.shadowBlur = 6;
+      ctx.fillStyle = isHover ? '#ffffff' : `rgb(${r},${g},${b})`;
+      ctx.beginPath();
+      ctx.arc(x, y, innerR, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+
+      // X-axis label
+      ctx.save();
+      ctx.font = '9px DM Mono, monospace';
+      ctx.fillStyle = isHover ? `rgb(${r},${g},${b})` : 'rgba(154,150,146,0.75)';
+      ctx.textAlign = 'center';
+      ctx.fillText(data.labels[i], x, mT + gH + 16);
+      ctx.restore();
+    }
+
+    /* 8. AXIS TITLES */
+    ctx.save();
+    ctx.font = '10px DM Mono, monospace';
+    ctx.fillStyle = 'rgba(154,150,146,0.8)';
+    ctx.textAlign = 'center';
+    ctx.fillText(data.xTitle, mL + gW / 2, H - 4);
+    // Y title
+    ctx.save();
+    ctx.translate(12, mT + gH / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText('k_ioq', 0, 0);
+    ctx.restore();
+    ctx.restore();
+
+    /* 9. DELTA ANNOTATION (right side) */
+    if (animProgress > 0.9) {
+      const first = pts[0];
+      const last  = pts[n - 1];
+      const delta = (data.values[n-1] - data.values[0]) * 100;
+      const midY  = (first.y + last.y) / 2;
+      ctx.save();
+      // Brace line
+      ctx.strokeStyle = `rgba(${r},${g},${b},0.5)`;
+      ctx.lineWidth = 1.2;
+      ctx.setLineDash([3, 3]);
+      const bx = W - mR + 6;
+      ctx.beginPath(); ctx.moveTo(bx, first.y); ctx.lineTo(bx, last.y); ctx.stroke();
+      ctx.setLineDash([]);
+      // Arrow ticks
+      ctx.beginPath(); ctx.moveTo(bx - 3, first.y); ctx.lineTo(bx + 3, first.y); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(bx - 3, last.y); ctx.lineTo(bx + 3, last.y); ctx.stroke();
+      ctx.shadowColor = `rgb(${r},${g},${b})`;
+      ctx.shadowBlur = 8;
+      ctx.font = `bold 10px DM Mono, monospace`;
+      ctx.fillStyle = `rgb(${r},${g},${b})`;
+      ctx.textAlign = 'left';
+      ctx.fillText(`+${delta.toFixed(1)}%`, bx + 6, midY + 4);
+      ctx.restore();
+    }
+
+    /* 10. HOVER crosshair */
+    if (hoverIdx >= 0 && hoverIdx < pts.length) {
+      const { x, y } = pts[hoverIdx];
+      ctx.save();
+      ctx.strokeStyle = `rgba(${r},${g},${b},0.25)`;
+      ctx.lineWidth = 1;
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath(); ctx.moveTo(x, mT); ctx.lineTo(x, mT + gH); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(mL, y); ctx.lineTo(W - mR, y); ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.restore();
+    }
+  }
+
+  function _drawLine(ctx, pts, limit) {
+    ctx.beginPath();
+    for (let i = 0; i <= limit && i < pts.length; i++) {
+      if (i === 0) { ctx.moveTo(pts[i].x, pts[i].y); continue; }
+      const prev = pts[i - 1];
+      const cpx1 = prev.x + (pts[i].x - prev.x) * 0.5;
+      const cpx2 = pts[i].x - (pts[i].x - prev.x) * 0.5;
+      ctx.bezierCurveTo(cpx1, prev.y, cpx2, pts[i].y, pts[i].x, pts[i].y);
+    }
+  }
+
+  /* ── ANIMATION LOOP ─────────────────────────────── */
+  function startAnim() {
+    animProgress = 0;
+    cancelAnimationFrame(animFrame);
+    function step() {
+      pulseFrame++;
+      animProgress = Math.min(1, animProgress + 0.03);
+      drawAll();
+      if (animProgress < 1) animFrame = requestAnimationFrame(step);
+      else pulseLoop();
+    }
+    animFrame = requestAnimationFrame(step);
+  }
+
+  function pulseLoop() {
+    cancelAnimationFrame(animFrame);
+    function tick() {
+      pulseFrame++;
+      drawAll();
+      animFrame = requestAnimationFrame(tick);
+    }
+    animFrame = requestAnimationFrame(tick);
+  }
+
+  /* ── HOVER / TOOLTIP ─────────────────────────────── */
+  canvas.addEventListener('mousemove', function(e) {
+    const rect = canvas.getBoundingClientRect();
+    const mx = e.clientX - rect.left;
+    const my = e.clientY - rect.top;
+    const data = currentMode === 'campo' ? dataCampo : dataCalidad;
+    const lay  = layout();
+    const n = data.values.length;
+    let best = -1, bestDist = 24;
+    for (let i = 0; i < n; i++) {
+      const { x, y } = toXY(i, n, data.values[i], data, lay);
+      const d = Math.hypot(mx - x, my - y);
+      if (d < bestDist) { bestDist = d; best = i; }
+    }
+    hoverIdx = best;
+    if (best >= 0) {
+      const { r, g, b } = data.color;
+      const val = data.values[best];
+      const lbl = data.labels[best];
+      tooltip.style.display = 'block';
+      tooltip.style.borderColor = `rgba(${r},${g},${b},0.4)`;
+      tooltip.style.boxShadow = `0 4px 20px rgba(0,0,0,0.5), 0 0 10px rgba(${r},${g},${b},0.15)`;
+      tooltip.innerHTML = `
+        <div style="color:rgba(${r},${g},${b},0.85);font-size:10px;margin-bottom:3px;">${data.xTitle.replace(' (cm)','').replace(' de haz','')}</div>
+        <div style="font-size:13px;color:#fff;font-weight:500;">${lbl}</div>
+        <div style="margin-top:4px;font-size:11px;">k<sub>ioq</sub> = <span style="color:rgb(${r},${g},${b});">${val.toFixed(4)}</span></div>
+        <div style="font-size:10px;color:rgba(154,150,146,0.8);margin-top:2px;">Δ = ${((val - 1) * 100).toFixed(3)}%</div>`;
+      const tw = tooltip.offsetWidth + 16;
+      const th = tooltip.offsetHeight + 10;
+      let tx = e.clientX - rect.left + 14;
+      let ty = e.clientY - rect.top - th / 2;
+      if (tx + tw > W) tx = e.clientX - rect.left - tw;
+      if (ty < 0) ty = 4;
+      tooltip.style.left = tx + 'px';
+      tooltip.style.top  = ty + 'px';
+    } else {
+      tooltip.style.display = 'none';
+    }
   });
-}
+  canvas.addEventListener('mouseleave', function() {
+    hoverIdx = -1;
+    tooltip.style.display = 'none';
+  });
 
-function showKioq() {
-  if (!specChart) return;
-  specChart.data.labels = fieldL;
-  specChart.data.datasets[0].data = kioqVals;
-  specChart.options.scales.x.title.text = 'Tamaño de campo (cm)';
-  specChart.update();
-  document.getElementById('btn-kioq').style.background = 'var(--teal-dim)';
-  document.getElementById('btn-kioq').style.color = 'var(--teal)';
-  document.getElementById('btn-kioq').style.borderColor = 'rgba(45,212,176,0.3)';
-  document.getElementById('btn-kq').style.background = 'var(--bg3)';
-  document.getElementById('btn-kq').style.color = 'var(--text2)';
-  document.getElementById('btn-kq').style.borderColor = 'var(--border)';
-}
+  /* ── MODE SWITCH ─────────────────────────────────── */
+  window.setMode = function(mode) {
+    currentMode = mode;
+    document.getElementById('btn-campo').className   = 'chart-btn' + (mode === 'campo'   ? ' active-teal'  : '');
+    document.getElementById('btn-calidad').className = 'chart-btn' + (mode === 'calidad' ? ' active-amber' : '');
+    hoverIdx = -1;
+    tooltip.style.display = 'none';
+    startAnim();
+  };
 
-function showKq() {
-  if (!specChart) return;
-  specChart.data.labels = qualities;
-  specChart.data.datasets[0].data = kioqQuals;
-  specChart.options.scales.x.title.text = 'Calidad de haz';
-  specChart.update();
-  document.getElementById('btn-kq').style.background = 'var(--amber-dim)';
-  document.getElementById('btn-kq').style.color = 'var(--amber)';
-  document.getElementById('btn-kq').style.borderColor = 'rgba(240,168,50,0.3)';
-  document.getElementById('btn-kioq').style.background = 'var(--bg3)';
-  document.getElementById('btn-kioq').style.color = 'var(--text2)';
-  document.getElementById('btn-kioq').style.borderColor = 'var(--border)';
-}
+  /* ── INIT ────────────────────────────────────────── */
+  // Wait for layout to settle, then resize & animate
+  setTimeout(() => { resize(); startAnim(); }, 80);
+  // Also re-init when slide becomes active
+  document.addEventListener('slideChanged', () => {
+    if (document.getElementById('slide-14').classList.contains('active')) {
+      setTimeout(() => { resize(); startAnim(); }, 80);
+    }
+  });
+})();
 </script>
 </body>
 </html>

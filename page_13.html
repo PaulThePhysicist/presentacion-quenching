@@ -61,71 +61,81 @@
 
 <div id="deck">
 
-<div class="slide" id="slide-13">
+<div class="slide" id="slide-13" style="padding-top: clamp(14px, 2vh, 24px); padding-bottom: clamp(14px, 2vh, 24px);">
   <div class="slide-num">13 / 24</div>
-  <div class="slide-eyebrow">Capítulo 5 · El espectro que nadie miraba</div>
-  <h2 class="slide-title">El Espectro <em>Compton Clínico</em></h2>
-  <p class="slide-subtitle">La presencia masiva de electrones de baja energía en haces de megavoltaje.</p>
-  <div class="persona-row">
+
+  <!-- Header compacto -->
+  <div class="slide-eyebrow" style="margin-bottom: 6px;">Capítulo 5 · El espectro que nadie miraba</div>
+  <h2 class="slide-title" style="font-size: clamp(24px, 3.2vw, 44px); margin-bottom: 4px;">El Espectro <em>Compton Clínico</em></h2>
+  <p class="slide-subtitle" style="font-size: 14px; margin-bottom: 8px;">La presencia masiva de electrones de baja energía en haces de megavoltaje.</p>
+  <div class="persona-row" style="margin-bottom: 10px;">
     <span class="persona-tag pt-mc">Contexto Clínico</span>
     <span class="persona-tag pt-marcos">Física Básica</span>
   </div>
 
-  <div class="two-col stretch" style="grid-template-columns: 1fr 1.25fr; gap: 18px;">
-    <!-- Columna izquierda: Estudio y métricas -->
-    <div class="col-stretch" style="gap: 14px;">
-      <div class="card card-teal reveal-item card-stretch" data-step="1">
-        <div class="card-label">El Estudio de Valdes Santurio (2019)</div>
-        <p style="font-size: 15px; color: var(--text2); line-height: 1.45;">
+  <!-- Grid principal que ocupa todo el espacio restante -->
+  <div class="two-col stretch" style="grid-template-columns: 1fr 1.25fr; gap: 14px; flex: 1; min-height: 0;">
+
+    <!-- Columna izquierda -->
+    <div class="col-stretch" style="gap: 10px;">
+
+      <div class="card card-teal reveal-item card-stretch" data-step="1" style="padding: 10px 14px;">
+        <div class="card-label" style="margin-bottom: 6px;">El Estudio de Valdes Santurio (2019)</div>
+        <p style="font-size: 13px; color: var(--text2); line-height: 1.4;">
           Modeló mediante simulación Monte Carlo (EGSnrc) un detector de centelleo de fibra BCF-60 en haces clínicos de un acelerador **Varian TrueBeam 6 MV**, utilizando archivos de espacio de fases de alta precisión.
         </p>
       </div>
 
-      <div class="card reveal-item card-stretch" data-step="2">
-        <div class="card-label">El origen de la cola de baja energía</div>
-        <p style="font-size: 14.5px; color: var(--text2); line-height: 1.45; margin-bottom: 4px;">
+      <div class="card reveal-item card-stretch" data-step="2" style="padding: 10px 14px;">
+        <div class="card-label" style="margin-bottom: 6px;">El origen de la cola de baja energía</div>
+        <p style="font-size: 13px; color: var(--text2); line-height: 1.4; margin-bottom: 6px;">
           ¿Por qué abundan los electrones lentos en un haz de alta energía (6 MV)?
         </p>
-        <ul class="nice" style="gap: 4px; font-size: 13px; padding-left: 12px; margin: 0;">
+        <ul class="nice" style="gap: 5px; font-size: 12px; padding-left: 10px; margin: 0;">
           <li>Los electrones primarios de alta energía se frenan y producen lluvias de **electrones secundarios de baja energía**.</li>
           <li>La **radiación dispersa** del cabezal y del fantoma introduce fotones de menor energía que producen electrones aún más lentos.</li>
         </ul>
       </div>
 
-      <div class="metric-highlight reveal-item card-stretch" data-step="3" style="padding: 12px 16px; display: flex; flex-direction: column; align-items: center; text-align: center; justify-content: center; min-height: auto;">
-        <div class="eq-label" style="margin-bottom: 2px; font-size: 11px;">Dosis absorbida por electrones &lt; 100 keV</div>
-        <div style="font-family: var(--serif); font-size: 32px; color: var(--amber); font-weight: bold; margin: 2px 0;">
+      <div class="metric-highlight reveal-item card-stretch" data-step="3"
+           style="padding: 10px 14px; display: flex; flex-direction: column; align-items: center;
+                  text-align: center; justify-content: center; min-height: auto; margin-bottom: 0;">
+        <div class="eq-label" style="margin-bottom: 2px; font-size: 10px;">Dosis absorbida por electrones &lt; 100 keV</div>
+        <div style="font-family: var(--serif); font-size: 28px; color: var(--amber); font-weight: bold; margin: 2px 0;">
           33% a 44%
         </div>
-        <div style="font-size: 13px; color: var(--text2); line-height: 1.4; max-width: 280px; margin-top: 2px;">
+        <div style="font-size: 12px; color: var(--text2); line-height: 1.35; max-width: 260px; margin-top: 2px;">
           de la dosis total depositada en el detector. **No es una cola marginal; representa más de un tercio de la dosis.**
         </div>
       </div>
+
     </div>
 
-    <!-- Columna derecha: Cascada Compton e Histograma -->
-    <div class="reveal-item col-stretch" data-step="1" style="gap: 14px;">
-      <div class="card card-stretch" style="display: flex; flex-direction: column; gap: 12px; min-height: 410px; justify-content: space-between;">
+    <!-- Columna derecha -->
+    <div class="reveal-item col-stretch" data-step="1" style="gap: 10px;">
+
+      <div class="card card-stretch" style="display: flex; flex-direction: column; gap: 8px; min-height: 0; padding: 10px 14px;">
         <div class="card-label" style="margin-bottom: 0;">Espectro Compton e Histograma de Electrones Seg.</div>
-        
+
         <!-- HUD de Compton -->
-        <div style="display: grid; grid-template-columns: 1fr 1.2fr 1fr; gap: 8px; background: var(--bg3); padding: 8px; border-radius: 8px; border: 1px solid var(--border);">
+        <div style="display: grid; grid-template-columns: 1fr 1.2fr 1fr; gap: 6px;
+                    background: var(--bg3); padding: 6px 8px; border-radius: 8px; border: 1px solid var(--border); flex-shrink: 0;">
           <div style="text-align: center;">
             <div style="font-size: 9px; color: var(--text3); font-family: var(--mono); text-transform: uppercase;">Espectro Fotón</div>
-            <div id="hud-photon-beam" style="font-size: 14px; font-family: var(--mono); color: var(--teal); font-weight: bold; margin-top: 2px;">6 MV</div>
+            <div id="hud-photon-beam" style="font-size: 13px; font-family: var(--mono); color: var(--teal); font-weight: bold; margin-top: 1px;">6 MV</div>
           </div>
           <div style="text-align: center; border-left: 1px solid var(--border); border-right: 1px solid var(--border);">
             <div style="font-size: 9px; color: var(--text3); font-family: var(--mono); text-transform: uppercase;">Fracción Quenching</div>
-            <div id="hud-quenched-fraction" style="font-size: 14px; font-family: var(--mono); color: var(--amber); font-weight: bold; margin-top: 2px;">~38% (Dosis)</div>
+            <div id="hud-quenched-fraction" style="font-size: 13px; font-family: var(--mono); color: var(--amber); font-weight: bold; margin-top: 1px;">~38% (Dosis)</div>
           </div>
           <div style="text-align: center;">
             <div style="font-size: 9px; color: var(--text3); font-family: var(--mono); text-transform: uppercase;">Estado de Haz</div>
-            <div id="hud-compton-status" style="font-size: 14px; font-family: var(--mono); color: var(--teal); font-weight: bold; margin-top: 2px;">Alta Energía</div>
+            <div id="hud-compton-status" style="font-size: 13px; font-family: var(--mono); color: var(--teal); font-weight: bold; margin-top: 1px;">Alta Energía</div>
           </div>
         </div>
 
-        <!-- Canvas -->
-        <div class="canvas-stretch-wrapper">
+        <!-- Canvas — flex: 1 para que tome todo el espacio disponible -->
+        <div class="canvas-stretch-wrapper" style="flex: 1; min-height: 0; max-height: none;">
           <canvas id="compton-canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: block; cursor: crosshair;"></canvas>
           <div id="compton-badge" class="hud-badge amber" style="position: absolute; top: 8px; right: 8px; pointer-events: none;">
             Pase el cursor sobre la gráfica
@@ -133,9 +143,12 @@
         </div>
 
         <!-- Beam Selector Buttons -->
-        <div id="compton-controls-container" class="controls-disabled" style="display: flex; flex-direction: column; gap: 6px; background: var(--bg3); padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border); transition: opacity 0.3s;">
-          <div style="font-size: 11px; font-family: var(--mono); color: var(--text2); margin-bottom: 2px;">Simular Calidad del Haz de Radiación:</div>
-          <div style="display: flex; gap: 8px; justify-content: space-between;">
+        <div id="compton-controls-container" class="controls-disabled"
+             style="display: flex; flex-direction: column; gap: 4px; background: var(--bg3);
+                    padding: 6px 10px; border-radius: 8px; border: 1px solid var(--border);
+                    transition: opacity 0.3s; flex-shrink: 0;">
+          <div style="font-size: 10px; font-family: var(--mono); color: var(--text2);">Simular Calidad del Haz de Radiación:</div>
+          <div style="display: flex; gap: 6px; justify-content: space-between;">
             <button class="spectrum-btn active" id="btn-6mv">6 MV (TrueBeam)</button>
             <button class="spectrum-btn" id="btn-co60">Co-60 (1.25 MeV)</button>
             <button class="spectrum-btn" id="btn-150kv">150 kV (Ortovoltaje)</button>
@@ -143,9 +156,11 @@
         </div>
       </div>
 
-      <div class="callout reveal-item" data-step="4">
+      <!-- Callout al fondo -->
+      <div class="callout reveal-item" data-step="4" style="margin-top: 0; flex-shrink: 0;">
         <strong>Perspectiva Clínica:</strong> Clínicamente, esto demuestra que el quenching no es un problema exótico de haces de electrones o protones, sino una realidad en haces de fotones MV clínicos.
       </div>
+
     </div>
   </div>
 </div>
@@ -166,143 +181,113 @@
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
 
-  let width = 0;
-  let height = 0;
+  let width = 0, height = 0;
   let dpr = window.devicePixelRatio || 1;
-
-  // Simulation State
-  let selectedBeam = '6mv'; // '6mv', 'co60', '150kv'
-  let activeStep = 0;
+  let selectedBeam = '6mv';
   let lastStep = -1;
-  let lastBeam = '';
-  let hoveredRegion = null; // 'low' (<125 keV), 'high' (>=125 keV), null
-
-  // Animation particles
-  let particles = [];
-  let tracks = [];
+  let hoveredRegion = null;
+  let particles = [], tracks = [], flashPoints = [];
   let frame = 0;
 
-  // DOM
-  const btn6mv = document.getElementById('btn-6mv');
-  const btnCo60 = document.getElementById('btn-co60');
+  // DOM refs
+  const btn6mv   = document.getElementById('btn-6mv');
+  const btnCo60  = document.getElementById('btn-co60');
   const btn150kv = document.getElementById('btn-150kv');
-  const hudBeam = document.getElementById('hud-photon-beam');
-  const hudFraction = document.getElementById('hud-quenched-fraction');
-  const hudStatus = document.getElementById('hud-compton-status');
-  const badge = document.getElementById('compton-badge');
+  const hudBeam      = document.getElementById('hud-photon-beam');
+  const hudFraction  = document.getElementById('hud-quenched-fraction');
+  const hudStatus    = document.getElementById('hud-compton-status');
+  const badge        = document.getElementById('compton-badge');
   const controlsContainer = document.getElementById('compton-controls-container');
 
+  /* ─── RESIZE ─────────────────────────────────────── */
   function resize() {
     const rect = canvas.getBoundingClientRect();
-    width = rect.width;
+    width  = rect.width;
     height = rect.height;
-    canvas.width = width * dpr;
-    canvas.height = height * dpr;
+    canvas.width  = Math.round(width  * dpr);
+    canvas.height = Math.round(height * dpr);
     ctx.scale(dpr, dpr);
   }
   window.addEventListener('resize', resize);
   resize();
 
-  // Hover detection
+  /* ─── LAYOUT CONSTANTS (computed each draw) ─────── */
+  function layout() {
+    const histH   = Math.round(height * 0.30);
+    const simH    = height - histH - 2;
+    const mL = 38, mR = 14;
+    const gW = width - mL - mR;
+    const detX = mL + gW * 0.04;
+    const detW = gW * 0.52;
+    const detY = 10;
+    const detH = simH - 20;
+    return { histH, simH, mL, mR, gW, detX, detW, detY, detH };
+  }
+
+  /* ─── HOVER ─────────────────────────────────────── */
   canvas.addEventListener('mousemove', function(e) {
     const rect = canvas.getBoundingClientRect();
     const mx = e.clientX - rect.left;
     const my = e.clientY - rect.top;
+    const { histH, mL, mR, gW } = layout();
+    const histTop = height - histH;
+    const threshX = mL + (125 / 1500) * gW;
 
-    const mLeft = 32;
-    const mRight = 15;
-    const graphWidth = width - mLeft - mRight;
-    const thresholdX = mLeft + (125 / 1500) * graphWidth;
-
-    if (my >= height - 60 && my <= height - 15 && mx >= mLeft && mx <= width - mRight) {
-      if (mx < thresholdX) {
+    if (my >= histTop && mx >= mL && mx <= width - mR) {
+      if (mx < threshX) {
         hoveredRegion = 'low';
-        if (badge) {
-          badge.textContent = '🔍 Quenching (<125 keV)';
-          badge.className = 'hud-badge red';
-        }
+        if (badge) { badge.textContent = '🔍 Quenching (<125 keV)'; badge.className = 'hud-badge red'; }
       } else {
         hoveredRegion = 'high';
-        if (badge) {
-          badge.textContent = '🔍 Lineal (≥125 keV)';
-          badge.className = 'hud-badge green';
-        }
+        if (badge) { badge.textContent = '🔍 Lineal (≥125 keV)'; badge.className = 'hud-badge green'; }
       }
     } else {
       hoveredRegion = null;
-      if (badge) {
-        badge.textContent = 'Pase el cursor sobre la gráfica';
-        badge.className = 'hud-badge amber';
-      }
+      if (badge) { badge.textContent = 'Pase el cursor sobre la gráfica'; badge.className = 'hud-badge amber'; }
     }
   });
-
   canvas.addEventListener('mouseleave', function() {
     hoveredRegion = null;
-    if (badge) {
-      badge.textContent = 'Pase el cursor sobre la gráfica';
-      badge.className = 'hud-badge amber';
-    }
+    if (badge) { badge.textContent = 'Pase el cursor sobre la gráfica'; badge.className = 'hud-badge amber'; }
   });
 
-  // Buttons Event Listeners
+  /* ─── BEAM SELECTOR ─────────────────────────────── */
   function setBeam(beam) {
     selectedBeam = beam;
-    [btn6mv, btnCo60, btn150kv].forEach(b => {
-      if (b) b.classList.remove('active');
-    });
-    if (beam === '6mv' && btn6mv) btn6mv.classList.add('active');
+    [btn6mv, btnCo60, btn150kv].forEach(b => { if (b) b.classList.remove('active'); });
+    if (beam === '6mv'  && btn6mv)  btn6mv.classList.add('active');
     if (beam === 'co60' && btnCo60) btnCo60.classList.add('active');
-    if (beam === '150kv' && btn150kv) btn150kv.classList.add('active');
-
+    if (beam === '150kv'&& btn150kv)btn150kv.classList.add('active');
     updateUI();
-    particles = [];
-    tracks = [];
+    particles = []; tracks = []; flashPoints = [];
   }
-
-  if (btn6mv) btn6mv.onclick = () => setBeam('6mv');
-  if (btnCo60) btnCo60.onclick = () => setBeam('co60');
+  if (btn6mv)   btn6mv.onclick   = () => setBeam('6mv');
+  if (btnCo60)  btnCo60.onclick  = () => setBeam('co60');
   if (btn150kv) btn150kv.onclick = () => setBeam('150kv');
 
+  /* ─── HUD UPDATE ─────────────────────────────────── */
   function updateUI() {
-    if (hudBeam) {
-      hudBeam.textContent = selectedBeam === '6mv' ? '6 MV' : (selectedBeam === 'co60' ? 'Cobalto-60' : '150 kVp');
-    }
-
-    let quenchFracText = '38%';
-    let statusText = 'Medio-Bajo';
-    let statusColor = 'var(--teal)';
-
+    if (hudBeam) hudBeam.textContent = selectedBeam === '6mv' ? '6 MV' : selectedBeam === 'co60' ? 'Cobalto-60' : '150 kVp';
+    let fText, fColor, sText, sColor;
     if (selectedBeam === '6mv') {
-      quenchFracText = '33% a 44%';
-      statusText = 'Substancial';
-      statusColor = 'var(--amber)';
+      fText = '33% a 44%'; fColor = '#f0a832';
+      sText = 'Substancial'; sColor = '#f0a832';
     } else if (selectedBeam === 'co60') {
-      quenchFracText = '~22%';
-      statusText = 'Leve (Bajo)';
-      statusColor = 'var(--teal)';
-    } else if (selectedBeam === '150kv') {
-      quenchFracText = '~82%';
-      statusText = 'Saturado (Crítico)';
-      statusColor = 'var(--red)';
+      fText = '~22%'; fColor = '#2dd4b0';
+      sText = 'Leve (Bajo)'; sColor = '#2dd4b0';
+    } else {
+      fText = '~82%'; fColor = '#e85555';
+      sText = 'Saturado (Crítico)'; sColor = '#e85555';
     }
-
-    if (hudFraction) {
-      hudFraction.textContent = quenchFracText;
-      hudFraction.style.color = selectedBeam === '150kv' ? 'var(--red)' : (selectedBeam === 'co60' ? 'var(--teal)' : 'var(--amber)');
-    }
-    if (hudStatus) {
-      hudStatus.textContent = statusText;
-      hudStatus.style.color = statusColor;
-    }
+    if (hudFraction) { hudFraction.textContent = fText; hudFraction.style.color = fColor; }
+    if (hudStatus)   { hudStatus.textContent = sText;   hudStatus.style.color = sColor; }
   }
-
   updateUI();
 
+  /* ─── SIMULATION STATE ───────────────────────────── */
   function updateSimulationState(step) {
     if (step === lastStep) return;
     lastStep = step;
-
     if (step >= 4) {
       if (controlsContainer) controlsContainer.classList.remove('controls-disabled');
       [btn6mv, btnCo60, btn150kv].forEach(b => { if (b) b.disabled = false; });
@@ -313,310 +298,460 @@
     }
   }
 
+  /* ─── PHYSICS ────────────────────────────────────── */
   function updatePhysics() {
     frame++;
+    const { detX, detW, detY, detH, simH } = layout();
+    const detX2 = detX + detW;
 
-    // Spawn incident photons from the left (x = -10)
-    // Spawn rate: orthovoltage spawns faster but low-energy, mv slower
-    const spawnRate = selectedBeam === '150kv' ? 12 : 25;
+    const spawnRate = selectedBeam === '150kv' ? 8 : 16;
     if (frame % spawnRate === 0) {
-      particles.push({
-        x: -10,
-        y: 20 + Math.random() * 85,
-        vx: 3.5,
-        vy: 0,
-        type: 'photon',
-        active: true
-      });
+      const count = selectedBeam === '150kv' ? 2 : 1;
+      for (let c = 0; c < count; c++) {
+        particles.push({
+          x: -12, y: detY + 8 + Math.random() * (detH - 16),
+          vx: selectedBeam === '150kv' ? 2.8 : 3.8,
+          vy: 0, type: 'photon', active: true, trail: []
+        });
+      }
     }
 
-    // Move particles
     for (let i = particles.length - 1; i >= 0; i--) {
       const p = particles[i];
       if (p.type === 'photon') {
+        p.trail.push({ x: p.x, y: p.y });
+        if (p.trail.length > 18) p.trail.shift();
         p.x += p.vx;
-        // Collision probability inside BCF-60 detector block (x: 40 to 190)
-        if (p.x >= 40 && p.x <= 180 && Math.random() < 0.1) {
-          p.active = false;
+
+        const insideDet = p.x >= detX && p.x <= detX2;
+        const collProb = selectedBeam === '150kv' ? 0.14 : 0.09;
+        if (insideDet && Math.random() < collProb) {
+          flashPoints.push({ x: p.x, y: p.y, life: 18, maxLife: 18 });
           particles.splice(i, 1);
-          
-          // Trigger Compton Scatter collision!
-          // 1. Spawn scattered photon
-          const scatAngle = (Math.random() - 0.5) * 1.5;
+          const scatAngle = (Math.random() - 0.5) * 1.8;
           particles.push({
-            x: p.x,
-            y: p.y,
-            vx: Math.cos(scatAngle) * 3.0,
-            vy: Math.sin(scatAngle) * 3.0,
-            type: 'scat_photon',
-            life: 30
+            x: p.x, y: p.y,
+            vx: Math.cos(scatAngle) * 2.8,
+            vy: Math.sin(scatAngle) * 2.8,
+            type: 'scat_photon', life: 35, trail: []
           });
-
-          // 2. Spawn recoil electron track
-          let energy = 1000; // default (keV)
-          if (selectedBeam === '6mv') {
-            // broad distribution, some very high energy, many slow
-            energy = Math.random() < 0.4 ? 40 + Math.random() * 80 : 150 + Math.random() * 1000;
-          } else if (selectedBeam === 'co60') {
-            energy = 300 + Math.random() * 750;
-          } else {
-            // 150 kvp
-            energy = 15 + Math.random() * 100;
-          }
-
+          let energy;
+          if (selectedBeam === '6mv')       energy = Math.random() < 0.42 ? 20 + Math.random() * 100 : 150 + Math.random() * 1100;
+          else if (selectedBeam === 'co60') energy = 280 + Math.random() * 750;
+          else                              energy = 10  + Math.random() * 120;
           generateElectronTrack(p.x, p.y, energy);
-        } else if (p.x > 210) {
-          p.active = false;
+        } else if (p.x > width + 10) {
           particles.splice(i, 1);
         }
       } else {
-        // Scattered photon decaying
+        p.trail.push({ x: p.x, y: p.y });
+        if (p.trail.length > 12) p.trail.shift();
         p.x += p.vx;
         p.y += p.vy;
         p.life--;
-        if (p.life <= 0) {
-          particles.splice(i, 1);
-        }
+        if (p.life <= 0) particles.splice(i, 1);
       }
     }
 
-    // Animate recoil electron track propagation
+    // Fade flash points
+    for (let i = flashPoints.length - 1; i >= 0; i--) {
+      flashPoints[i].life--;
+      if (flashPoints[i].life <= 0) flashPoints.splice(i, 1);
+    }
+
+    // Advance tracks
     tracks.forEach(t => {
-      if (t.progress < t.points.length) {
-        t.progress += 0.5;
-      } else {
-        t.alpha -= 0.02;
-      }
+      if (t.progress < t.points.length) t.progress += 0.7;
+      else t.alpha -= 0.015;
     });
     tracks = tracks.filter(t => t.alpha > 0);
   }
 
   function generateElectronTrack(sx, sy, energy) {
     const points = [{ x: sx, y: sy }];
-    
-    // Low energy electron tracks: short range, highly curled
-    // High energy: long, straight
-    const range = Math.min(65, 8 + (energy / 1500) * 80);
-    const steps = Math.ceil(range / 2.5);
-    const scatterAngle = Math.max(0.04, 1.35 * (1 - (energy / 1200)));
-    
-    let x = sx;
-    let y = sy;
-    let angle = (Math.random() - 0.5) * 0.8; // generally forward
-
+    const range = Math.min(80, 6 + (energy / 1500) * 90);
+    const steps = Math.ceil(range / 2.2);
+    const scatterAngle = Math.max(0.05, 1.5 * (1 - energy / 1300));
+    let x = sx, y = sy;
+    let angle = (Math.random() - 0.5) * 1.0;
     for (let i = 0; i < steps; i++) {
       angle += (Math.random() - 0.5) * scatterAngle;
-      x += Math.cos(angle) * 2.5;
-      y += Math.sin(angle) * 2.5;
+      x += Math.cos(angle) * 2.2;
+      y += Math.sin(angle) * 2.2;
       points.push({ x, y });
     }
-
-    tracks.push({
-      points,
-      energy,
-      progress: 0,
-      alpha: 1.0
-    });
+    tracks.push({ points, energy, progress: 0, alpha: 1.0 });
   }
 
-  function draw(step) {
+  /* ─── SPECTRUM FUNCTION ──────────────────────────── */
+  function getSpecY(eV) {
+    if (selectedBeam === '150kv') {
+      if (eV > 180) return 0;
+      return Math.exp(-eV / 40) * 1.0;
+    } else if (selectedBeam === 'co60') {
+      if (eV > 1080) return 0;
+      const edge = Math.exp(-Math.pow(eV - 850, 2) / 5000) * 0.65;
+      const low  = Math.exp(-eV / 280) * 0.32;
+      const flat = eV < 900 ? 0.20 * (eV / 900) : 0;
+      return edge + low + flat;
+    } else {
+      const cascade = Math.exp(-eV / 80)  * 0.85;
+      const broad   = Math.exp(-Math.pow(eV - 340, 2) / 160000) * 0.30;
+      const tail    = Math.exp(-eV / 680) * 0.13;
+      return cascade + broad + tail;
+    }
+  }
+
+  /* ─── DRAW ───────────────────────────────────────── */
+  function draw() {
     ctx.clearRect(0, 0, width, height);
+    const { histH, simH, mL, mR, gW, detX, detW, detY, detH } = layout();
+    const detX2 = detX + detW;
+    const histTop = height - histH;
+    const maxE = 1500;
+    const threshX = mL + (125 / maxE) * gW;
 
-    // Margins for histogram at bottom
-    const mLeft = 32;
-    const mRight = 15;
-    const mTop = 15;
-    const mBottom = 15;
-    const graphWidth = width - mLeft - mRight;
-    const graphHeight = 45; // height of histogram
-    const histTop = height - mBottom - graphHeight;
+    /* 1. BACKGROUND */
+    const bgGrad = ctx.createLinearGradient(0, 0, width, height);
+    bgGrad.addColorStop(0, '#07090b');
+    bgGrad.addColorStop(1, '#0b0e12');
+    ctx.fillStyle = bgGrad;
+    ctx.fillRect(0, 0, width, height);
 
-    // --- DRAW PHYSICAL BCF-60 DETECTOR BLOCK ---
+    /* 2. SCANLINE GRID */
     ctx.save();
-    ctx.strokeStyle = 'rgba(91, 156, 246, 0.28)';
-    const gradient = ctx.createLinearGradient(40, 0, 185, 0);
-    gradient.addColorStop(0, 'rgba(91, 156, 246, 0.02)');
-    gradient.addColorStop(1, 'rgba(91, 156, 246, 0.08)');
-    ctx.fillStyle = gradient;
-    ctx.lineWidth = 1.5;
-    ctx.beginPath();
-    ctx.roundRect(40, 15, 140, 100, 4);
-    ctx.fill();
-    ctx.stroke();
-
-    ctx.fillStyle = 'rgba(91, 156, 246, 0.4)';
-    ctx.font = '8px DM Mono, monospace';
-    ctx.textAlign = 'center';
-    ctx.fillText('BCF-60 Centelleador Plástico', 110, 27);
+    ctx.strokeStyle = 'rgba(255,255,255,0.022)';
+    ctx.lineWidth = 1;
+    for (let gy = 0; gy < simH; gy += 20) {
+      ctx.beginPath(); ctx.moveTo(0, gy); ctx.lineTo(width, gy); ctx.stroke();
+    }
+    for (let gx = mL; gx < width - mR; gx += Math.round(gW / 8)) {
+      ctx.beginPath(); ctx.moveTo(gx, 0); ctx.lineTo(gx, simH); ctx.stroke();
+    }
     ctx.restore();
 
-    // --- DRAW PARTICLES ---
-    // Incident / scattered photons (dashed lines)
+    /* 3. AMBIENT GLOW behind detector */
+    const ambColor = selectedBeam === '150kv' ? 'rgba(232,85,85,' :
+                     selectedBeam === 'co60'  ? 'rgba(45,212,176,' :
+                                                'rgba(91,156,246,';
+    const ambGrad = ctx.createRadialGradient(
+      detX + detW * 0.5, detY + detH * 0.5, 0,
+      detX + detW * 0.5, detY + detH * 0.5, Math.max(detW, detH) * 0.75
+    );
+    ambGrad.addColorStop(0, ambColor + '0.08)');
+    ambGrad.addColorStop(1, ambColor + '0.00)');
+    ctx.fillStyle = ambGrad;
+    ctx.fillRect(0, 0, width, simH);
+
+    /* 4. DETECTOR BLOCK (BCF-60) */
     ctx.save();
-    ctx.strokeStyle = 'rgba(167, 139, 250, 0.8)';
-    ctx.lineWidth = 1.2;
-    ctx.setLineDash([4, 3]);
-    
-    particles.forEach(p => {
-      if (p.type === 'photon') {
-        ctx.beginPath();
-        ctx.moveTo(p.x - 8, p.y);
-        ctx.lineTo(p.x, p.y);
-        ctx.stroke();
-      } else {
-        // Scattered photon
-        ctx.strokeStyle = `rgba(167, 139, 250, ${p.life / 30 * 0.55})`;
-        ctx.beginPath();
-        const startX = p.x - p.vx * 2;
-        const startY = p.y - p.vy * 2;
-        ctx.moveTo(startX, startY);
-        ctx.lineTo(p.x, p.y);
-        ctx.stroke();
-      }
+    ctx.shadowColor = selectedBeam === '6mv' ? '#5b9cf6' : selectedBeam === 'co60' ? '#2dd4b0' : '#e85555';
+    ctx.shadowBlur = 14;
+    const detGrad = ctx.createLinearGradient(detX, detY, detX + detW, detY);
+    const c0 = selectedBeam === '150kv' ? 'rgba(232,85,85,0.06)'  :
+               selectedBeam === 'co60'  ? 'rgba(45,212,176,0.06)' :
+                                          'rgba(91,156,246,0.06)';
+    const c1 = selectedBeam === '150kv' ? 'rgba(232,85,85,0.16)'  :
+               selectedBeam === 'co60'  ? 'rgba(45,212,176,0.16)' :
+                                          'rgba(91,156,246,0.16)';
+    detGrad.addColorStop(0, c0);
+    detGrad.addColorStop(1, c1);
+    ctx.fillStyle = detGrad;
+    ctx.strokeStyle = selectedBeam === '150kv' ? 'rgba(232,85,85,0.55)'  :
+                      selectedBeam === 'co60'  ? 'rgba(45,212,176,0.55)' :
+                                                  'rgba(91,156,246,0.55)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.roundRect(detX, detY, detW, detH, 6);
+    ctx.fill();
+    ctx.stroke();
+    ctx.restore();
+
+    // Detector label
+    ctx.save();
+    ctx.font = 'bold 9px DM Mono, monospace';
+    ctx.fillStyle = selectedBeam === '150kv' ? 'rgba(232,85,85,0.75)'  :
+                    selectedBeam === 'co60'  ? 'rgba(45,212,176,0.75)' :
+                                               'rgba(91,156,246,0.75)';
+    ctx.textAlign = 'left';
+    ctx.fillText('BCF-60  Centelleador Plástico', detX + 10, detY + 16);
+    ctx.restore();
+
+    // Corner brackets
+    ctx.save();
+    ctx.strokeStyle = selectedBeam === '150kv' ? 'rgba(232,85,85,0.5)'  :
+                      selectedBeam === 'co60'  ? 'rgba(45,212,176,0.5)' :
+                                                  'rgba(91,156,246,0.5)';
+    ctx.lineWidth = 1.5;
+    const bl = 14;
+    [[detX, detY], [detX2, detY], [detX, detY + detH], [detX2, detY + detH]].forEach(([cx, cy]) => {
+      const sx2 = cx === detX ? 1 : -1;
+      const sy2 = cy === detY ? 1 : -1;
+      ctx.beginPath();
+      ctx.moveTo(cx + sx2 * bl, cy);
+      ctx.lineTo(cx, cy);
+      ctx.lineTo(cx, cy + sy2 * bl);
+      ctx.stroke();
     });
     ctx.restore();
 
-    // Electron recoil tracks
-    tracks.forEach(t => {
-      const isLow = t.energy < 125;
-      
-      // Determine color based on energy and hover state
-      let color = 'rgba(91, 156, 246, '; // default blue
-      if (isLow) {
-        color = 'rgba(232, 85, 85, '; // default red
-      }
-      
-      let thickness = isLow ? 1.4 : 1.8;
-      let opacity = t.alpha;
+    /* 5. PHOTON BEAM CHANNEL */
+    ctx.save();
+    ctx.strokeStyle = 'rgba(167,139,250,0.18)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([6, 5]);
+    ctx.beginPath();
+    ctx.moveTo(0, simH / 2);
+    ctx.lineTo(detX, simH / 2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.font = '11px DM Mono, monospace';
+    ctx.fillStyle = 'rgba(167,139,250,0.6)';
+    ctx.textAlign = 'left';
+    ctx.fillText('γ →', 4, simH / 2 - 4);
+    ctx.restore();
 
-      // Glow matching hover states
-      if (hoveredRegion === 'low' && isLow) {
-        color = 'rgba(255, 100, 100, ';
-        thickness = 2.5;
-        opacity = Math.min(1.0, t.alpha + 0.3);
-      } else if (hoveredRegion === 'high' && !isLow) {
-        color = 'rgba(100, 255, 230, ';
-        thickness = 3.0;
-        opacity = Math.min(1.0, t.alpha + 0.3);
-      }
-
+    /* 6. FLASH POINTS (Compton sparks) */
+    flashPoints.forEach(fp => {
+      const t = fp.life / fp.maxLife;
       ctx.save();
-      ctx.strokeStyle = color + opacity + ')';
-      ctx.lineWidth = thickness;
+      ctx.shadowColor = '#ffffff';
+      ctx.shadowBlur = 18 * t;
+      ctx.fillStyle = `rgba(255,255,220,${t * 0.95})`;
       ctx.beginPath();
-      
-      const limit = Math.min(t.points.length, Math.floor(t.progress));
-      for (let i = 0; i < limit; i++) {
-        const pt = t.points[i];
-        if (i === 0) ctx.moveTo(pt.x, pt.y);
-        else ctx.lineTo(pt.x, pt.y);
+      ctx.arc(fp.x, fp.y, 3.5 * t + 1, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = `rgba(255,255,180,${t * 0.6})`;
+      ctx.lineWidth = 0.8;
+      for (let a = 0; a < Math.PI * 2; a += Math.PI / 4) {
+        const r2 = (1 - t) * 12 + 2;
+        ctx.beginPath();
+        ctx.moveTo(fp.x, fp.y);
+        ctx.lineTo(fp.x + Math.cos(a) * r2, fp.y + Math.sin(a) * r2);
+        ctx.stroke();
       }
-      ctx.stroke();
       ctx.restore();
     });
 
-    // --- DRAW HISTOGRAM SPECTRA ---
-    // Draw boundary background
-    ctx.fillStyle = '#0a0d0f';
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+    /* 7. PARTICLES */
+    particles.forEach(p => {
+      ctx.save();
+      if (p.type === 'photon') {
+        if (p.trail.length > 1) {
+          ctx.shadowColor = '#a78bfa';
+          ctx.shadowBlur = 8;
+          for (let i = 1; i < p.trail.length; i++) {
+            const t2 = i / p.trail.length;
+            ctx.strokeStyle = `rgba(167,139,250,${t2 * 0.85})`;
+            ctx.lineWidth = 1.5 * t2;
+            ctx.setLineDash([4, 3]);
+            ctx.beginPath();
+            ctx.moveTo(p.trail[i-1].x, p.trail[i-1].y);
+            ctx.lineTo(p.trail[i].x, p.trail[i].y);
+            ctx.stroke();
+          }
+        }
+        ctx.setLineDash([]);
+        ctx.shadowBlur = 12;
+        ctx.fillStyle = 'rgba(200,180,255,0.9)';
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 2.5, 0, Math.PI * 2);
+        ctx.fill();
+      } else {
+        const tFrac = p.life / 35;
+        ctx.shadowColor = '#a78bfa';
+        ctx.shadowBlur = 10 * tFrac;
+        if (p.trail.length > 1) {
+          for (let i = 1; i < p.trail.length; i++) {
+            const f = (i / p.trail.length) * tFrac;
+            ctx.strokeStyle = `rgba(167,139,250,${f * 0.7})`;
+            ctx.lineWidth = 1.2;
+            ctx.setLineDash([3, 3]);
+            ctx.beginPath();
+            ctx.moveTo(p.trail[i-1].x, p.trail[i-1].y);
+            ctx.lineTo(p.trail[i].x, p.trail[i].y);
+            ctx.stroke();
+          }
+        }
+      }
+      ctx.restore();
+    });
+
+    /* 8. ELECTRON TRACKS */
+    tracks.forEach(t => {
+      const isLow = t.energy < 125;
+      const hoverLow  = hoveredRegion === 'low'  && isLow;
+      const hoverHigh = hoveredRegion === 'high' && !isLow;
+      let r, g, b;
+      if (isLow)     { r = 232; g =  85; b =  85; }
+      else           { r =  91; g = 156; b = 246; }
+      if (hoverLow)  { r = 255; g = 110; b = 110; }
+      if (hoverHigh) { r = 100; g = 255; b = 230; }
+      const thickness = hoverLow || hoverHigh ? 2.8 : (isLow ? 1.6 : 2.0);
+      const glow = hoverLow || hoverHigh ? 18 : (isLow ? 8 : 10);
+      ctx.save();
+      ctx.shadowColor = `rgb(${r},${g},${b})`;
+      ctx.shadowBlur = glow;
+      ctx.strokeStyle = `rgba(${r},${g},${b},${t.alpha})`;
+      ctx.lineWidth = thickness;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.beginPath();
+      const limit = Math.min(t.points.length, Math.floor(t.progress));
+      for (let i = 0; i < limit; i++) {
+        const pt = t.points[i];
+        if (i === 0) ctx.moveTo(pt.x, pt.y); else ctx.lineTo(pt.x, pt.y);
+      }
+      ctx.stroke();
+      if (limit > 3 && t.alpha > 0.7) {
+        const last = t.points[limit - 1];
+        ctx.font = '7px DM Mono, monospace';
+        ctx.fillStyle = `rgba(${r},${g},${b},${t.alpha * 0.85})`;
+        ctx.shadowBlur = 0;
+        ctx.textAlign = 'left';
+        ctx.fillText(`${Math.round(t.energy)} keV`, last.x + 3, last.y - 2);
+      }
+      ctx.restore();
+    });
+
+    /* 9. DIVIDER */
+    ctx.save();
+    ctx.strokeStyle = 'rgba(255,255,255,0.07)';
     ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.roundRect(mLeft, histTop, graphWidth, graphHeight, 4);
-    ctx.fill();
+    ctx.moveTo(0, histTop);
+    ctx.lineTo(width, histTop);
     ctx.stroke();
-
-    // Draw coordinate markers on histogram
-    ctx.strokeStyle = 'rgba(255,255,255,0.03)';
-    for (let x_m = mLeft + graphWidth/5; x_m < width - mRight; x_m += graphWidth/5) {
-      ctx.beginPath(); ctx.moveTo(x_m, histTop); ctx.lineTo(x_m, histTop + graphHeight); ctx.stroke();
-    }
-
-    // Mathematical representation of distributions
-    // orthovoltage: y = exp(-E/60)
-    // co60: y = Compton distribution (low peak + Compton edge at 900 keV)
-    // 6mv: combination of exponential low energy (scatter) + broad Compton continuum
-    const maxE = 1500; // keV
-    
-    function getSpecY(energy_v) {
-      if (selectedBeam === '150kv') {
-        if (energy_v > 180) return 0;
-        return Math.exp(-energy_v / 42) * 0.92;
-      } else if (selectedBeam === 'co60') {
-        if (energy_v > 1050) return 0;
-        // compton edge spike around 900
-        const comptonEdge = Math.exp(-Math.pow(energy_v - 850, 2) / 6000) * 0.55;
-        const lowCont = Math.exp(-energy_v / 300) * 0.28;
-        const flatVal = (energy_v < 900) ? 0.18 * (energy_v / 900) : 0;
-        return comptonEdge + lowCont + flatVal;
-      } else {
-        // 6mv: combination of high cascade peak + broad tail
-        const cascadePeak = Math.exp(-energy_v / 85) * 0.72;
-        const broadPeak = Math.exp(-Math.pow(energy_v - 350, 2) / 180000) * 0.26;
-        const highTail = Math.exp(-energy_v / 700) * 0.12;
-        return cascadePeak + broadPeak + highTail;
-      }
-    }
-
-    // Draw distribution bars
-    const barWidth = 2;
-    for (let px = mLeft + 1; px < width - mRight; px += barWidth + 1) {
-      const eV = ((px - mLeft) / graphWidth) * maxE;
-      const val = getSpecY(eV);
-      const barH = val * (graphHeight - 8);
-
-      const isLow = eV < 125;
-      
-      // Hover color mapping
-      let barColor = isLow ? 'rgba(232, 85, 85, 0.45)' : 'rgba(91, 156, 246, 0.45)';
-      if (hoveredRegion === 'low' && isLow) {
-        barColor = 'rgba(255, 100, 100, 0.9)';
-      } else if (hoveredRegion === 'high' && !isLow) {
-        barColor = 'rgba(100, 255, 230, 0.9)';
-      }
-
-      ctx.fillStyle = barColor;
-      ctx.fillRect(px, height - mBottom - barH - 2, barWidth, barH);
-    }
-
-    // Draw vertical threshold line (125 keV)
-    const thresholdX = mLeft + (125 / maxE) * graphWidth;
-    ctx.save();
-    ctx.strokeStyle = 'rgba(240, 168, 50, 0.6)';
-    ctx.setLineDash([3, 3]);
-    ctx.lineWidth = 1.2;
-    ctx.beginPath();
-    ctx.moveTo(thresholdX, histTop - 3);
-    ctx.lineTo(thresholdX, height - mBottom);
-    ctx.stroke();
-
-    // Threshold text
-    ctx.fillStyle = 'rgba(240, 168, 50, 0.85)';
-    ctx.font = '8px DM Mono, monospace';
-    ctx.textAlign = 'center';
-    ctx.fillText('125 keV (Umbral Quenching)', thresholdX, histTop - 6);
     ctx.restore();
 
-    // Hist labels
-    ctx.fillStyle = 'var(--text3)';
-    ctx.font = '8px DM Mono, monospace';
-    ctx.textAlign = 'left';
-    ctx.fillText('0 keV', mLeft + 2, height - 5);
-    ctx.textAlign = 'right';
-    ctx.fillText('1500 keV', width - mRight - 2, height - 5);
+    /* 10. HISTOGRAM AREA */
+    const histBg = ctx.createLinearGradient(0, histTop, 0, height);
+    histBg.addColorStop(0, 'rgba(10,13,16,0.95)');
+    histBg.addColorStop(1, 'rgba(6,8,10,1)');
+    ctx.save();
+    ctx.fillStyle = histBg;
+    ctx.fillRect(0, histTop, width, histH);
+    ctx.restore();
+
+    ctx.save();
+    ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+    ctx.lineWidth = 1;
+    for (let gx2 = mL + gW / 6; gx2 < width - mR; gx2 += gW / 6) {
+      ctx.beginPath(); ctx.moveTo(gx2, histTop); ctx.lineTo(gx2, height); ctx.stroke();
+    }
+    for (let gy2 = histTop + histH * 0.33; gy2 < height - 14; gy2 += histH * 0.33) {
+      ctx.beginPath(); ctx.moveTo(mL, gy2); ctx.lineTo(width - mR, gy2); ctx.stroke();
+    }
+    ctx.restore();
+
+    // Low-energy zone tint
+    ctx.save();
+    ctx.fillStyle = 'rgba(232,85,85,0.04)';
+    ctx.fillRect(mL, histTop, threshX - mL, histH - 14);
+    ctx.restore();
+
+    // Bars
+    const barW = 2.5;
+    const barAreaH = histH - 22;
+    for (let px = mL; px < width - mR; px += barW + 0.8) {
+      const eV = ((px - mL) / gW) * maxE;
+      const val = getSpecY(eV);
+      if (val < 0.002) continue;
+      const bH = val * barAreaH;
+      const bY = height - 14 - bH;
+      const isLow = eV < 125;
+      let cr, cg, cb, baseAlpha;
+      if (isLow)       { cr = 232; cg =  85; cb =  85; baseAlpha = 0.70; }
+      else             { cr =  91; cg = 156; cb = 246; baseAlpha = 0.65; }
+      if (hoveredRegion === 'low'  && isLow)  { cr = 255; cg = 110; cb = 110; baseAlpha = 1.00; }
+      if (hoveredRegion === 'high' && !isLow) { cr = 120; cg = 255; cb = 220; baseAlpha = 1.00; }
+      const barGrad = ctx.createLinearGradient(0, bY, 0, bY + bH);
+      barGrad.addColorStop(0, `rgba(${cr},${cg},${cb},${baseAlpha})`);
+      barGrad.addColorStop(1, `rgba(${cr},${cg},${cb},0.10)`);
+      ctx.save();
+      if ((hoveredRegion === 'low' && isLow) || (hoveredRegion === 'high' && !isLow)) {
+        ctx.shadowColor = `rgb(${cr},${cg},${cb})`;
+        ctx.shadowBlur = 6;
+      }
+      ctx.fillStyle = barGrad;
+      ctx.fillRect(px, bY, barW, bH);
+      ctx.restore();
+    }
+
+    /* 11. THRESHOLD LINE (pulsing) */
+    const pulse = 0.65 + 0.35 * Math.sin(frame * 0.08);
+    ctx.save();
+    ctx.shadowColor = '#f0a832';
+    ctx.shadowBlur = 10 * pulse;
+    ctx.strokeStyle = `rgba(240,168,50,${0.5 + 0.4 * pulse})`;
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(threshX, histTop + 2);
+    ctx.lineTo(threshX, height - 14);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.restore();
+
+    ctx.save();
+    ctx.font = 'bold 9px DM Mono, monospace';
+    ctx.fillStyle = `rgba(240,168,50,${0.85 + 0.15 * pulse})`;
+    ctx.shadowColor = '#f0a832';
+    ctx.shadowBlur = 8;
     ctx.textAlign = 'center';
-    ctx.fillText('Espectro de Energía Recuento (E_sec)', mLeft + graphWidth/2, height - 5);
+    ctx.fillText('125 keV · Umbral Quenching', threshX, histTop + 13);
+    ctx.restore();
+
+    /* 12. AXIS LABELS */
+    ctx.save();
+    ctx.font = '8px DM Mono, monospace';
+    ctx.fillStyle = 'rgba(154,150,146,0.85)';
+    ctx.textAlign = 'left';
+    ctx.fillText('0 keV', mL + 2, height - 3);
+    ctx.textAlign = 'right';
+    ctx.fillText('1500 keV', width - mR - 2, height - 3);
+    ctx.textAlign = 'center';
+    ctx.fillStyle = 'rgba(154,150,146,0.60)';
+    ctx.fillText('Espectro de Energía Recuento (E_sec)', mL + gW / 2, height - 3);
+    ctx.restore();
+
+    /* 13. LEGEND */
+    ctx.save();
+    const lx = width - mR - 5;
+    ctx.font = '8px DM Mono, monospace';
+    ctx.textAlign = 'right';
+    ctx.fillStyle = 'rgba(232,85,85,0.85)';
+    ctx.shadowColor = '#e85555'; ctx.shadowBlur = 5;
+    ctx.fillRect(lx - 54, 36, 16, 2);
+    ctx.shadowBlur = 0;
+    ctx.fillText('e⁻ baja E', lx, 39);
+    ctx.fillStyle = 'rgba(91,156,246,0.85)';
+    ctx.shadowColor = '#5b9cf6'; ctx.shadowBlur = 5;
+    ctx.fillRect(lx - 54, 50, 16, 2);
+    ctx.shadowBlur = 0;
+    ctx.fillText('e⁻ alta E', lx, 53);
+    ctx.setLineDash([4, 3]);
+    ctx.strokeStyle = 'rgba(167,139,250,0.75)';
+    ctx.lineWidth = 1.2;
+    ctx.beginPath(); ctx.moveTo(lx - 54, 64); ctx.lineTo(lx - 38, 64); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = 'rgba(167,139,250,0.75)';
+    ctx.fillText('fotón γ', lx, 67);
+    ctx.restore();
   }
 
+  /* ─── MAIN LOOP ──────────────────────────────────── */
   function animate() {
     const step = (typeof currentStep !== 'undefined') ? currentStep : 1;
     updateSimulationState(step);
     updatePhysics();
-    draw(step);
+    draw();
     requestAnimationFrame(animate);
   }
-
   animate();
 })();
 </script>
 </body>
 </html>
+
