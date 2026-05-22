@@ -60,14 +60,14 @@
     <div style="display: flex; flex-direction: column; gap: clamp(8px, 1.8vh, 16px); height: 100%;">
       <div class="card card-teal reveal-item" data-step="1" style="padding: clamp(8px, 1.8vh, 16px) clamp(12px, 2vw, 20px); flex: 1; display: flex; flex-direction: column; justify-content: center; min-height: 0;">
         <div class="card-label" style="font-size: 12.5px; margin-bottom: 4px;">Volumen sensible sub-milimétrico</div>
-        <p style="font-size: 14.5px; color: var(--text2); line-height: 1.35;">
+        <p style="color: var(--text2); line-height: 1.35">
           Típicamente <strong style="color: var(--teal);">$1\text{ mm}$ de diámetro por $1\text{ mm}$ de longitud</strong>. En campos pequeños, los gradientes en la penumbra varían de forma extrema; un detector grande promedia la variación y subestima la dosis en el eje.
         </p>
       </div>
 
       <div class="card reveal-item" data-step="2" style="padding: clamp(8px, 1.8vh, 16px) clamp(12px, 2vw, 20px); flex: 1; display: flex; flex-direction: column; justify-content: center; min-height: 0;">
         <div class="card-label" style="font-size: 12.5px; margin-bottom: 4px;">Resolución espacial contra penumbra</div>
-        <p style="font-size: 14.5px; color: var(--text2); line-height: 1.35;">
+        <p style="color: var(--text2); line-height: 1.35">
           El volumen microscópico del PSD resuelve localmente la penumbra clínica de los micro-colimadores de forma fidedigna, eliminando la necesidad de factores de corrección por volumen físico.
         </p>
       </div>
@@ -116,7 +116,7 @@
         </div>
 
         <!-- Contenedor del Canvas con altura adaptada y fondo con degradado moderno -->
-        <div style="position: relative; width: 100%; flex: 1; min-height: 215px; max-height: 480px; background: radial-gradient(circle at 50% 50%, rgba(45, 212, 176, 0.04) 0%, #080a0b 100%); border-radius: 8px; border: 1px solid var(--border); overflow: hidden;">
+        <div class="canvas-stretch-wrapper" style="min-height: 280px; max-height: 480px; background: radial-gradient(circle at 50% 50%, rgba(45, 212, 176, 0.04) 0%, #080a0b 100%);">
           <canvas id="penumbra-canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: block;"></canvas>
           <div id="dose-badge" style="position: absolute; top: 6px; right: 6px; background: rgba(13, 15, 16, 0.85); border: 1px solid rgba(45, 212, 176, 0.25); border-radius: 4px; padding: 2px 5px; font-size: 11px; font-family: var(--mono); color: var(--teal); pointer-events: none; transition: all 0.2s;">
             ✓ Preciso (100.0%)

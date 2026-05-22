@@ -35,6 +35,10 @@ html, body {
   overflow: hidden;
 }
 
+p {
+  font-size: 18px;
+}
+
 /* ── SLIDES CONTAINER ── */
 #deck {
   width: 100vw; height: 100vh;
@@ -333,25 +337,19 @@ input[type=range]::-webkit-slider-thumb {
 .reveal-item {
   opacity: 0;
   transform: translateY(16px);
-  transition: opacity 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: opacity 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), visibility 0.5s;
   pointer-events: none;
+  visibility: hidden;
 }
 .reveal-item:not(.reveal-active) {
-  height: 0 !important;
-  min-height: 0 !important;
-  padding-top: 0 !important;
-  padding-bottom: 0 !important;
-  margin-top: 0 !important;
-  margin-bottom: 0 !important;
-  border-top-width: 0 !important;
-  border-bottom-width: 0 !important;
-  overflow: hidden !important;
   opacity: 0 !important;
+  visibility: hidden !important;
 }
 .reveal-item.reveal-active {
   opacity: 1;
   transform: translateY(0);
   pointer-events: all;
+  visibility: visible;
 }
 
 /* ── COVER SLIDE ── */
@@ -614,12 +612,32 @@ body.projector-mode .progress-bar {
 .canvas-stretch-wrapper {
   position: relative;
   width: 100%;
-  flex: 1;
-  min-height: 180px;
-  max-height: 420px;
+  flex: 1 0 auto;
+  min-height: 280px;
+  max-height: 480px;
   background: #080a0b;
   border-radius: 8px;
   border: 1px solid var(--border);
   overflow: hidden;
 }
+
+/* ── AUTO HEIGHT FOR TEXT-ONLY CARDS ── */
+.card:not(:has(canvas)),
+.card-stretch:not(:has(canvas)),
+.metric-highlight:not(:has(canvas)) {
+  flex: none !important;
+  height: auto !important;
+  min-height: 0 !important;
+}
+
+/* If a card is a direct child of a grid container, prevent vertical stretching */
+.two-col > .card:not(:has(canvas)),
+.three-col > .card:not(:has(canvas)),
+.two-col > .card-stretch:not(:has(canvas)),
+.three-col > .card-stretch:not(:has(canvas)),
+.two-col > .metric-highlight:not(:has(canvas)),
+.three-col > .metric-highlight:not(:has(canvas)) {
+  align-self: start;
+}
+
 

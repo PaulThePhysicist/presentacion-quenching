@@ -59,14 +59,14 @@
     <div style="display: flex; flex-direction: column; gap: 14px; height: 100%;">
       <div class="card card-red reveal-item" data-step="1" style="flex: 1; display: flex; flex-direction: column; justify-content: flex-start; min-height: min-content;">
         <div class="card-label">Límites de la Ley de Birks</div>
-        <p style="font-size: 15px; color: var(--text2); line-height: 1.45;">
+        <p style="color: var(--text2); line-height: 1.45">
           Birks asume que el quenching es función únicamente del $dE/dx$. Sin embargo, para protones y iones de diferente especie con el **mismo LET ($dE/dx$)**, la luz producida difiere apreciablemente. Birks no puede modelar este efecto dependiente de la partícula.
         </p>
       </div>
 
       <div class="card card-teal reveal-item" data-step="2" style="flex: 1; display: flex; flex-direction: column; justify-content: flex-start; min-height: min-content;">
         <div class="card-label">El Modelo de Ogawa (2018)</div>
-        <p style="font-size: 15px; color: var(--text2); line-height: 1.45;">
+        <p style="color: var(--text2); line-height: 1.45">
           Ogawa et al. propusieron modelar el quenching mediante el mecanismo cuántico **FRET** (<em>Förster Resonance Energy Transfer</em>). La energía se transfiere de forma no radiativa por acoplamiento dipolo-dipolo.
         </p>
       </div>
@@ -103,7 +103,7 @@
         </div>
 
         <!-- Canvas -->
-        <div style="position: relative; width: 100%; flex: 1; min-height: 180px; max-height: 400px; background: radial-gradient(circle at 50% 50%, rgba(45,212,176,0.06) 0%, #050708 100%); border-radius: 8px; border: 1px solid rgba(255,255,255,0.08); box-shadow: inset 0 0 20px rgba(0,0,0,0.6); overflow: hidden;">
+        <div class="canvas-stretch-wrapper" style="min-height: 280px; max-height: 400px; background: radial-gradient(circle at 50% 50%, rgba(45,212,176,0.06) 0%, #050708 100%); box-shadow: inset 0 0 20px rgba(0,0,0,0.6);">
           <canvas id="fret-canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: block;"></canvas>
           <div id="fret-badge" class="hud-badge green" style="position: absolute; top: 8px; right: 8px; pointer-events: none;">
             FRET Dominante

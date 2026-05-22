@@ -47,14 +47,14 @@
     <div class="col-stretch" style="gap: 10px; min-height: 0;">
       <div class="card card-purple reveal-item card-stretch" data-step="1" style="padding: 10px 14px;">
         <div class="card-label" style="font-size: 10px;">EGSnrc · Promedio Analítico</div>
-        <p style="font-size: 14px; color: var(--text2); line-height: 1.45;">
+        <p style="color: var(--text2); line-height: 1.45">
           Calcula el quenching integrando analíticamente el poder de frenado restringido sobre el espectro local de electrones (usando el objeto <code>ausgab</code>). Es un enfoque promedio que no simula el transporte paso a paso.
         </p>
       </div>
 
       <div class="card card-red reveal-item card-stretch" data-step="2" style="padding: 10px 14px;">
         <div class="card-label" style="font-size: 10px;">Geant4 · Simulación de Paso</div>
-        <p style="font-size: 14px; color: var(--text2); line-height: 1.45;">
+        <p style="color: var(--text2); line-height: 1.45">
           Aplica el modelo de Birks en cada paso individual del transporte de la partícula a través de la clase <code>G4EmSaturation</code>. Esto hace que la atenuación de luz dependa del tamaño de paso (parámetro <code>dRoverRange</code>).
         </p>
       </div>
@@ -122,7 +122,7 @@
         </div>
 
         <!-- Canvas -->
-        <div class="canvas-stretch-wrapper" style="min-height: 220px; max-height: 380px; flex: 1;">
+        <div class="canvas-stretch-wrapper" style="min-height: 280px; max-height: 380px; flex: 1 0 auto;">
           <canvas id="convergence-canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: block;"></canvas>
           <div id="convergence-badge" class="hud-badge" style="position: absolute; top: 8px; right: 8px; pointer-events: none; border-color: rgba(167, 139, 250, 0.3); color: var(--purple); background: rgba(167, 139, 250, 0.1);">
             EGSnrc: Continuo
