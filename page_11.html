@@ -21,48 +21,53 @@
     <span class="persona-tag pt-marcos">Fundamento Teórico</span>
   </div>
 
-  <div class="two-col stretch">
-    <div class="col-stretch" style="gap: 14px;">
-      <div class="card card-teal reveal-item" data-step="1" style="flex: 1; display: flex; flex-direction: column; justify-content: flex-start; min-height: min-content;">
+  <div class="two-col stretch" style="gap: 18px; margin-bottom: 4px;">
+    <!-- COLUMNA IZQUIERDA: Probabilidad de Transferencia (Fórmula) -->
+    <div class="col-stretch" style="flex: 1.05;">
+      <div class="card card-teal reveal-item" data-step="1" style="flex: 1; display: flex; flex-direction: column; justify-content: center; min-height: min-content; padding: 24px 28px;">
         <div class="card-label">La Probabilidad de Transferencia</div>
-        <p style="font-size: 15px; color: var(--text2); line-height: 1.5; margin-bottom: 8px;">
+        <p style="font-size: 16.5px; color: var(--text2); line-height: 1.6; margin-bottom: 12px;">
           La probabilidad de que una molécula excitada transfiera su energía de forma no radiativa a otra vecina está dada por:
         </p>
-        <div class="eq-block" style="font-size: 22.5px; padding: 12px; margin: 6px 0; text-align: center;">
+        <div class="eq-block" style="font-size: 25px; padding: 18px 24px; margin: 12px 0; text-align: center;">
           $$p(r) = \frac{1}{1 + \left(\frac{r}{R_f}\right)^6}$$
         </div>
-        <p style="font-size: 13px; color: var(--text3); margin-top: 4px;">
+        <p style="font-size: 14.5px; color: var(--text3); margin-top: 8px;">
           Donde $r$ es la distancia espacial y $R_f$ es el radio de Förster.
         </p>
       </div>
+    </div>
 
-      <div class="card card-amber reveal-item" data-step="2" style="flex: 1; display: flex; flex-direction: column; justify-content: flex-start; min-height: min-content;">
+    <!-- COLUMNA DERECHA: Parámetro Rf y Dependencia de Distancia -->
+    <div class="col-stretch" style="gap: 16px; flex: 0.95;">
+      <!-- Tarjeta Ámbar -->
+      <div class="card card-amber reveal-item" data-step="2" style="display: flex; flex-direction: column; justify-content: center; flex: 1; min-height: min-content; padding: 18px 20px;">
         <div class="card-label">Radio de Förster (R_f)</div>
-        <p style="font-size: 15px; color: var(--text2); line-height: 1.5;">
+        <p style="font-size: 15.5px; color: var(--text2); line-height: 1.55;">
           Es la distancia crítica a la cual la probabilidad de transferencia es exactamente del **50%**. En centelleadores orgánicos comunes, $R_f$ se encuentra en un rango estrecho entre **2 y 6 nanómetros**.
         </p>
       </div>
-    </div>
 
-    <div class="reveal-item col-stretch" data-step="3" style="gap: 14px;">
-      <div class="card card-red" style="padding: 16px; flex: 1; display: flex; flex-direction: column; justify-content: flex-start; min-height: min-content;">
+      <!-- Tarjeta Roja -->
+      <div class="card card-red reveal-item" data-step="3" style="display: flex; flex-direction: column; justify-content: center; flex: 1.5; min-height: min-content; padding: 18px 20px;">
         <div class="card-label">Dependencia a la sexta potencia ($1/r^6$)</div>
-        <p style="font-size: 15px; color: var(--text2); line-height: 1.5; margin-bottom: 8px;">
+        <p style="font-size: 15.5px; color: var(--text2); line-height: 1.5; margin-bottom: 8px;">
           La potencia de orden 6 hace que el efecto sea de alcance extremadamente corto, actuando virtualmente por "contacto nanométrico":
         </p>
-        <ul class="nice" style="gap: 6px; font-size: 14px;">
+        <ul class="nice" style="gap: 5px; font-size: 14.5px; margin-bottom: 8px;">
           <li>A distancia $r = R_f$, la probabilidad de pérdida es $p = 50\%$.</li>
           <li>A distancia doble $r = 2 R_f$, la probabilidad cae a **menos del 2%** ($1/65 \approx 1.5\%$).</li>
         </ul>
-        <p style="font-size: 13px; color: var(--text3); margin-top: 8px; font-style: italic;">
+        <p style="font-size: 13.5px; color: var(--text3); font-style: italic;">
           Fuera de la vecindad inmediata de pocos nanómetros, el efecto FRET es completamente despreciable.
         </p>
       </div>
-
-      <div class="callout red reveal-item" data-step="4">
-        <strong>Punto clave:</strong> El quenching es un fenómeno que se activa sólo cuando los depósitos de energía están confinados en volúmenes del tamaño de macromoléculas.
-      </div>
     </div>
+  </div>
+
+  <!-- CALLOUT DE CIERRE: Punto clave a ancho completo -->
+  <div class="callout red reveal-item" data-step="4" style="margin-top: 14px; font-size: 15.5px; padding: 12px 20px;">
+    <strong>Punto clave:</strong> El quenching es un fenómeno que se activa sólo cuando los depósitos de energía están confinados en volúmenes del tamaño de macromoléculas.
   </div>
 </div>
 

@@ -151,7 +151,7 @@
         </div>
 
         <!-- Canvas -->
-        <div style="position: relative; flex: 1; min-height: 180px; max-height: 400px; background: #080a0b; border-radius: 6px; border: 1px solid var(--border); overflow: hidden;">
+        <div style="position: relative; flex: 1; min-height: 180px; max-height: 400px; background: radial-gradient(circle at center, #0d151f 0%, #06080a 100%); box-shadow: inset 0 0 24px rgba(0, 0, 0, 0.7); border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.12); overflow: hidden;">
           <canvas id="mol-canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: block;"></canvas>
           <!-- Leyenda Química HUD -->
           <div style="position: absolute; top: 8px; right: 8px; background: rgba(13, 15, 16, 0.88); border: 1px solid var(--border); border-radius: 4px; padding: 5px 7px; display: flex; flex-direction: column; gap: 4px; font-size: 8.5px; font-family: var(--mono); pointer-events: none; z-index: 10; box-shadow: 0 4px 10px rgba(0,0,0,0.5);">
@@ -257,46 +257,70 @@
       });
     }
 
-    // Determine colors
-    let strokeStyle = 'rgba(91, 156, 246, 0.3)';
-    let fillStyle = 'rgba(91, 156, 246, 0.05)';
-    let glowColor = 'rgba(91, 156, 246, 0)';
+    // Determine colors and gradients
+    let strokeStyle = 'rgba(91, 156, 246, 0.25)';
+    let fillStyle;
+    let glowColor = '';
+    let glowBlur = 0;
+
+    // Create radial gradient for 3D sphere look
+    const grad = ctx.createRadialGradient(cx - R*0.25, cy - R*0.25, R*0.08, cx, cy, R);
 
     if (isFluorophore) {
       if (excitedRatio > 0) {
         if (qRatio > 0) {
           // Amber/Red quenching
-          strokeStyle = `rgba(232, 85, 85, ${0.4 + excitedRatio * 0.6})`;
-          fillStyle = `rgba(240, 168, 50, ${0.05 + excitedRatio * 0.25})`;
-          glowColor = `rgba(240, 168, 50, ${excitedRatio * 0.6})`;
+          strokeStyle = `rgba(232, 85, 85, ${0.5 + excitedRatio * 0.5})`;
+          grad.addColorStop(0, '#ffffff');
+          grad.addColorStop(0.35, `rgba(240, 168, 50, ${0.85 * excitedRatio})`);
+          grad.addColorStop(1, `rgba(232, 85, 85, 0.15)`);
+          fillStyle = grad;
+          glowColor = 'rgba(232, 85, 85, 0.85)';
+          glowBlur = 8 + excitedRatio * 15;
         } else {
           // Teal scintillation
-          strokeStyle = `rgba(45, 212, 176, ${0.4 + excitedRatio * 0.6})`;
-          fillStyle = `rgba(45, 212, 176, ${0.05 + excitedRatio * 0.25})`;
-          glowColor = `rgba(45, 212, 176, ${excitedRatio * 0.6})`;
+          strokeStyle = `rgba(45, 212, 176, ${0.5 + excitedRatio * 0.5})`;
+          grad.addColorStop(0, '#ffffff');
+          grad.addColorStop(0.35, `rgba(45, 212, 176, ${0.9 * excitedRatio})`);
+          grad.addColorStop(1, `rgba(45, 212, 176, 0.15)`);
+          fillStyle = grad;
+          glowColor = 'rgba(45, 212, 176, 0.85)';
+          glowBlur = 8 + excitedRatio * 15;
         }
       } else {
-        strokeStyle = 'rgba(45, 212, 176, 0.45)';
-        fillStyle = 'rgba(45, 212, 176, 0.08)';
+        strokeStyle = 'rgba(45, 212, 176, 0.65)';
+        grad.addColorStop(0, 'rgba(45, 212, 176, 0.22)');
+        grad.addColorStop(1, 'rgba(45, 212, 176, 0.06)');
+        fillStyle = grad;
       }
     } else {
       if (excitedRatio > 0) {
         // Glowing monomer
-        strokeStyle = `rgba(91, 156, 246, ${0.4 + excitedRatio * 0.6})`;
-        fillStyle = `rgba(91, 156, 246, ${0.05 + excitedRatio * 0.35})`;
-        glowColor = `rgba(91, 156, 246, ${excitedRatio * 0.5})`;
+        strokeStyle = `rgba(91, 156, 246, ${0.5 + excitedRatio * 0.5})`;
+        grad.addColorStop(0, '#ffffff');
+        grad.addColorStop(0.4, `rgba(91, 156, 246, ${0.75 * excitedRatio})`);
+        grad.addColorStop(1, `rgba(91, 156, 246, 0.12)`);
+        fillStyle = grad;
+        glowColor = 'rgba(91, 156, 246, 0.7)';
+        glowBlur = 6 + excitedRatio * 11;
+      } else {
+        strokeStyle = 'rgba(91, 156, 246, 0.28)';
+        grad.addColorStop(0, 'rgba(91, 156, 246, 0.12)');
+        grad.addColorStop(1, 'rgba(91, 156, 246, 0.03)');
+        fillStyle = grad;
       }
     }
 
     ctx.save();
     if (glowColor && excitedRatio > 0) {
+      ctx.globalCompositeOperation = 'screen';
       ctx.shadowColor = glowColor;
-      ctx.shadowBlur = 4 + excitedRatio * 6;
+      ctx.shadowBlur = glowBlur;
     }
 
     ctx.strokeStyle = strokeStyle;
     ctx.fillStyle = fillStyle;
-    ctx.lineWidth = isFluorophore ? 1.5 : 1;
+    ctx.lineWidth = isFluorophore ? 1.6 : 1.1;
 
     // Draw main hexagon
     ctx.beginPath();
@@ -310,6 +334,7 @@
 
     // Draw double bonds (alternating)
     const insetFactor = 0.22;
+    ctx.lineWidth = isFluorophore ? 1.1 : 0.8;
     for (let s of [0, 2, 4]) {
       const p1 = hexPoints[s];
       const p2 = hexPoints[(s + 1) % 6];
@@ -347,13 +372,23 @@
       { x: f.x + D * Math.cos(theta), y: f.y + D * Math.sin(theta) }
     ];
 
-    // Draw connecting lines underneath
-    ctx.strokeStyle = f.excited ? (f.quenched ? 'rgba(232, 85, 85, 0.7)' : 'rgba(45, 212, 176, 0.7)') : 'rgba(45, 212, 176, 0.4)';
-    ctx.lineWidth = 1.2;
+    // Draw connecting lines underneath with glows
+    ctx.save();
+    if (f.excited) {
+      ctx.globalCompositeOperation = 'screen';
+      ctx.strokeStyle = f.quenched ? 'rgba(232, 85, 85, 0.95)' : 'rgba(45, 212, 176, 0.95)';
+      ctx.lineWidth = 1.8;
+      ctx.shadowColor = f.quenched ? '#e85555' : '#2dd4b0';
+      ctx.shadowBlur = 8 * excitedRatio;
+    } else {
+      ctx.strokeStyle = 'rgba(45, 212, 176, 0.5)';
+      ctx.lineWidth = 1.2;
+    }
     ctx.beginPath();
     ctx.moveTo(centers[0].x, centers[0].y);
     ctx.lineTo(centers[2].x, centers[2].y);
     ctx.stroke();
+    ctx.restore();
 
     // Draw 3 rings
     centers.forEach(c => {
@@ -821,6 +856,16 @@
   function draw() {
     ctx.clearRect(0, 0, width, height);
 
+    // 0. Grid de coordenadas de laboratorio (estilo HUD)
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.015)';
+    ctx.lineWidth = 1;
+    for (let x_g = 0; x_g < width; x_g += 25) {
+      ctx.beginPath(); ctx.moveTo(x_g, 0); ctx.lineTo(x_g, height); ctx.stroke();
+    }
+    for (let y_g = 0; y_g < height; y_g += 25) {
+      ctx.beginPath(); ctx.moveTo(0, y_g); ctx.lineTo(width, y_g); ctx.stroke();
+    }
+
     // 1. Backbone del polímero
     polymerChains.forEach(chain => {
       ctx.beginPath();
@@ -828,7 +873,7 @@
       for (let i = 1; i < chain.length; i++) {
         ctx.lineTo(chain[i].x, chain[i].y);
       }
-      ctx.strokeStyle = 'rgba(91, 156, 246, 0.12)';
+      ctx.strokeStyle = 'rgba(91, 156, 246, 0.18)';
       ctx.lineWidth = 1.8;
       ctx.stroke();
     });
@@ -852,9 +897,10 @@
       drawPTerphenyl(f);
     });
 
-    // 4. Acoplamientos FRET activos (vibración roja)
+    // 4. Acoplamientos FRET activos (vibración roja tipo láser de plasma)
     activeFretLinks.forEach(link => {
       ctx.save();
+      ctx.globalCompositeOperation = 'screen';
       ctx.beginPath();
       const steps = 14;
       ctx.moveTo(link.x1, link.y1);
@@ -873,103 +919,164 @@
         ctx.lineTo(px + nx * vib, py + ny * vib);
       }
       ctx.lineTo(link.x2, link.y2);
-      ctx.strokeStyle = `rgba(232, 85, 85, ${link.time / 25})`;
-      ctx.lineWidth = 2.0;
-      ctx.shadowColor = 'rgba(232, 85, 85, 0.6)';
-      ctx.shadowBlur = 6;
+
+      // Capa de plasma roja externa
+      ctx.strokeStyle = `rgba(255, 60, 60, ${0.4 + (link.time / 25) * 0.6})`;
+      ctx.lineWidth = 2.8;
+      ctx.shadowColor = 'rgba(255, 60, 60, 0.95)';
+      ctx.shadowBlur = 12 * (link.time / 25);
       ctx.stroke();
+
+      // Hilo central blanco brillante
+      ctx.strokeStyle = `rgba(255, 255, 255, ${(link.time / 25) * 0.95})`;
+      ctx.lineWidth = 1.0;
+      ctx.shadowBlur = 2;
+      ctx.stroke();
+
       ctx.restore();
     });
 
-    // 5. Excitones activos
+    // 5. Excitones activos (Ondas de energía cuántica)
     excitons.forEach(ex => {
       ctx.save();
+      ctx.globalCompositeOperation = 'screen';
+      
+      // Halo externo
       ctx.beginPath();
-      ctx.arc(ex.x, ex.y, 4, 0, 2*Math.PI);
-      ctx.fillStyle = '#5b9cf6';
-      ctx.shadowColor = '#5b9cf6';
-      ctx.shadowBlur = 8;
+      ctx.arc(ex.x, ex.y, 6.5, 0, 2*Math.PI);
+      ctx.fillStyle = 'rgba(91, 156, 246, 0.35)';
       ctx.fill();
+
+      // Centro brillante
+      ctx.beginPath();
+      ctx.arc(ex.x, ex.y, 3.8, 0, 2*Math.PI);
+      ctx.fillStyle = '#ffffff';
+      ctx.shadowColor = '#5b9cf6';
+      ctx.shadowBlur = 12;
+      ctx.fill();
+
       ctx.restore();
     });
 
     // 6. Trazado del electrón
     if (electron && electron.active && electron.path.length > 1) {
       ctx.save();
+      ctx.globalCompositeOperation = 'screen';
+
+      const isLow = electron.type === 'low';
+      const beamColor = isLow ? '#5b9cf6' : '#ef4444';
+      const glowColor = isLow ? 'rgba(91, 156, 246, 0.45)' : 'rgba(239, 68, 68, 0.45)';
+      const size = isLow ? 2.5 : 4.0;
+
+      // Dibujar estela
       ctx.beginPath();
       ctx.moveTo(electron.path[0].x, electron.path[0].y);
       for (let i = 1; i < electron.path.length; i++) {
         ctx.lineTo(electron.path[i].x, electron.path[i].y);
       }
-      ctx.strokeStyle = 'rgba(91, 156, 246, 0.75)';
-      ctx.lineWidth = 2.5;
-      ctx.shadowColor = '#5b9cf6';
-      ctx.shadowBlur = 6;
+      ctx.strokeStyle = beamColor;
+      ctx.lineWidth = size;
+      ctx.shadowColor = beamColor;
+      ctx.shadowBlur = size * 3;
       ctx.stroke();
-      ctx.restore();
 
-      ctx.save();
+      // Cabeza del electrón
       ctx.beginPath();
-      ctx.arc(electron.x, electron.y, 4.5, 0, 2 * Math.PI);
+      ctx.arc(electron.x, electron.y, size * 1.5, 0, 2 * Math.PI);
       ctx.fillStyle = '#ffffff';
-      ctx.shadowColor = '#5b9cf6';
-      ctx.shadowBlur = 10;
+      ctx.shadowColor = beamColor;
+      ctx.shadowBlur = size * 4.5;
       ctx.fill();
+
+      // Halo de energía de cabeza
+      ctx.beginPath();
+      ctx.arc(electron.x, electron.y, size * 2.8, 0, 2 * Math.PI);
+      ctx.fillStyle = glowColor;
+      ctx.fill();
+
       ctx.restore();
     }
 
     // 7. Ripples de luz
+    ctx.save();
+    ctx.globalCompositeOperation = 'screen';
     waveRipples.forEach(w => {
-      ctx.strokeStyle = `rgba(45, 212, 176, ${w.alpha})`;
-      ctx.lineWidth = 1.2;
+      ctx.strokeStyle = `rgba(45, 212, 176, ${w.alpha * 0.85})`;
+      ctx.lineWidth = 1.5;
+      ctx.shadowColor = '#2dd4b0';
+      ctx.shadowBlur = 8 * w.alpha;
       ctx.beginPath();
       ctx.arc(w.x, w.y, w.r, 0, 2*Math.PI);
       ctx.stroke();
     });
+    ctx.restore();
 
-    // 8. Partículas fotónicas
+    // 8. Partículas fotónicas (Centelleo emitido)
+    ctx.save();
+    ctx.globalCompositeOperation = 'screen';
     photons.forEach(p => {
-      ctx.save();
-      ctx.fillStyle = `rgba(45, 212, 176, ${p.alpha})`;
+      // Núcleo blanco
+      ctx.fillStyle = `rgba(255, 255, 255, ${p.alpha})`;
+      ctx.shadowColor = '#45d4b0';
+      ctx.shadowBlur = 8 * p.alpha;
       ctx.beginPath();
-      ctx.arc(p.x, p.y, 2.5, 0, 2*Math.PI);
+      ctx.arc(p.x, p.y, 2.2, 0, 2*Math.PI);
       ctx.fill();
 
-      ctx.strokeStyle = `rgba(45, 212, 176, ${p.alpha * 0.45})`;
-      ctx.lineWidth = 1.2;
+      // Estela cian/teal
+      ctx.strokeStyle = `rgba(45, 212, 176, ${p.alpha * 0.65})`;
+      ctx.lineWidth = 1.8;
       ctx.beginPath();
       ctx.moveTo(p.x, p.y);
-      ctx.lineTo(p.x - p.vx * 2.5, p.y - p.vy * 2.5);
+      ctx.lineTo(p.x - p.vx * 2.8, p.y - p.vy * 2.8);
       ctx.stroke();
-      ctx.restore();
     });
+    ctx.restore();
 
     // 9. Calor de quenching
+    ctx.save();
+    ctx.globalCompositeOperation = 'screen';
     heatParticles.forEach(p => {
-      ctx.fillStyle = `rgba(240, 168, 50, ${p.alpha})`;
+      ctx.fillStyle = `rgba(240, 140, 50, ${p.alpha})`;
+      ctx.shadowColor = '#f08c32';
+      ctx.shadowBlur = 6 * p.alpha;
       ctx.beginPath();
-      ctx.arc(p.x, p.y, p.size, 0, 2*Math.PI);
+      ctx.arc(p.x, p.y, p.size * 1.25, 0, 2*Math.PI);
       ctx.fill();
     });
+    ctx.restore();
 
-    // 10. Sonda interactiva FRET del ratón
+    // 10. Sonda interactiva FRET del ratón (Radar holográfico)
     if (mouse.active) {
       ctx.save();
+      ctx.globalCompositeOperation = 'screen';
+
+      // Degradado del área de radar
+      const radarGrad = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, rfPx);
+      radarGrad.addColorStop(0, 'rgba(240, 168, 50, 0.08)');
+      radarGrad.addColorStop(0.85, 'rgba(240, 168, 50, 0.02)');
+      radarGrad.addColorStop(1, 'rgba(240, 168, 50, 0.0)');
+
       ctx.beginPath();
       ctx.arc(mouse.x, mouse.y, rfPx, 0, 2*Math.PI);
-      ctx.strokeStyle = 'rgba(240, 168, 50, 0.16)';
-      ctx.fillStyle = 'rgba(240, 168, 50, 0.015)';
-      ctx.lineWidth = 1;
-      ctx.setLineDash([4, 4]);
+      ctx.fillStyle = radarGrad;
       ctx.fill();
+
+      // Círculo exterior punteado
+      ctx.strokeStyle = 'rgba(240, 168, 50, 0.45)';
+      ctx.lineWidth = 1.2;
+      ctx.shadowColor = '#f0a832';
+      ctx.shadowBlur = 6;
+      ctx.setLineDash([4, 4]);
       ctx.stroke();
       ctx.setLineDash([]);
 
-      ctx.strokeStyle = 'rgba(240, 168, 50, 0.45)';
-      ctx.lineWidth = 1;
+      // Punto central / Cruz
+      ctx.strokeStyle = 'rgba(240, 168, 50, 0.75)';
+      ctx.lineWidth = 1.2;
       ctx.beginPath();
-      ctx.moveTo(mouse.x - 7, mouse.y); ctx.lineTo(mouse.x + 7, mouse.y);
-      ctx.moveTo(mouse.x, mouse.y - 7); ctx.lineTo(mouse.x, mouse.y + 7);
+      ctx.moveTo(mouse.x - 8, mouse.y); ctx.lineTo(mouse.x + 8, mouse.y);
+      ctx.moveTo(mouse.x, mouse.y - 8); ctx.lineTo(mouse.x, mouse.y + 8);
       ctx.stroke();
 
       fluorophores.forEach(f => {
@@ -983,26 +1090,28 @@
           ctx.beginPath();
           ctx.moveTo(mouse.x, mouse.y);
           ctx.lineTo(f.x, f.y);
-          ctx.strokeStyle = `rgba(240, 168, 50, ${0.12 + eff * 0.7})`;
-          ctx.lineWidth = 1.2;
+          ctx.strokeStyle = `rgba(240, 168, 50, ${0.15 + eff * 0.75})`;
+          ctx.lineWidth = 1.2 + eff * 0.8;
+          ctx.shadowColor = '#f0a832';
+          ctx.shadowBlur = 4 * eff;
           ctx.stroke();
 
           const mx = (mouse.x + f.x) / 2;
           const my = (mouse.y + f.y) / 2;
 
-          ctx.font = '500 8.5px DM Mono, monospace';
+          ctx.font = '600 8.5px DM Mono, monospace';
           const txt = `E:${effPct}%`;
           const txtWidth = ctx.measureText(txt).width;
 
-          ctx.fillStyle = '#080a0b';
-          ctx.strokeStyle = `rgba(240, 168, 50, ${0.35 + eff * 0.5})`;
-          ctx.lineWidth = 0.8;
+          ctx.fillStyle = '#06080a';
+          ctx.strokeStyle = `rgba(240, 168, 50, ${0.45 + eff * 0.5})`;
+          ctx.lineWidth = 1.0;
           ctx.beginPath();
           ctx.roundRect(mx - txtWidth/2 - 4, my - 6, txtWidth + 8, 12, 3);
           ctx.fill();
           ctx.stroke();
 
-          ctx.fillStyle = `rgba(240, 168, 50, ${0.75 + eff * 0.25})`;
+          ctx.fillStyle = `rgba(240, 168, 50, ${0.85 + eff * 0.15})`;
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
           ctx.fillText(txt, mx, my);
