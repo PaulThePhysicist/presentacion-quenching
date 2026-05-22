@@ -1,0 +1,181 @@
+
+---
+
+# Guion de presentación — MDSIM1
+**Paul Martinez · Mayo 2026 · ~20 minutos**
+
+---
+
+## APERTURA — *El setup* (1:00 min)
+
+> "Quiero empezar con algo que me pareció raro cuando lo leí por primera vez."
+
+> "El detector de centelleo plástico — el PSD — ha sido considerado durante más de treinta años como el dosímetro casi ideal para radioterapia. Y el consenso internacional, codificado en el TRS-483 — el código de práctica de la IAEA para campos pequeños — decía explícitamente que su factor de corrección se puede asumir igual a uno. Sin corrección. Úselo directamente."
+
+> "Resultó que ese consenso era correcto. Pero por razones completamente distintas a las que todos pensaban. Hay dos efectos físicos reales, de signo opuesto, que se cancelan entre sí — y nadie los había separado hasta 2025."
+
+> "Eso es lo que voy a desarrollar hoy. El estado del arte que justifica por qué existe MDSIM1, qué pregunta específica responde, y por qué esa pregunta importa para Blue Physics."
+
+---
+
+## CAP. 1 — *El detector ideal y su defecto oculto* (2:30 min)
+
+> "Primero, el contexto de por qué el PSD es tan atractivo como dosímetro."
+
+> "Su composición es fundamentalmente carbono e hidrógeno, con un Z efectivo — Zeff (pronunciar: 'zeta-ef') — de aproximadamente 5.7. Eso lo hace casi agua-equivalente en términos de coeficientes de interacción con la radiación. Un diodo de silicio tiene Zeff (zeta-ef) de 14 — muy diferente al agua. El diamante, 6 — mejor que el silicio pero no tanto como el plástico. El PSD gana en ese frente."
+
+> "Tiene volumen sensible sub-milimétrico — típicamente 1 mm de diámetro por 1 mm de longitud —, lo que minimiza el promediado volumétrico de dosis. Eso es crítico en campos pequeños, donde el gradiente de dosis en los bordes puede ser de decenas de por ciento por milímetro. Un detector grande promedia ese gradiente y miente."
+
+> "Además: no requiere corrección por tasa de dosis, respuesta lineal en el rango terapéutico, lectura en tiempo real. Para dosimetría in vivo, campos pequeños y dosis en superficie — que son exactamente los escenarios de interés de este proyecto — es difícil encontrar una sola tecnología que ofrezca todo eso."
+
+> "El TRS-483 reconocía estas propiedades y establecía que el factor de corrección de salida de campo — k (pronunciar: 'k') con superíndice f-clin, f-msr (pronunciar: 'f-clín, f-em-es-er') y subíndice Q-clin, Q-msr (pronunciar: 'Q-clín, Q-em-es-er') — podía asumirse igual a uno para detectores de centelleo plástico en fotones MV. Para detectores de estado sólido ese mismo factor puede desviarse varios por ciento de uno — de hecho el TRS-483 tabula correcciones de hasta 10–15% para diodos en campos de 0.5 por 0.5 centímetros. El PSD se consideraba exento de eso."
+
+> "Pero esa presunción de idealidad tenía un defecto oculto: el quenching de ionización. El centelleador absorbe dosis correctamente, pero no convierte toda esa energía en luz. Y en haces de fotones de megavoltaje — la aplicación clínica más común — se asumía implícitamente que ese efecto no existía."
+
+**Transición:** "Para entender por qué ese supuesto era incorrecto, hay que entender qué es el quenching."
+
+---
+
+## CAP. 2 — *¿Qué es el quenching? Del centelleo a la saturación* (2:00 min)
+
+> "El proceso de centelleo tiene tres etapas. Primero: una partícula cargada — típicamente un electrón secundario puesto en movimiento por un fotón del haz — atraviesa el material y deposita energía. Segundo: esa energía se transfiere a las moléculas de un dopante fluorescente disperso en el polímero. Tercero: el dopante emite fotones de fluorescencia que recorre la fibra óptica hasta el sistema de lectura."
+
+> "En condiciones ideales, la intensidad luminosa es proporcional a la dosis absorbida. Esa linealidad es la base de toda la dosimetría con PSD."
+
+> "El quenching rompe esa linealidad. Específicamente, cuando la densidad de ionización a lo largo de la trayectoria de la partícula es alta, las moléculas excitadas quedan tan cerca entre sí que en lugar de emitir fotones — cada una independientemente — se desexcitan por vías no radiativas: disipan la energía como calor o vibración molecular. El fotón simplemente no nace."
+
+> "¿Cuándo pasa esto? Con electrones de baja energía. Un electrón de 1 MeV deposita energía de forma dispersa a lo largo de centímetros — las moléculas excitadas están separadas, cada una emite sin interferencia. Un electrón de 10 keV deposita la misma cantidad de energía en micrones — las moléculas quedan apiladas, se interfieren, y la eficiencia de centelleo cae."
+
+> "El umbral práctico para electrones en centelleadores orgánicos es de aproximadamente 125 keV. Por encima de ese valor, la respuesta es esencialmente lineal. Por debajo, la eficiencia cae de forma apreciable."
+
+> "La pregunta que nadie se había hecho sistemáticamente era: ¿cuántos electrones por debajo de 125 keV hay en un haz clínico de fotones de megavoltaje?"
+
+**Transición:** "Pero antes de llegar a esa pregunta, hay que hablar del modelo que describe el quenching cuantitativamente."
+
+---
+
+## CAP. 3 — *La ley de Birks* (2:00 min)
+
+> "En 1951, Birks propuso un modelo semiempírico que sigue siendo el estándar. La ecuación dice: la luz producida por unidad de longitud de trayectoria — dL sobre dx (pronunciar: 'd-ele sobre d-equis') — es igual a S — la eficiencia absoluta de centelleo — multiplicada por la pérdida de energía específica dE sobre dx (pronunciar: 'd-e sobre d-equis'), dividida por uno más kB (pronunciar: 'k-sub-be') por dE sobre dx."
+
+> "El comportamiento de esa ecuación define dos regímenes. Cuando dE sobre dx (d-e sobre d-equis) es bajo — electrones de alta energía — el denominador es prácticamente uno y la producción de luz es lineal: detector ideal. Cuando dE sobre dx (d-e sobre d-equis) es alto — electrones lentos, protones, iones pesados — el denominador crece y la producción de luz se satura. Todo fotón que 'debería haber nacido' pero no nació, se perdió por quenching."
+
+> "El parámetro que controla esa saturación es kB (k-sub-be) — el coeficiente de Birks. En principio es una constante del material: depende del polímero, del dopante, de la concentración. No del tipo de partícula. Típicamente se expresa en centímetros por MeV, o en gramos por centímetro cuadrado por MeV."
+
+> "El problema práctico es que la dispersión de valores reportados en la literatura para el mismo material es enorme. Para centelleadores de poliestireno, hay valores entre 0.0005 y 0.094 g por cm² por MeV — factor 40 de diferencia para el mismo material. Para la fibra BCF-12, esos dos extremos han sido reportados ambos en la literatura."
+
+> "Esa dispersión no refleja variabilidad real del material. Refleja que el kB (k-sub-be) que uno extrae depende del método experimental, del rango de energía cubierto por el ajuste, del código Monte Carlo utilizado y de si se consideran o no los electrones secundarios. Es un parámetro muy sensible a cómo se mide."
+
+> "Esto tiene implicaciones directas para MDSIM1: el kB (k-sub-be) del material de Blue Physics no está determinado experimentalmente. La simulación parte del valor de referencia del BCF-60 — 0.019 cm por MeV — y hace un análisis de sensibilidad. Pero medir ese parámetro para el material propio eventualmente va a ser necesario."
+
+**Transición:** "Ahora, hay algo más profundo que cuestionarse sobre la propia ley de Birks."
+
+---
+
+## CAP. 4 — *Más allá de Birks: el mecanismo molecular FRET* (2:00 min)
+
+> "La ley de Birks funciona bien en muchos regímenes, pero tiene grietas conocidas. Para protones e iones de distinta especie con el mismo LET (pronunciar: 'L-E-T') — que es la transferencia lineal de energía, básicamente el dE sobre dx (d-e sobre d-equis) — la producción de luz puede diferir entre especies aunque el LET (L-E-T) sea idéntico. Eso Birks no lo puede explicar."
+
+> "En 2018, Ogawa y colaboradores propusieron un modelo radicalmente diferente basado en el mecanismo FRET — Förster Resonance Energy Transfer (pronunciar: 'transferencia resonante de energía de Förster'). La idea central: en lugar de parametrizar el quenching como función de dE sobre dx (d-e sobre d-equis), calculan la posición espacial de cada deposición de energía a escala nanométrica, y modelan la probabilidad de que una molécula excitada transfiera su energía a una vecina por acoplamiento dipolo-dipolo en lugar de emitir un fotón."
+
+> "La probabilidad de esa transferencia sigue una ley de potencias: p de r (pronunciar: 'p de erre') igual a uno sobre uno más la cantidad r sobre Rf (pronunciar: 'erre sobre erre-sub-efe') a la sexta potencia. Rf (erre-sub-efe) es el radio de Förster — la distancia a la cual la probabilidad de transferencia es del 50%. Para materiales orgánicos usados en centelleadores, Rf (erre-sub-efe) está entre 2 y 6 nanómetros."
+
+> "La dependencia con r a la sexta (erre a la sexta) lo hace extremadamente local: a distancia doble del radio de Förster, la probabilidad cae a menos del 2%. El efecto es esencialmente de contacto nanométrico."
+
+> "La conexión con el quenching: cuando una partícula de alto dE sobre dx (d-e sobre d-equis) atraviesa el material, las excitaciones quedan separadas por distancias del orden de Rf (erre-sub-efe). FRET activo, fotones perdidos. Con un electrón rápido, las excitaciones están separadas por decenas de nanómetros: FRET despreciable, centelleador ideal."
+
+> "La implicación más importante para Blue Physics: en el modelo FRET, kB (k-sub-be) no es una constante fundamental. Es una cantidad emergente que depende de la microestructura del material — concentración de dopante, eficiencia de transferencia entre polímero y fluoróforo, distribución espacial de los centros activos. Cambiar la formulación del material cambia Rf (erre-sub-efe) y, por tanto, cambia la susceptibilidad al quenching. El quenching se convierte en un parámetro de diseño, no en un defecto fijo."
+
+---
+
+## CAP. 5 — *El espectro que nadie miraba* (1:30 min)
+
+> "Con ese marco físico claro, volvemos a la pregunta: ¿cuánto importa el quenching en un haz clínico de fotones MV?"
+
+> "Valdes Santurio y Andersen respondieron eso en 2019 con simulaciones Monte Carlo con EGSnrc sobre un centelleador BCF-60 en distintas configuraciones de campo y calidad de haz — usando archivos de espacio de fases del TrueBeam 6 MV de Varian."
+
+> "El resultado fue sorprendente: en un campo de 10 por 10 centímetros a 6 MV, entre el 33 y el 44 por ciento de la dosis absorbida en el centelleador proviene de electrones con energía cinética inferior a 100 keV. Más de un tercio. No es una cola marginal."
+
+> "El origen es conocido: los fotones del haz generan electrones Compton de alta energía, que al frenarse producen electrones secundarios más lentos. Además la radiación dispersa del cabezal y del maniquí aporta fotones de menor energía que generan electrones aún más lentos. Todo eso contribuye a la cola por debajo del umbral de quenching."
+
+> "Y esa fracción no es constante: crece con el tamaño de campo — más radiación dispersa, más electrones lentos — y varía con la calidad del haz. Cuantificaron el factor de corrección por quenching — kioq (pronunciar: 'k-i-o-q') — y encontraron que varía 0.6% entre campos de 0.5 por 0.5 y 10 por 10 centímetros, y aproximadamente 2% entre 4 MV y 15 MV."
+
+> "El efecto de tamaño de campo está dentro del ruido de las mediciones clínicas — por eso no se había observado. El efecto de calidad de haz ya no es despreciable si se quiere trazabilidad metrológica."
+
+**Transición:** "Y entonces llega el trabajo de Gingras, que le da una vuelta de tuerca completamente inesperada a toda esta historia."
+
+---
+
+## CAP. 6 — *El hallazgo de Gingras: una compensación accidental* (2:30 min)
+
+> "Gingras et al. publicaron en 2025 — en Medical Physics — el trabajo más completo que existe sobre correcciones de salida de campo para un PSD comercial. Tomaron el detector PRB-0002 de la plataforma Hyperscint RP-200 de Medscint — basado en centelleador BCF-60 — y separaron todos los factores de corrección que contribuyen a la respuesta total."
+
+> "El formalismo que usan extiende el del TRS-483 al caso de centelleadores. La dosis absorbida en agua se relaciona con la lectura del detector a través de cuatro factores: kvol (pronunciar: 'k-sub-vol'), corrección por promediado volumétrico; Pscint (pronunciar: 'P-scint'), perturbación por la composición del centelleador; Pwall (pronunciar: 'P-wall'), perturbación por los materiales no centelleadores del ensamblaje; y kioq (k-i-o-q), el factor de corrección por quenching. Cada uno calculado por separado con Monte Carlo, EGSnrc, con geometría detallada del detector real."
+
+> "Pscint (P-scint) es el cociente entre la dosis que habría en un volumen de agua de la misma forma y la dosis en el volumen real del centelleador. Es mayor o menor que uno según si el material centelleador interactúa más o menos con la radiación que el agua."
+
+> "kioq (k-i-o-q) es el cociente entre la luz que produciría un centelleador ideal — sin quenching — y la que produce el detector real. Es siempre mayor o igual a uno: el quenching siempre reduce la luz."
+
+> "Los resultados muestran un patrón muy claro. Al ampliar el campo, Pscint (P-scint) decrece: más radiación dispersa de baja energía interactúa de forma diferente con el centelleador que con el agua, y la perturbación material crece. Al mismo tiempo, kioq (k-i-o-q) crece: más electrones lentos, más quenching, corrección mayor requerida."
+
+> "Las dos curvas van en direcciones opuestas — y se cancelan casi exactamente. El factor de corrección total del PRB-0002 se mantiene entre 0.999 y 1.002 para campos de 0.6 por 0.6 a 30 por 30 centímetros, con incertidumbre combinada del 0.5%."
+
+Pausa.
+
+> "Entonces el TRS-483 tenía razón — factor de corrección igual a uno. Pero la justificación física era incorrecta. El TRS-483 asumía que el factor era unitario porque el detector es agua-equivalente. Gingras demuestra que es unitario porque Pscint (P-scint) y kioq (k-i-o-q) se compensan. Dos imperfecciones reales que se cancelan."
+
+> "Y la pregunta que eso abre es inmediata: ¿esa cancelación es universal para todos los centelleadores plásticos, o es específica del BCF-60? Si es específica del material, entonces cambiar la composición del centelleador puede romper esa compensación — y el detector deja de ser auto-corregido sin que nadie se entere."
+
+**Transición:** "Esa es exactamente la pregunta que MDSIM1 se propone responder."
+
+---
+
+## CAP. 7 — *La contribución de MDSIM1* (1:30 min)
+
+> "MDSIM1 no está para replicar lo que Gingras hizo con EGSnrc. La contribución es convertir ese hallazgo puntual en un criterio de diseño generalizable."
+
+> "La métrica central es Cmaterial (pronunciar: 'C-sub-material') — definida como el producto Pscint (P-scint) por kioq (k-i-o-q) — evaluada para diferentes materiales, diferentes tamaños de campo y diferentes calidades de haz. Un material con Cmaterial (C-sub-material) cercano a uno en un rango amplio de condiciones es intrínsecamente auto-corregido. Uno con Cmaterial (C-sub-material) diferente de uno necesita correcciones explícitas que dependen de las condiciones de irradiación."
+
+> "Hay además una brecha metodológica que nadie ha cerrado: todos los cálculos de kioq (k-i-o-q) para PSD en fotones MV han sido realizados con EGSnrc. Nadie los ha verificado con Geant4. Los dos códigos implementan el modelo de Birks de forma diferente: EGSnrc usa un objeto ausgab (pronunciar: 'aus-gab') con poder de frenado restringido integrado sobre el espectro de electrones; Geant4 aplica la corrección de Birks paso a paso a través de la clase G4EmSaturation (pronunciar: 'G4-Em-Saturation'). Esas implementaciones no son equivalentes sin validación cruzada. Dietz-Laursonn documentó que el valor efectivo de kB (k-sub-be) recuperado de una simulación Geant4 depende del tamaño de paso del transporte electrónico — controlado por el parámetro dRoverRange (pronunciar: 'd-R-over-Range'). MDSIM1 hace esa verificación por primera vez."
+
+---
+
+## CAP. 8 — *El espacio de materiales como ventaja competitiva* (2:00 min)
+
+> "El Blue Physics Model 11 fue caracterizado experimentalmente por Bauer et al. en 2026 — publicado hace pocas semanas — en haces de electrones de 6 a 12 MeV sobre un acelerador Elekta Synergy. Los resultados son buenos: coeficiente de variación de linealidad del 1.3% entre 1 y 1000 unidades monitor, independencia de tasa de dosis del 1.0%, repetibilidad del 0.3%, isotropía del 0.8%."
+
+> "Las curvas de dosis en profundidad concuerdan con cámaras de ionización dentro de 1 mm en R80 y R50 (pronunciar: 'R-ochenta y R-cincuenta') — que son las profundidades al 80 y 50% de la dosis máxima, usadas para caracterizar la calidad del haz de electrones. Los factores de salida para campos de 3 por 3 a 7 por 7 centímetros presentan una desviación media del 0.4% respecto a la cámara Advanced Markus."
+
+> "Ese desempeño es competitivo. Pero hay un punto importante: esa caracterización es en electrones, donde el factor dominante que hay que corregir es la señal Cherenkov en la fibra óptica — aproximadamente el 50% de la señal total en un campo de 10 por 10 centímetros, con un factor de corrección ACR (pronunciar: 'A-C-R', por Adjacent Channel Ratio) de 0.916."
+
+> "En fotones MV, el factor dominante es el quenching. Y en fotones MV, el Model 11 no tiene la misma caracterización que el PRB-0002 en el trabajo de Gingras. No sabemos si el material de Blue Physics exhibe la misma compensación Pscint por kioq (P-scint por k-i-o-q) cercana a uno. Esa es exactamente la pregunta que MDSIM1 calcula."
+
+> "Más allá del Model 11: la simulación permite explorar el espacio de materiales. Cambiar el polímero base — poliestireno, polivinilueno, PMMA —, el tipo de dopante, la concentración, y calcular Cmaterial (C-sub-material) para cada combinación antes de fabricar un prototipo. Eso convierte el diseño de materiales en algo sistemático. En lugar de fabricar y medir, se simula primero y se fabrica lo que tiene sentido físico."
+
+---
+
+## CAP. 9 — *Conclusiones y camino a seguir* (1:30 min)
+
+> "El estado del arte establece un mapa bastante claro. Las herramientas teóricas existen: la ley de Birks, su extensión modificada de Valdes Santurio con poder de frenado restringido, el modelo FRET de Ogawa. Los datos de referencia existen: Gingras para el PRB-0002 en fotones MV, Bauer para el Model 11 en electrones, Valdes Santurio para BCF-60 en MV y kV."
+
+> "Lo que no existe es la conexión entre ellos: una plataforma que use esas herramientas, se valide contra esos datos de referencia, y extienda los resultados a otros materiales y a Geant4."
+
+> "MDSIM1 tiene un camino concreto. Primero, verificar que la implementación con kB (k-sub-be) igual a cero produce kioq (k-i-o-q) igual a cero exactamente — prueba de consistencia interna. Segundo, reproducir el kioq (k-i-o-q) de Valdes Santurio para BCF-60 en 10 por 10 centímetros a 6 MV — referencia cuantitativa. Tercero, hacer el barrido de dRoverRange (d-R-over-Range) — 0.1, 0.05, 0.02, 0.01 — y demostrar convergencia del cociente Lquenched sobre Lideal (pronunciar: 'L-quenched sobre L-ideal'). Cuarto, calcular Cmaterial (C-sub-material) para el PRB-0002 y comparar con Gingras. Quinto, extender a materiales centelleadores alternativos con distintos valores de kB (k-sub-be)."
+
+> "La pregunta que articula todo esto se puede formular de manera precisa: para qué materiales centelleadores, en qué régimen energético y para qué geometrías de detector se cumple que el producto Pscint (P-scint) por kioq (k-i-o-q) es aproximadamente igual a uno en un rango amplio de condiciones clínicas. Esa pregunta no está respondida en ningún paper publicado."
+
+---
+
+## CIERRE (0:30 min)
+
+> "Volviendo a donde empezamos: el TRS-483 tenía razón sobre el factor de corrección unitario del PSD. Pero la física detrás de eso es más interesante de lo que se pensaba. No es que el detector sea perfecto — es que tiene dos imperfecciones que se cancelan. MDSIM1 existe para saber si eso también aplica al material de Blue Physics, para cuantificarlo con Geant4, y para entender cómo diseñar materiales donde esa cancelación sea intencional. No accidental."
+
+---
+
+## Notas finales de presentación
+
+**Sobre el tono:** si en algún momento sientes que estás "recitando", para y di algo como "básicamente lo que esto significa es..." y reformula en tus propias palabras. Eso es señal de que entendés el material, no de que lo olvidaste.
+
+**Sobre las fórmulas:** no las pongas en la diapositiva y las leas. Muéstralas, señálalas, y explica el comportamiento — los dos regímenes, qué pasa en los extremos. Las ecuaciones son para apoyar la intuición, no para impresionar.
+
+**Sobre la audiencia:** Marcos necesita entender la implicación para el diseño del material. María Cristina necesita el contexto clínico de por qué importa en megavoltaje. Camilo ya sabe todo esto — para él la presentación es el hilo argumental que conecta su trabajo. Los tres están en la misma sala así que el hilo narrativo los tiene que llevar a los tres al mismo lugar.

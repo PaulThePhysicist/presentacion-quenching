@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quenching en detectores de centelleo plástico - Mapeo del Espacio de Materiales</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+</head>
+<body>
+
+<div id="deck">
+
+<div class="slide" id="slide-22">
+  <div class="slide-num">22 / 24</div>
+  <div class="slide-eyebrow">Capítulo 8 · El espacio de materiales</div>
+  <h2 class="slide-title">Mapeo del Espacio de <em>Materiales</em></h2>
+  <p class="slide-subtitle">Sistemática pre-prototipado: simular la física del material antes de su fabricación.</p>
+  <div class="persona-row">
+    <span class="persona-tag pt-marcos">Ventaja Blue Physics</span>
+    <span class="persona-tag pt-camilo">Técnico / Monte Carlo</span>
+  </div>
+
+  <div class="two-col stretch">
+    <div class="col-stretch" style="gap: 10px;">
+      <div class="card card-purple reveal-item card-stretch" data-step="1">
+        <div class="card-label">Exploración de Diseños Químicos</div>
+        <p style="font-size: 14.5px; color: var(--text2); line-height: 1.45;">
+          Podemos variar virtualmente el polímero base (poliestireno, poliviniltolueno, PMMA), el fluoróforo y su concentración en el simulador Monte Carlo.
+        </p>
+      </div>
+
+      <div class="card card-teal reveal-item card-stretch" data-step="2">
+        <div class="card-label">Filtrado Predictivo de Prototipos</div>
+        <p style="font-size: 14.5px; color: var(--text2); line-height: 1.45;">
+          Calculamos $C_{\text{material}}$ para cada formulación en Geant4. Solo las configuraciones químicas que caen en la zona de auto-compensación ($C_{\text{material}} \approx 1$) avanzan a fabricación física.
+        </p>
+      </div>
+      
+      <div class="callout reveal-item" data-step="3" style="font-size: 13px; margin: 0; padding: 8px 12px;">
+        <strong>Ventaja:</strong> En lugar del tradicional y costoso método empírico de prueba y error, la simulación microdosimétrica permite racionalizar el diseño molecular del detector.
+      </div>
+    </div>
+
+    <div class="reveal-item col-stretch" data-step="4" style="gap: 10px; flex: 1;">
+      <div class="card card-stretch" style="padding: 10px 14px; display: flex; flex-direction: column; justify-content: space-between;">
+        <div class="card-label" style="font-size: 10px; font-family: var(--mono); color: var(--text3);">Espacio de Parámetros de Diseño (kB vs Zeff)</div>
+        
+        <div class="canvas-stretch-wrapper" style="border: none; background: transparent; padding: 0;">
+          <canvas id="matChart"></canvas>
+        </div>
+        
+        <div style="display: flex; gap: 8px; flex-wrap: wrap; font-size: 9px; justify-content: center; font-family: var(--mono); margin-top: 4px;">
+          <span style="display:flex;align-items:center;gap:3px;"><span style="width:10px;height:10px;background:rgba(45,212,176,0.12);border:1px solid rgba(45,212,176,0.4);border-radius:2px;display:inline-block;"></span>C ≈ 1</span>
+          <span style="display:flex;align-items:center;gap:3px;"><span style="width:8px;height:8px;background:#5b9cf6;border-radius:50%;display:inline-block;"></span>BCF-60</span>
+          <span style="display:flex;align-items:center;gap:3px;"><span style="width:8px;height:8px;background:#a78bfa;border-radius:50%;display:inline-block;"></span>Model 11</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<div id="nav">
+  <button id="btn-prev">←</button>
+  <div class="nav-dots" id="nav-dots"></div>
+  <span id="nav-counter"></span>
+  <button id="btn-next">→</button>
+</div>
+
+<script src="navigation.js"></script>
+<script>
+Chart.defaults.color = '#dcd9d4';
+Chart.defaults.font.family = "'DM Mono', monospace";
+Chart.defaults.font.size = 10;
+const gridColor = 'rgba(255,255,255,0.05)';
+
+const matCtx = document.getElementById('matChart');
+if (matCtx) {
+  new Chart(matCtx, {
+    type: 'bubble',
+    data: {
+      datasets: [
+        { label: 'BCF-60 (PRB-0002)', data: [{ x: 5.74, y: 0.019, r: 8 }], backgroundColor: 'rgba(91,156,246,0.8)', borderColor: '#5b9cf6', borderWidth: 1.5 },
+        { label: 'Blue Physics Model 11', data: [{ x: 5.70, y: 0.021, r: 8 }], backgroundColor: 'rgba(167,139,250,0.8)', borderColor: '#a78bfa', borderWidth: 1.5 },
+        { label: 'PVT bajo kB', data: [{ x: 5.60, y: 0.010, r: 5 }], backgroundColor: 'rgba(154,150,144,0.4)', borderColor: '#9a9692', borderWidth: 1 },
+        { label: 'PS alto kB', data: [{ x: 5.82, y: 0.026, r: 5 }], backgroundColor: 'rgba(154,150,144,0.4)', borderColor: '#9a9692', borderWidth: 1 },
+        { label: 'PS denso', data: [{ x: 6.02, y: 0.029, r: 5 }], backgroundColor: 'rgba(232,85,85,0.5)', borderColor: '#e85555', borderWidth: 1 },
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => `${c.dataset.label}: Zeff=${c.parsed.x.toFixed(2)}, kB=${c.parsed.y.toFixed(3)}` } } },
+      scales: {
+        x: { title: { display: true, text: 'Zeff', font: { size: 9 } }, min: 5.3, max: 6.3, grid: { color: gridColor }, ticks: { stepSize: 0.2 } },
+        y: { title: { display: true, text: 'kB (g·cm⁻²·MeV⁻¹)', font: { size: 9 } }, min: 0.005, max: 0.035, grid: { color: gridColor }, ticks: { callback: v => v.toFixed(3) } }
+      }
+    },
+    plugins: [{
+      id: 'compZone',
+      beforeDraw(c) {
+        const { ctx, scales: { x, y } } = c;
+        ctx.save();
+        ctx.fillStyle = 'rgba(45,212,176,0.06)';
+        ctx.strokeStyle = 'rgba(45,212,176,0.3)'; ctx.lineWidth = 1; ctx.setLineDash([5,4]);
+        const x0=x.getPixelForValue(5.52), x1=x.getPixelForValue(5.92);
+        const y0=y.getPixelForValue(0.032), y1=y.getPixelForValue(0.011);
+        ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(x0,y0,x1-x0,y1-y0,6); else ctx.rect(x0,y0,x1-x0,y1-y0);
+        ctx.fill(); ctx.stroke(); ctx.setLineDash([]);
+        ctx.fillStyle = '#2dd4b0'; ctx.font = '9px DM Mono, monospace';
+        ctx.fillText('Compensación C ≈ 1', x0+5, y0+12);
+        ctx.restore();
+      }
+    }]
+  });
+}
+</script>
+</body>
+</html>

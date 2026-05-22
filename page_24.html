@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quenching en detectores de centelleo plástico - Roadmap, Pregunta Abierta y Cierre</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div id="deck">
+
+<div class="slide" id="slide-24">
+  <div class="slide-num">24 / 24</div>
+  <div class="slide-eyebrow">Capítulo 9 · Conclusiones y camino a seguir</div>
+  <h2 class="slide-title">Roadmap, Pregunta Abierta y <em>Cierre</em></h2>
+  <p class="slide-subtitle">El camino de validación de MDSIM1 y el diseño de la compensación intencional.</p>
+
+
+  <div class="two-col stretch" style="margin-bottom: 10px;">
+    <div class="col-stretch" style="gap: 10px;">
+      <div class="card card-teal reveal-item card-stretch" data-step="1" style="padding: 10px 14px;">
+        <div class="card-label">Roadmap de Validación de MDSIM1</div>
+        <ol style="font-size: 13px; color: var(--text2); line-height: 1.45; padding-left: 18px; display: flex; flex-direction: column; gap: 4px; margin: 4px 0;">
+          <li><strong>Consistencia interna:</strong> Verificar que con $k_B = 0$ se obtiene $k_{\text{ioq}} = 1.000$ (sin quenching).</li>
+          <li><strong>Referencia BCF-60:</strong> Reproducir el $k_{\text{ioq}}$ de Valdes Santurio para campo $10\times10\text{ cm}^2$ a 6 MV.</li>
+          <li><strong>Estudio de paso:</strong> Demostrar convergencia de $L_{\text{quenched}}/L_{\text{ideal}}$ vs <code>dRoverRange</code>.</li>
+          <li><strong>Comparación Gingras:</strong> Calcular $C_{\text{material}}$ para PRB-0002 y comparar con EGSnrc.</li>
+          <li><strong>Exploración Blue Physics:</strong> Extender a materiales alternativos variando $k_B$ y $Z_{\text{eff}}$.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="col-stretch" style="gap: 10px;">
+      <div class="card card-amber reveal-item card-stretch" data-step="2" style="padding: 10px 14px;">
+        <div class="card-label">La Pregunta Científica Central</div>
+        <p style="font-size: 14.5px; color: var(--text); line-height: 1.45; font-style: italic; font-weight: 500; margin-bottom: 6px;">
+          "¿Para qué materiales centelleadores, energías y geometrías se cumple que el producto $P_{\text{scint}}\cdot k_{\text{ioq}} \approx 1$ en un rango amplio de condiciones clínicas?"
+        </p>
+        <p style="font-size: 13px; color: var(--text3); line-height: 1.35;">
+          Esta es la pregunta que articula el manuscrito Q1 y permanece sin responder en la literatura médica.
+        </p>
+      </div>
+
+      <div class="callout reveal-item" data-step="3" style="font-size: 13px; margin: 0; padding: 8px 12px;">
+        <strong>Conclusión:</strong> El PSD no es perfecto; tiene dos imperfecciones que se cancelan. MDSIM1 existe para hacer que esta cancelación sea <strong>intencional</strong>, no accidental.
+      </div>
+    </div>
+  </div>
+
+  <div class="reveal-item" data-step="4" style="display: flex; justify-content: center; margin-top: 6px; font-family: var(--mono); font-size: 11px; color: var(--text3); text-align: center; border-top: 1px solid var(--border); padding-top: 6px; width: 100%;">
+    <span style="color: var(--teal); font-weight: bold; margin-right: 6px;">Refs:</span>
+    Birks (1951) • Beddar (1992) • TRS-483 (2018) • Valdes (2019) • Ogawa (2018) • Gingras (2025) • Bauer (2026)
+  </div>
+</div>
+
+</div>
+
+<div id="nav">
+  <button id="btn-prev">←</button>
+  <div class="nav-dots" id="nav-dots"></div>
+  <span id="nav-counter"></span>
+  <button id="btn-next">→</button>
+</div>
+
+<script src="navigation.js"></script>
+</body>
+</html>

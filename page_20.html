@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quenching en detectores de centelleo plástico - La Brecha EGSnrc vs Geant4</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+  .controls-disabled {
+    opacity: 0.35;
+    pointer-events: none;
+  }
+  .hud-badge {
+    font-size: 10px;
+    font-family: var(--mono);
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 1px solid rgba(255,255,255,0.05);
+    transition: all 0.2s ease;
+  }
+  #step-slider::-webkit-slider-thumb {
+    background: var(--slider-color, var(--purple)) !important;
+    transition: background-color 0.2s, box-shadow 0.2s;
+  }
+  #step-slider::-webkit-slider-thumb:hover {
+    box-shadow: 0 0 8px var(--slider-color, var(--purple)) !important;
+  }
+</style>
+</head>
+<body>
+
+<div id="deck">
+
+<div class="slide" id="slide-20">
+  <div class="slide-num">20 / 24</div>
+  <div class="slide-eyebrow">Capítulo 7 · La contribución de MDSIM1</div>
+  <h2 class="slide-title">La Brecha <em>EGSnrc vs Geant4</em></h2>
+  <p class="slide-subtitle">Una discrepancia metodológica no resuelta en la literatura de microdosimetría.</p>
+  <div class="persona-row">
+    <span class="persona-tag pt-camilo">Implementación Monte Carlo · Agenda Directa</span>
+  </div>
+
+  <div class="two-col stretch" style="grid-template-columns: 1fr 1.6fr; gap: 16px;">
+    <!-- Columna izquierda: Teoría y explicaciones -->
+    <div class="col-stretch" style="gap: 10px;">
+      <div class="card card-purple reveal-item card-stretch" data-step="1" style="padding: 10px 14px;">
+        <div class="card-label" style="font-size: 10px;">EGSnrc · Promedio Analítico</div>
+        <p style="font-size: 14px; color: var(--text2); line-height: 1.45;">
+          Calcula el quenching integrando analíticamente el poder de frenado restringido sobre el espectro local de electrones (usando el objeto <code>ausgab</code>). Es un enfoque promedio que no simula el transporte paso a paso.
+        </p>
+      </div>
+
+      <div class="card card-red reveal-item card-stretch" data-step="2" style="padding: 10px 14px;">
+        <div class="card-label" style="font-size: 10px;">Geant4 · Simulación de Paso</div>
+        <p style="font-size: 14px; color: var(--text2); line-height: 1.45;">
+          Aplica el modelo de Birks en cada paso individual del transporte de la partícula a través de la clase <code>G4EmSaturation</code>. Esto hace que la atenuación de luz dependa del tamaño de paso (parámetro <code>dRoverRange</code>).
+        </p>
+      </div>
+
+      <div class="callout amber reveal-item" data-step="3" style="font-size: 12.5px; margin: 0; padding: 8px 12px;">
+        <strong>Validación técnica:</strong> Antes de interpretar $k_{\text{ioq}}$ en Geant4, se debe barrer <code>dRoverRange</code> (0.1, 0.05, 0.02, 0.01) y verificar la convergencia del cociente $L_{\text{quenched}}/L_{\text{ideal}}$.
+      </div>
+    </div>
+
+    <!-- Columna derecha: Simulador interactivo y tabla comparativa -->
+    <div class="col-stretch" style="gap: 12px; min-height: 0;">
+      <!-- Tarjeta del Canvas -->
+      <div class="card reveal-item card-stretch" data-step="1" style="display: flex; flex-direction: column; gap: 8px; justify-content: space-between; padding: 10px 14px;">
+        <div class="card-label" style="font-size: 10px; margin-bottom: 0;">Simulador de Convergencia: EGSnrc vs Geant4</div>
+        
+        <!-- HUD de Parámetros -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1.1fr; gap: 6px; background: var(--bg3); padding: 6px; border-radius: 8px; border: 1px solid var(--border);">
+          <div style="text-align: center;">
+            <div style="font-size: 8px; color: var(--text3); font-family: var(--mono); text-transform: uppercase;">dRoverRange (G4)</div>
+            <div id="hud-droverrange" style="font-size: 12px; font-family: var(--mono); color: var(--purple); font-weight: bold; margin-top: 1px;">N/A</div>
+          </div>
+          <div style="text-align: center; border-left: 1px solid var(--border); border-right: 1px solid var(--border);">
+            <div style="font-size: 8px; color: var(--text3); font-family: var(--mono); text-transform: uppercase;">Error Scint.</div>
+            <div id="hud-error" style="font-size: 12px; font-family: var(--mono); color: var(--purple); font-weight: bold; margin-top: 1px;">0.0% (Ref)</div>
+          </div>
+          <div style="text-align: center;">
+            <div style="font-size: 8px; color: var(--text3); font-family: var(--mono); text-transform: uppercase;">Estado G4</div>
+            <div id="hud-status" style="font-size: 11px; font-family: var(--mono); color: var(--purple); font-weight: bold; margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Referencia EGS</div>
+          </div>
+        </div>
+
+        <!-- Canvas -->
+        <div class="canvas-stretch-wrapper">
+          <canvas id="convergence-canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: block;"></canvas>
+          <div id="convergence-badge" class="hud-badge" style="position: absolute; top: 8px; right: 8px; pointer-events: none; border-color: rgba(167, 139, 250, 0.3); color: var(--purple); background: rgba(167, 139, 250, 0.1);">
+            EGSnrc: Continuo
+          </div>
+        </div>
+
+        <!-- Slider de Control de dRoverRange -->
+        <div id="step-controls-container" class="reveal-item" data-step="4" style="display: flex; flex-direction: column; gap: 3px; background: var(--bg3); padding: 6px 10px; border-radius: 8px; border: 1px solid var(--border); transition: opacity 0.3s, transform 0.3s;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1px;">
+            <span style="font-size: 10px; font-family: var(--mono); color: var(--text2);">Ajustar dRoverRange (Paso G4):</span>
+            <span id="step-slider-val-disp" style="font-size: 10.5px; font-family: var(--mono); color: var(--purple); font-weight: bold;">0.20</span>
+          </div>
+          <input type="range" id="step-slider" min="1" max="20" step="1" value="20" style="width: 100%; cursor: pointer;">
+        </div>
+      </div>
+
+      <!-- Tabla Comparativa -->
+      <div class="reveal-item" data-step="3" style="overflow-x: auto; background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 8px 12px;">
+        <table class="gap-table" style="font-size: 11.5px; width: 100%;">
+          <thead>
+            <tr>
+              <th style="padding: 2px 6px; font-size: 9px;">Pregunta Abierta</th>
+              <th style="padding: 2px 6px; font-size: 9px;">En la Literatura</th>
+              <th style="padding: 2px 6px; font-size: 9px;">MDSIM1</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="padding: 4px 6px; font-weight: 600;">¿Reproduce G4 el k_ioq de EGS?</td>
+              <td style="padding: 4px 6px;"><span class="gap-badge gap-none" style="font-size: 8px; padding: 0px 3px;">Sin datos</span><br>Cálculos previos en EGSnrc.</td>
+              <td style="padding: 4px 6px;"><span class="gap-badge gap-mdsim" style="font-size: 8px; padding: 0px 3px;">MDSIM1</span><br>Primer cálculo pareado idéntico.</td>
+            </tr>
+            <tr>
+              <td style="padding: 4px 6px; font-weight: 600;">¿Universalidad P_scint·k_ioq?</td>
+              <td style="padding: 4px 6px;"><span class="gap-badge gap-none" style="font-size: 8px; padding: 0px 3px;">Sin datos</span><br>Solo para BCF-60 (PRB-0002).</td>
+              <td style="padding: 4px 6px;"><span class="gap-badge gap-mdsim" style="font-size: 8px; padding: 0px 3px;">MDSIM1</span><br>Múltiples composiciones orgánicas.</td>
+            </tr>
+            <tr>
+              <td style="padding: 4px 6px; font-weight: 600;">¿Variación k_ioq (kV vs MV)?</td>
+              <td style="padding: 4px 6px;"><span class="gap-badge gap-partial" style="font-size: 8px; padding: 0px 3px;">Parcial</span><br>Boivin (2016) con k_B constante.</td>
+              <td style="padding: 4px 6px;"><span class="gap-badge gap-mdsim" style="font-size: 8px; padding: 0px 3px;">MDSIM1</span><br>Separación analítica P_scint/k_ioq.</td>
+            </tr>
+            <tr>
+              <td style="padding: 4px 6px; font-weight: 600;">¿Sesgo por paso en G4?</td>
+              <td style="padding: 4px 6px;"><span class="gap-badge gap-partial" style="font-size: 8px; padding: 0px 3px;">Parcial</span><br>Dietz (2016): para iones pesados.</td>
+              <td style="padding: 4px 6px;"><span class="gap-badge gap-mdsim" style="font-size: 8px; padding: 0px 3px;">MDSIM1</span><br>Análisis sistemático en MV.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<div id="nav">
+  <button id="btn-prev">←</button>
+  <div class="nav-dots" id="nav-dots"></div>
+  <span id="nav-counter"></span>
+  <button id="btn-next">→</button>
+</div>
+
+<script src="navigation.js"></script>
+<script>
+(function() {
+  const canvas = document.getElementById('convergence-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+
+  let width = 0;
+  let height = 0;
+  let dpr = window.devicePixelRatio || 1;
+
+  // Physical parameters
+  const kB_phys = 0.02; // g/cm²/MeV
+  const yTrackCenter = 45;
+
+  // State
+  let dRoverRange = -1; // -1 means EGSnrc only, otherwise G4 step size (0.01 to 0.20)
+  let lastStep = -1;
+  let lastDRoverRange = -999;
+
+  // DOM elements
+  const slider = document.getElementById('step-slider');
+  const sliderDisp = document.getElementById('step-slider-val-disp');
+  const hudDroverrange = document.getElementById('hud-droverrange');
+  const hudError = document.getElementById('hud-error');
+  const hudStatus = document.getElementById('hud-status');
+  const badge = document.getElementById('convergence-badge');
+  const controlsContainer = document.getElementById('step-controls-container');
+
+  function resize() {
+    const rect = canvas.getBoundingClientRect();
+    width = rect.width;
+    height = rect.height;
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+    ctx.scale(dpr, dpr);
+    draw();
+  }
+  window.addEventListener('resize', resize);
+  
+  if (slider) {
+    slider.addEventListener('input', function() {
+      // 1 to 20 maps to 0.01 to 0.20
+      dRoverRange = parseInt(this.value, 10) / 100;
+      updateUI();
+    });
+  }
+
+  function getTrackY(x) {
+    const mLeft = 35;
+    const mRight = 15;
+    const graphWidth = width - mLeft - mRight;
+    if (graphWidth <= 0) return yTrackCenter;
+    const u = (x - mLeft) / graphWidth;
+    return yTrackCenter + Math.sin(u * Math.PI * 1.5) * 22 + Math.cos(u * Math.PI * 3) * 8 - 8 * u;
+  }
+
+  function getBragg(u) {
+    if (u < 0) return 0;
+    if (u > 0.95) {
+      return Math.max(0, 80 * (1 - u) / 0.05);
+    }
+    return 15 + 65 * Math.pow(u, 3) / (1 + 10 * Math.pow(u - 0.9, 2));
+  }
+
+  function getQuenched(u) {
+    const dedx = getBragg(u);
+    return dedx / (1 + kB_phys * dedx);
+  }
+
+  function updateUI() {
+    if (dRoverRange === lastDRoverRange) return;
+    lastDRoverRange = dRoverRange;
+
+    if (dRoverRange === -1) {
+      if (sliderDisp) {
+        sliderDisp.textContent = "N/A";
+        sliderDisp.style.color = "var(--purple)";
+      }
+      if (hudDroverrange) {
+        hudDroverrange.textContent = "N/A (Continuo)";
+        hudDroverrange.style.color = "var(--purple)";
+      }
+      if (hudError) {
+        hudError.textContent = "0.0% (Ref)";
+        hudError.style.color = "var(--purple)";
+      }
+      if (hudStatus) {
+        hudStatus.textContent = "Referencia EGS";
+        hudStatus.style.color = "var(--purple)";
+      }
+      if (badge) {
+        badge.textContent = "EGSnrc: Continuo";
+        badge.style.color = "var(--purple)";
+        badge.style.borderColor = "rgba(167, 139, 250, 0.3)";
+        badge.style.background = "rgba(167, 139, 250, 0.1)";
+      }
+      if (slider) {
+        slider.style.setProperty('--slider-color', 'var(--purple)');
+      }
+      return;
+    }
+
+    // G4 active
+    if (sliderDisp) sliderDisp.textContent = dRoverRange.toFixed(2);
+    if (hudDroverrange) hudDroverrange.textContent = dRoverRange.toFixed(2);
+
+    // Compute error
+    const N = Math.round(1 / dRoverRange);
+    let totalEGS = 0;
+    let totalG4 = 0;
+    const samples = 200;
+    
+    // Compute EGS reference integral
+    for (let j = 0; j < samples; j++) {
+      const u = (j + 0.5) / samples;
+      totalEGS += getQuenched(u) * (1 / samples);
+    }
+
+    // Compute G4 discretized sum
+    for (let i = 0; i < N; i++) {
+      const u_start = i / N;
+      let sumDEDX = 0;
+      for (let k = 0; k < 5; k++) {
+        const u_k = u_start + (k + 0.5) * (1/N) / 5;
+        sumDEDX += getBragg(u_k);
+      }
+      const dedx_step = sumDEDX / 5;
+      const dldx_step = dedx_step / (1 + kB_phys * dedx_step);
+      totalG4 += dldx_step * (1 / N);
+    }
+
+    const errorPercent = ((totalG4 - totalEGS) / totalEGS) * 100;
+    if (hudError) {
+      hudError.textContent = "+" + errorPercent.toFixed(1) + "%";
+    }
+
+    // Color interpolation Red -> Teal
+    const t = Math.max(0, Math.min(1, (0.20 - dRoverRange) / 0.19));
+    const r = Math.round(232 - (232 - 45) * t);
+    const g = Math.round(85 + (212 - 85) * t);
+    const b = Math.round(85 + (176 - 85) * t);
+    const geantColor = `rgb(${r}, ${g}, ${b})`;
+    const geantDimColor = `rgba(${r}, ${g}, ${b}, 0.12)`;
+    const geantBorderColor = `rgba(${r}, ${g}, ${b}, 0.3)`;
+
+    if (slider) {
+      slider.style.setProperty('--slider-color', geantColor);
+    }
+    if (sliderDisp) {
+      sliderDisp.style.color = geantColor;
+    }
+    if (hudDroverrange) {
+      hudDroverrange.style.color = geantColor;
+    }
+    if (hudError) {
+      hudError.style.color = geantColor;
+    }
+
+    if (hudStatus) {
+      if (t < 0.3) {
+        hudStatus.textContent = "Sesgado (Fuerte)";
+        hudStatus.style.color = "var(--red)";
+      } else if (t < 0.8) {
+        hudStatus.textContent = "Aproximado";
+        hudStatus.style.color = "var(--amber)";
+      } else {
+        hudStatus.textContent = "Convergido";
+        hudStatus.style.color = "var(--teal)";
+      }
+    }
+
+    if (badge) {
+      badge.style.color = geantColor;
+      badge.style.borderColor = geantBorderColor;
+      badge.style.background = geantDimColor;
+      if (t < 0.3) {
+        badge.textContent = "⚠️ Paso Crítico";
+      } else if (t < 0.8) {
+        badge.textContent = "⚡ Paso Medio";
+      } else {
+        badge.textContent = "✓ Convergencia";
+      }
+    }
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, width, height);
+
+    // Margins
+    const mLeft = 35;
+    const mRight = 15;
+    const graphWidth = width - mLeft - mRight;
+    if (graphWidth <= 0) return;
+
+    // Layout Heights
+    const yBraggBottom = 185;
+    const hBragg = 65;
+
+    // Draw boundary/medium for scintillator
+    ctx.save();
+    const scinLeft = mLeft + 5;
+    const scinWidth = graphWidth - 5;
+    const grad = ctx.createLinearGradient(scinLeft, 0, scinLeft + scinWidth, 0);
+    grad.addColorStop(0, 'rgba(91, 156, 246, 0.04)');
+    grad.addColorStop(1, 'rgba(91, 156, 246, 0.005)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(scinLeft, 5, scinWidth, 80);
+    ctx.restore();
+
+    // Medium entry line
+    ctx.save();
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+    ctx.setLineDash([3, 3]);
+    ctx.beginPath();
+    ctx.moveTo(scinLeft, 5);
+    ctx.lineTo(scinLeft, 85);
+    ctx.stroke();
+    
+    // Label for medium entry
+    ctx.font = '7px DM Mono, monospace';
+    ctx.fillStyle = 'var(--text3)';
+    ctx.fillText('Entrada Medio', scinLeft + 4, 12);
+    ctx.restore();
+
+    // Draw grid for Bragg curve axis
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.03)';
+    ctx.lineWidth = 1;
+    for (let x_g = mLeft; x_g <= width - mRight; x_g += graphWidth / 5) {
+      ctx.beginPath(); ctx.moveTo(x_g, 105); ctx.lineTo(x_g, yBraggBottom); ctx.stroke();
+    }
+    for (let y_g = yBraggBottom - hBragg; y_g <= yBraggBottom; y_g += hBragg / 3) {
+      ctx.beginPath(); ctx.moveTo(mLeft, y_g); ctx.lineTo(width - mRight, y_g); ctx.stroke();
+    }
+
+    // Coordinate Axes for Bragg
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    // Y Axis
+    ctx.moveTo(mLeft, yBraggBottom - hBragg - 5);
+    ctx.lineTo(mLeft, yBraggBottom);
+    // X Axis
+    ctx.lineTo(width - mRight + 5, yBraggBottom);
+    ctx.stroke();
+
+    // Axis Labels
+    ctx.font = '7.5px DM Mono, monospace';
+    ctx.fillStyle = 'var(--text3)';
+    ctx.textAlign = 'right';
+    ctx.fillText('dL/dx', mLeft - 5, yBraggBottom - hBragg + 2);
+    ctx.textAlign = 'center';
+    ctx.fillText('Profundidad (x)', mLeft + graphWidth/2, yBraggBottom + 12);
+
+    // Panel Labels
+    ctx.fillStyle = 'var(--text3)';
+    ctx.font = '9px DM Mono, monospace';
+    ctx.textAlign = 'left';
+    ctx.fillText('A. Trayectoria 2D (Scattering)', mLeft, 14);
+    ctx.fillText('B. Rendimiento Lumínico Quenched (dL/dx)', mLeft, 114);
+
+    const maxVal = 72;
+    function valToY(val) {
+      return yBraggBottom - (val / maxVal) * hBragg;
+    }
+
+    // --- DRAW EGSNRC (Purple) ---
+    // Smooth track
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(mLeft, getTrackY(mLeft));
+    for (let x = mLeft + 1; x <= width - mRight; x++) {
+      ctx.lineTo(x, getTrackY(x));
+    }
+    ctx.strokeStyle = '#a78bfa'; // Purple for EGSnrc
+    ctx.lineWidth = 2.0;
+    ctx.shadowColor = '#a78bfa';
+    ctx.shadowBlur = 4;
+    ctx.stroke();
+    ctx.restore();
+
+    // Smooth Bragg Quenched curve
+    ctx.save();
+    ctx.beginPath();
+    let first = true;
+    for (let x = mLeft; x <= width - mRight; x++) {
+      const u = (x - mLeft) / graphWidth;
+      const py = valToY(getQuenched(u));
+      if (first) {
+        ctx.moveTo(x, py);
+        first = false;
+      } else {
+        ctx.lineTo(x, py);
+      }
+    }
+    ctx.strokeStyle = '#a78bfa';
+    ctx.lineWidth = 2.0;
+    ctx.stroke();
+    ctx.restore();
+
+    // Draw ideal (unquenched) Bragg curve as reference dashed line
+    ctx.save();
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+    ctx.setLineDash([3, 3]);
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    first = true;
+    for (let x = mLeft; x <= width - mRight; x++) {
+      const u = (x - mLeft) / graphWidth;
+      const py = valToY(getBragg(u));
+      if (first) {
+        ctx.moveTo(x, py);
+        first = false;
+      } else {
+        ctx.lineTo(x, py);
+      }
+    }
+    ctx.stroke();
+    
+    // Ideal curve label
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.25)';
+    ctx.font = '6.5px DM Mono, monospace';
+    ctx.fillText('Luz Ideal (Sin Quenching)', mLeft + graphWidth * 0.45, valToY(getBragg(0.45)) - 4);
+    ctx.restore();
+
+    // --- DRAW GEANT4 (Red/Teal depending on convergence) ---
+    if (dRoverRange > 0) {
+      const N = Math.round(1 / dRoverRange);
+      const stepWidthX = graphWidth / N;
+      
+      const t = Math.max(0, Math.min(1, (0.20 - dRoverRange) / 0.19));
+      const r = Math.round(232 - (232 - 45) * t);
+      const g = Math.round(85 + (212 - 85) * t);
+      const b = Math.round(85 + (176 - 85) * t);
+      const geantColor = `rgb(${r}, ${g}, ${b})`;
+      const geantFillColor = `rgba(${r}, ${g}, ${b}, 0.08)`;
+
+      // A. Jagged Track
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(mLeft, getTrackY(mLeft));
+      for (let i = 0; i < N; i++) {
+        const x_end = mLeft + (i + 1) * stepWidthX;
+        ctx.lineTo(x_end, getTrackY(x_end));
+      }
+      ctx.strokeStyle = geantColor;
+      ctx.lineWidth = 1.8;
+      ctx.shadowColor = geantColor;
+      ctx.shadowBlur = 3;
+      ctx.stroke();
+      ctx.restore();
+
+      // Step endpoints
+      ctx.fillStyle = geantColor;
+      for (let i = 0; i <= N; i++) {
+        const x = mLeft + i * stepWidthX;
+        const y = getTrackY(x);
+        ctx.beginPath();
+        ctx.arc(x, y, N <= 6 ? 2.5 : 1.5, 0, 2 * Math.PI);
+        ctx.fill();
+      }
+
+      // B. Step Histogram for Bragg Quenched
+      ctx.save();
+      
+      // Trace fill path
+      ctx.beginPath();
+      ctx.moveTo(mLeft, yBraggBottom);
+      
+      for (let i = 0; i < N; i++) {
+        const u_start = i / N;
+        const x_start = mLeft + u_start * graphWidth;
+        const x_end = mLeft + (i + 1) * graphWidth / N;
+        
+        let sumDEDX = 0;
+        for (let k = 0; k < 5; k++) {
+          const u_k = u_start + (k + 0.5) * (1/N) / 5;
+          sumDEDX += getBragg(u_k);
+        }
+        const dedx_step = sumDEDX / 5;
+        const dldx_step = dedx_step / (1 + kB_phys * dedx_step);
+        const py = valToY(dldx_step);
+
+        ctx.lineTo(x_start, py);
+        ctx.lineTo(x_end, py);
+      }
+      ctx.lineTo(width - mRight, yBraggBottom);
+      ctx.closePath();
+      ctx.fillStyle = geantFillColor;
+      ctx.fill();
+
+      // Draw outline
+      ctx.beginPath();
+      ctx.moveTo(mLeft, yBraggBottom);
+      for (let i = 0; i < N; i++) {
+        const u_start = i / N;
+        const x_start = mLeft + u_start * graphWidth;
+        const x_end = mLeft + (i + 1) * graphWidth / N;
+        
+        let sumDEDX = 0;
+        for (let k = 0; k < 5; k++) {
+          const u_k = u_start + (k + 0.5) * (1/N) / 5;
+          sumDEDX += getBragg(u_k);
+        }
+        const dedx_step = sumDEDX / 5;
+        const dldx_step = dedx_step / (1 + kB_phys * dedx_step);
+        const py = valToY(dldx_step);
+
+        if (i === 0) {
+          ctx.moveTo(x_start, py);
+        } else {
+          ctx.lineTo(x_start, py);
+        }
+        ctx.lineTo(x_end, py);
+      }
+      ctx.strokeStyle = geantColor;
+      ctx.lineWidth = 1.8;
+      ctx.stroke();
+      ctx.restore();
+    }
+  }
+
+  function updateSimulationState(step) {
+    if (step === lastStep) return;
+    lastStep = step;
+
+    if (step >= 4) {
+      if (slider) slider.disabled = false;
+      const val = parseInt(slider.value, 10);
+      dRoverRange = val / 100;
+    } else {
+      if (slider) slider.disabled = true;
+
+      if (step === 1) {
+        dRoverRange = -1; // EGSnrc continuous mode
+      } else {
+        dRoverRange = 0.20; // Coarse steps demo mode
+      }
+      if (slider) slider.value = 20;
+    }
+  }
+
+  function animate() {
+    const step = (typeof currentStep !== 'undefined') ? currentStep : 1;
+    updateSimulationState(step);
+    
+    if (step >= 4 && slider) {
+      dRoverRange = parseInt(slider.value, 10) / 100;
+    }
+    
+    updateUI();
+    draw();
+    requestAnimationFrame(animate);
+  }
+
+  resize();
+  animate();
+})();
+</script>
+</body>
+</html>

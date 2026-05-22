@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quenching en detectores de centelleo plástico - La Ley de Birks (1951)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+  .controls-disabled {
+    opacity: 0.35;
+    pointer-events: none;
+  }
+  .hud-badge {
+    font-size: 10px;
+    font-family: var(--mono);
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 1px solid rgba(255,255,255,0.05);
+    transition: all 0.2s ease;
+  }
+  .hud-badge.green {
+    background: var(--teal-dim);
+    color: var(--teal);
+    border-color: rgba(45, 212, 176, 0.25);
+    box-shadow: 0 0 8px rgba(45, 212, 176, 0.15);
+  }
+  .hud-badge.red {
+    background: var(--red-dim);
+    color: var(--red);
+    border-color: rgba(232, 85, 85, 0.25);
+    box-shadow: 0 0 8px rgba(232, 85, 85, 0.15);
+  }
+  .hud-badge.amber {
+    background: var(--amber-dim);
+    color: var(--amber);
+    border-color: rgba(240, 168, 50, 0.25);
+    box-shadow: 0 0 8px rgba(240, 168, 50, 0.15);
+  }
+  .canvas-stretch-wrapper {
+    background: radial-gradient(circle at 50% 50%, #0d1216 0%, #050709 100%) !important;
+    border: 1px solid rgba(45, 212, 176, 0.15) !important;
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8), 0 0 15px rgba(45, 212, 176, 0.03);
+    border-radius: 12px !important;
+    position: relative;
+  }
+  .canvas-stretch-wrapper::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%),
+                linear-gradient(90deg, rgba(45, 212, 176, 0.02), rgba(240, 168, 50, 0.01), rgba(232, 85, 85, 0.02));
+    background-size: 100% 4px, 6px 100%;
+    opacity: 0.18;
+    pointer-events: none;
+    z-index: 2;
+  }
+  .canvas-stretch-wrapper::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 50%;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0) 100%);
+    pointer-events: none;
+    z-index: 4;
+  }
+  #kb-slider {
+    background: rgba(255, 255, 255, 0.05) !important;
+    height: 6px !important;
+    border-radius: 3px !important;
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+    transition: all 0.2s ease;
+  }
+  #kb-slider::-webkit-slider-thumb {
+    width: 14px !important;
+    height: 14px !important;
+    background: var(--teal) !important;
+    border: 2px solid #0d0f10 !important;
+    box-shadow: 0 0 6px rgba(45, 212, 176, 0.4) !important;
+    transition: all 0.2s ease;
+  }
+  #kb-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.15);
+    background: #ffffff !important;
+    box-shadow: 0 0 10px rgba(45, 212, 176, 0.8) !important;
+  }
+  #kb-controls-container {
+    background: rgba(26, 30, 34, 0.5) !important;
+    border: 1px solid rgba(255,255,255,0.04) !important;
+    backdrop-filter: blur(8px);
+  }
+  #kb-controls-container:not(.controls-disabled) {
+    border-color: rgba(45, 212, 176, 0.25) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+</style>
+</head>
+<body>
+
+<div id="deck">
+
+<div class="slide" id="slide-7" style="padding-top: 18px; padding-bottom: 18px;">
+  <div class="slide-num">7 / 24</div>
+  <div class="slide-eyebrow" style="margin-bottom: 4px;">Capítulo 3 · La ley de Birks</div>
+  <h2 class="slide-title" style="margin-bottom: 4px; font-size: clamp(28px, 3.5vw, 42px);">La Ley de Birks (1951)</h2>
+  <p class="slide-subtitle" style="margin-bottom: 6px; font-size: 15px;">El modelo matemático estándar y semiempírico que describe la saturación de luz.</p>
+  <div class="persona-row" style="margin-bottom: 8px;">
+    <span class="persona-tag pt-marcos" style="padding: 2px 8px; font-size: 11.5px;">Fundamento Teórico</span>
+  </div>
+
+  <div class="two-col stretch" style="grid-template-columns: 1fr 1.2fr; gap: 12px;">
+    <!-- Columna izquierda: Conceptos teóricos y regímenes -->
+    <div class="col-stretch" style="gap: 8px;">
+      <div class="card card-teal reveal-item card-stretch" data-step="1" style="padding: 10px 14px; flex: 1.35;">
+        <div class="card-label" style="font-size: 10.5px; margin-bottom: 6px;">La Ecuación de Birks</div>
+        <p style="font-size: 13.5px; color: var(--text2); line-height: 1.4; margin-bottom: 6px;">
+          Describe la producción de luz por unidad de longitud ($dL/dx$) en función del poder de frenado electrónico ($dE/dx$ o LET):
+        </p>
+        <div class="eq-block" style="font-size: 16px; padding: 6px 12px; margin: 4px 0; text-align: center; border-left-width: 2px;">
+          $$\frac{dL}{dx} = \frac{S \cdot \frac{dE}{dx}}{1 + k_B \cdot \frac{dE}{dx}}$$
+        </div>
+        <p style="font-size: 11.5px; color: var(--text3); margin-top: 4px;">
+          Donde $S$ es la eficiencia de centelleo absoluta, y $k_B$ es el coeficiente de Birks.
+        </p>
+      </div>
+
+      <div class="card card-amber reveal-item card-stretch" data-step="2" style="padding: 10px 14px; flex: 0.65;">
+        <div class="card-label" style="font-size: 10.5px; margin-bottom: 6px;">Parámetro k_B (Coeficiente de Birks)</div>
+        <p style="font-size: 13.5px; color: var(--text2); line-height: 1.4;">
+          Es el factor clave que controla la saturación. Define la sensibilidad del material al quenching. Se expresa típicamente en unidades de $\text{cm/MeV}$ o $\text{g}\cdot\text{cm}^{-2}\cdot\text{MeV}^{-1}$.
+        </p>
+      </div>
+
+      <div class="card reveal-item card-stretch" data-step="3" style="padding: 8px 12px; flex: 1.0;">
+        <div class="card-label" style="font-size: 11px; margin-bottom: 4px;">Los dos regímenes del modelo</div>
+        <ul class="nice" style="gap: 4px; font-size: 12.5px; margin: 0; padding-left: 12px;">
+          <li style="font-size: 12.5px; padding-left: 16px;">
+            <strong style="color: var(--teal)">1. Régimen Lineal (Bajo $dE/dx$):</strong>
+            Ocurre con electrones rápidos. $k_B \frac{dE}{dx} \ll 1$, resultando en respuesta lineal:
+            <div style="font-family: var(--mono); font-size: 11.5px; color: var(--teal); margin-top: 1px;">$\frac{dL}{dx} \approx S \cdot \frac{dE}{dx}$</div>
+          </li>
+          <li style="font-size: 12.5px; padding-left: 16px;">
+            <strong style="color: var(--red)">2. Régimen de Saturación (Alto $dE/dx$):</strong>
+            Ocurre con partículas lentas/pesadas. $k_B \frac{dE}{dx} \gg 1$, haciendo que la luz se sature:
+            <div style="font-family: var(--mono); font-size: 11.5px; color: var(--red); margin-top: 1px;">$\frac{dL}{dx} \approx \frac{S}{k_B} = \text{constante}$</div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Columna derecha: Gráfica interactiva de Birks -->
+    <div class="reveal-item col-stretch" data-step="1" style="gap: 8px;">
+      <div class="card card-stretch" style="display: flex; flex-direction: column; gap: 8px; min-height: 280px; justify-content: space-between; padding: 10px 14px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0;">
+          <div class="card-label" style="margin-bottom: 0; font-size: 10.5px;">Gráfico Interactivo: La Curva de Birks</div>
+          <div id="birks-badge" class="hud-badge green" style="pointer-events: none; flex-shrink: 0;">
+            Lineal (Ideal)
+          </div>
+        </div>
+        
+        <!-- HUD de Parámetros -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; background: var(--bg3); padding: 6px; border-radius: 8px; border: 1px solid var(--border);">
+          <div style="text-align: center;">
+            <div style="font-size: 8.5px; color: var(--text3); font-family: var(--mono); text-transform: uppercase;">Coeficiente k_B</div>
+            <div id="hud-kb" style="font-size: 12.5px; font-family: var(--mono); color: var(--teal); font-weight: bold; margin-top: 1px;">0.000 g/cm²/MeV</div>
+          </div>
+          <div style="text-align: center; border-left: 1px solid var(--border);">
+            <div style="font-size: 8.5px; color: var(--text3); font-family: var(--mono); text-transform: uppercase;">Estado de Luz</div>
+            <div id="hud-status" style="font-size: 12.5px; font-family: var(--mono); color: var(--teal); font-weight: bold; margin-top: 1px;">Sin Quenching</div>
+          </div>
+        </div>
+
+        <!-- Canvas -->
+        <div class="canvas-stretch-wrapper" style="min-height: 140px;">
+          <canvas id="birks-canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: block; z-index: 3;"></canvas>
+        </div>
+
+        <!-- Slider de Control de k_B -->
+        <div id="kb-controls-container" class="controls-disabled" style="display: flex; flex-direction: column; gap: 4px; background: var(--bg3); padding: 6px 10px; border-radius: 8px; border: 1px solid var(--border); transition: opacity 0.3s;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px;">
+            <span style="font-size: 10.5px; font-family: var(--mono); color: var(--text2);">Ajustar Coeficiente k_B:</span>
+            <span id="kb-slider-val-disp" style="font-size: 11px; font-family: var(--mono); color: var(--teal); font-weight: bold;">0.000</span>
+          </div>
+          <input type="range" id="kb-slider" min="0" max="50" step="1" value="0" style="width: 100%; cursor: pointer;">
+        </div>
+      </div>
+
+      <div class="callout reveal-item" data-step="4" style="padding: 8px 12px; font-size: 13.5px; margin-top: 8px;">
+        <strong>Importante:</strong> Las ecuaciones de Birks muestran que el fotón que "debería haber nacido" se pierde debido al término correctivo en el denominador.
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<div id="nav">
+  <button id="btn-prev">←</button>
+  <div class="nav-dots" id="nav-dots"></div>
+  <span id="nav-counter"></span>
+  <button id="btn-next">→</button>
+</div>
+
+<script src="navigation.js"></script>
+<script>
+(function() {
+  const canvas = document.getElementById('birks-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  
+  let width = 0;
+  let height = 0;
+  let dpr = window.devicePixelRatio || 1;
+
+  // State
+  let kB = 0.0; // g/cm²/MeV
+  let activeStep = 0;
+  let lastStep = -1;
+  let lastKB = -1;
+
+  // Mouse interactivity state
+  let mouseX = -1;
+  let mouseY = -1;
+  let isHovered = false;
+
+  // DOM elements
+  const slider = document.getElementById('kb-slider');
+  const sliderDisp = document.getElementById('kb-slider-val-disp');
+  const hudKB = document.getElementById('hud-kb');
+  const hudStatus = document.getElementById('hud-status');
+  const badge = document.getElementById('birks-badge');
+  const controlsContainer = document.getElementById('kb-controls-container');
+
+  const wrapper = canvas.parentElement;
+  const resizeObserver = new ResizeObserver(entries => {
+    for (let entry of entries) {
+      dpr = window.devicePixelRatio || 1;
+      const rect = wrapper.getBoundingClientRect();
+      width = Math.round(rect.width);
+      height = Math.round(rect.height);
+      
+      canvas.style.width = width + 'px';
+      canvas.style.height = height + 'px';
+      
+      canvas.width = Math.round(width * dpr);
+      canvas.height = Math.round(height * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+  });
+  if (wrapper) {
+    resizeObserver.observe(wrapper);
+  }
+
+  canvas.addEventListener('mousemove', function(e) {
+    const rect = canvas.getBoundingClientRect();
+    mouseX = e.clientX - rect.left;
+    mouseY = e.clientY - rect.top;
+    isHovered = true;
+  });
+
+  canvas.addEventListener('mouseleave', function() {
+    isHovered = false;
+    mouseX = -1;
+    mouseY = -1;
+  });
+
+  if (slider) {
+    slider.addEventListener('input', function() {
+      // 0 to 50 maps to kB from 0.0 to 0.05
+      kB = parseInt(this.value, 10) / 1000;
+      updateUI();
+    });
+  }
+
+  function drawRoundRect(x, y, w, h, r) {
+    if (w < 2 * r) r = w / 2;
+    if (h < 2 * r) r = h / 2;
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+  }
+
+  function updateUI() {
+    if (sliderDisp) sliderDisp.textContent = kB.toFixed(3);
+    if (hudKB) {
+      hudKB.textContent = kB.toFixed(3) + " g/cm²/MeV";
+      if (kB === 0) {
+        hudKB.style.color = "var(--teal)";
+        hudKB.style.textShadow = "0 0 8px rgba(45, 212, 176, 0.45)";
+      } else if (kB < 0.02) {
+        hudKB.style.color = "var(--amber)";
+        hudKB.style.textShadow = "0 0 8px rgba(240, 168, 50, 0.45)";
+      } else {
+        hudKB.style.color = "var(--red)";
+        hudKB.style.textShadow = "0 0 8px rgba(232, 85, 85, 0.45)";
+      }
+    }
+    
+    if (hudStatus) {
+      if (kB === 0) {
+        hudStatus.textContent = "Sin Quenching";
+        hudStatus.style.color = "var(--teal)";
+        hudStatus.style.textShadow = "0 0 8px rgba(45, 212, 176, 0.45)";
+      } else if (kB < 0.015) {
+        hudStatus.textContent = "Quenching Leve";
+        hudStatus.style.color = "#38dfa8";
+        hudStatus.style.textShadow = "0 0 8px rgba(56, 223, 168, 0.45)";
+      } else if (kB < 0.035) {
+        hudStatus.textContent = "Quenching Mod.";
+        hudStatus.style.color = "var(--amber)";
+        hudStatus.style.textShadow = "0 0 8px rgba(240, 168, 50, 0.45)";
+      } else {
+        hudStatus.textContent = "Quenching Crítico";
+        hudStatus.style.color = "var(--red)";
+        hudStatus.style.textShadow = "0 0 8px rgba(232, 85, 85, 0.45)";
+      }
+    }
+
+    if (badge) {
+      if (kB === 0) {
+        badge.textContent = "Lineal (Ideal)";
+        badge.className = "hud-badge green";
+      } else if (kB < 0.02) {
+        badge.textContent = "⚠️ Mod. Curvado";
+        badge.className = "hud-badge amber";
+      } else {
+        badge.textContent = "🚨 Fuerte Quenching";
+        badge.className = "hud-badge red";
+      }
+    }
+  }
+
+  updateUI();
+
+  // Animation loop
+  function draw(step) {
+    ctx.clearRect(0, 0, width, height);
+
+    // Margins
+    const mLeft = 48;
+    const mRight = 16;
+    const mTop = 28;
+    const mBottom = 40;
+
+    const graphWidth = width - mLeft - mRight;
+    const graphHeight = height - mTop - mBottom;
+
+    // Draw background subtle radial glow (shifts based on kB)
+    const radialGlow = ctx.createRadialGradient(
+      width / 2, height / 2, 10,
+      width / 2, height / 2, Math.max(width, height) / 1.3
+    );
+    if (kB === 0) {
+      radialGlow.addColorStop(0, 'rgba(45, 212, 176, 0.08)');
+      radialGlow.addColorStop(0.5, 'rgba(45, 212, 176, 0.02)');
+    } else if (kB < 0.025) {
+      radialGlow.addColorStop(0, 'rgba(240, 168, 50, 0.07)');
+      radialGlow.addColorStop(0.5, 'rgba(45, 212, 176, 0.01)');
+    } else {
+      radialGlow.addColorStop(0, 'rgba(232, 85, 85, 0.07)');
+      radialGlow.addColorStop(0.5, 'rgba(240, 168, 50, 0.01)');
+    }
+    radialGlow.addColorStop(1, 'rgba(0, 0, 0, 0)');
+    ctx.fillStyle = radialGlow;
+    ctx.fillRect(0, 0, width, height);
+
+    // Corner telemetries
+    ctx.save();
+    ctx.font = '500 11px DM Mono, monospace';
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+    ctx.textBaseline = 'top';
+    ctx.textAlign = 'left';
+    ctx.fillText('[TELEM: BIRKS_CORE_RUNNING]', Math.round(mLeft + 4), 8);
+    ctx.textAlign = 'right';
+    ctx.fillText('[RANGE_LET: 0-15 MeV/(g/cm²)]', Math.round(width - mRight - 4), 8);
+    ctx.restore();
+
+    // Draw grid lines
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.025)';
+    ctx.lineWidth = 0.8;
+    const gridXValues = [];
+    const gridYValues = [];
+    for (let x_g = mLeft; x_g <= width - mRight; x_g += graphWidth / 5) {
+      gridXValues.push(x_g);
+      ctx.beginPath();
+      ctx.moveTo(Math.round(x_g), Math.round(mTop));
+      ctx.lineTo(Math.round(x_g), Math.round(height - mBottom));
+      ctx.stroke();
+    }
+    for (let y_g = mTop; y_g <= height - mBottom; y_g += graphHeight / 4) {
+      gridYValues.push(y_g);
+      ctx.beginPath();
+      ctx.moveTo(Math.round(mLeft), Math.round(y_g));
+      ctx.lineTo(Math.round(width - mRight), Math.round(y_g));
+      ctx.stroke();
+    }
+
+    // Draw small '+' cross hairs at grid intersections for telemetry look
+    ctx.save();
+    ctx.strokeStyle = 'rgba(45, 212, 176, 0.08)';
+    ctx.lineWidth = 0.8;
+    gridXValues.forEach(gx => {
+      gridYValues.forEach(gy => {
+        const rGx = Math.round(gx);
+        const rGy = Math.round(gy);
+        ctx.beginPath();
+        ctx.moveTo(rGx - 2.5, rGy);
+        ctx.lineTo(rGx + 2.5, rGy);
+        ctx.moveTo(rGx, rGy - 2.5);
+        ctx.lineTo(rGx, rGy + 2.5);
+        ctx.stroke();
+      });
+    });
+    ctx.restore();
+
+    // Physics parameters for plot
+    const S = 1.0;
+    const maxDEDX = 15;
+    const maxDLDX = 15;
+
+    // Helper conversion functions
+    function toPixelX(dedx) {
+      return mLeft + (dedx / maxDEDX) * graphWidth;
+    }
+    function toPixelY(dldx) {
+      return height - mBottom - (dldx / maxDLDX) * graphHeight;
+    }
+    function toValueX(px) {
+      return ((px - mLeft) / graphWidth) * maxDEDX;
+    }
+
+    // Ticks and Labels on X Axis (0, 5, 10, 15)
+    ctx.font = '500 12px DM Mono, monospace';
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    const xTicks = [0, 5, 10, 15];
+    xTicks.forEach(tick => {
+      const px = Math.round(toPixelX(tick));
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.35)';
+      ctx.beginPath();
+      ctx.moveTo(px, Math.round(height - mBottom));
+      ctx.lineTo(px, Math.round(height - mBottom + 4));
+      ctx.stroke();
+      ctx.fillText(tick, px, Math.round(height - mBottom + 6));
+    });
+
+    // Ticks and Labels on Y Axis (5, 10, 15)
+    ctx.font = '500 12px DM Mono, monospace';
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    const yTicks = [5, 10, 15];
+    yTicks.forEach(tick => {
+      const py = Math.round(toPixelY(tick));
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.35)';
+      ctx.beginPath();
+      ctx.moveTo(Math.round(mLeft), py);
+      ctx.lineTo(Math.round(mLeft - 4), py);
+      ctx.stroke();
+      ctx.fillText(tick, Math.round(mLeft - 7), py);
+    });
+
+    // Draw coordinate axes
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.moveTo(Math.round(mLeft), Math.round(mTop - 5));
+    ctx.lineTo(Math.round(mLeft), Math.round(height - mBottom));
+    ctx.lineTo(Math.round(width - mRight + 5), Math.round(height - mBottom));
+    ctx.stroke();
+
+    // Draw axis arrows
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+    // Y arrow
+    ctx.beginPath();
+    ctx.moveTo(Math.round(mLeft - 2.5), Math.round(mTop - 5));
+    ctx.lineTo(Math.round(mLeft + 2.5), Math.round(mTop - 5));
+    ctx.lineTo(Math.round(mLeft), Math.round(mTop - 9));
+    ctx.closePath();
+    ctx.fill();
+    // X arrow
+    ctx.beginPath();
+    ctx.moveTo(Math.round(width - mRight + 5), Math.round(height - mBottom - 2.5));
+    ctx.lineTo(Math.round(width - mRight + 5), Math.round(height - mBottom + 2.5));
+    ctx.lineTo(Math.round(width - mRight + 9), Math.round(height - mBottom));
+    ctx.closePath();
+    ctx.fill();
+
+    // Axis Labels
+    ctx.font = '500 12px DM Mono, monospace';
+    ctx.fillStyle = '#ffffff';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('dL/dx', Math.round(mLeft), Math.round(mTop - 15));
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('dE/dx (Poder de frenado / LET)', Math.round(mLeft + graphWidth/2), Math.round(height - mBottom + 22));
+
+    // Draw Regimen zones shading (Step >= 3)
+    if (step >= 3) {
+      // Linear Zone (0 to 3.5)
+      const linearGrad = ctx.createLinearGradient(0, mTop, 0, height - mBottom);
+      linearGrad.addColorStop(0, 'rgba(45, 212, 176, 0.08)');
+      linearGrad.addColorStop(1, 'rgba(45, 212, 176, 0.005)');
+      ctx.fillStyle = linearGrad;
+      ctx.fillRect(Math.round(toPixelX(0)), Math.round(toPixelY(maxDLDX)), Math.round(toPixelX(3.5) - toPixelX(0)), Math.round(graphHeight));
+
+      // Draw dashed border for Linear Zone
+      ctx.save();
+      ctx.strokeStyle = 'rgba(45, 212, 176, 0.2)';
+      ctx.setLineDash([2, 4]);
+      ctx.beginPath();
+      ctx.moveTo(Math.round(toPixelX(3.5)), Math.round(mTop));
+      ctx.lineTo(Math.round(toPixelX(3.5)), Math.round(height - mBottom));
+      ctx.stroke();
+      ctx.restore();
+      
+      // Saturation Zone (8.5 to 15)
+      const satGrad = ctx.createLinearGradient(0, mTop, 0, height - mBottom);
+      satGrad.addColorStop(0, 'rgba(232, 85, 85, 0.08)');
+      satGrad.addColorStop(1, 'rgba(232, 85, 85, 0.005)');
+      ctx.fillStyle = satGrad;
+      ctx.fillRect(Math.round(toPixelX(8.5)), Math.round(toPixelY(maxDLDX)), Math.round(toPixelX(15) - toPixelX(8.5)), Math.round(graphHeight));
+
+      // Draw dashed border for Saturation Zone
+      ctx.save();
+      ctx.strokeStyle = 'rgba(232, 85, 85, 0.2)';
+      ctx.setLineDash([2, 4]);
+      ctx.beginPath();
+      ctx.moveTo(Math.round(toPixelX(8.5)), Math.round(mTop));
+      ctx.lineTo(Math.round(toPixelX(8.5)), Math.round(height - mBottom));
+      ctx.stroke();
+      ctx.restore();
+
+      // Zone Labels
+      ctx.font = '500 12px DM Mono, monospace';
+      
+      // Linear Label
+      ctx.fillStyle = '#38dfa8';
+      ctx.textAlign = 'left';
+      ctx.fillText('RÉGIMEN LINEAL', Math.round(toPixelX(0.6)), Math.round(mTop + 16));
+      
+      // Saturation Label
+      ctx.fillStyle = '#ff6b6b';
+      ctx.textAlign = 'right';
+      ctx.fillText('SATURACIÓN', Math.round(toPixelX(14.4)), Math.round(mTop + 16));
+    }
+
+    // Create curve gradient
+    const curveGrad = ctx.createLinearGradient(mLeft, 0, width - mRight, 0);
+    curveGrad.addColorStop(0.0, '#2dd4b0'); // low LET (linear cian/teal)
+    curveGrad.addColorStop(0.35, '#38dfa8');
+    curveGrad.addColorStop(0.65, '#f0a832'); // moderate quenching (amber)
+    curveGrad.addColorStop(1.0, '#e85555');    // severe quenching (red)
+
+    // Draw ideal linear dashed curve (for reference when kB > 0)
+    if (kB > 0.001) {
+      ctx.save();
+      ctx.strokeStyle = 'rgba(45, 212, 176, 0.22)';
+      ctx.setLineDash([3, 4]);
+      ctx.lineWidth = 1.0;
+      ctx.beginPath();
+      ctx.moveTo(Math.round(toPixelX(0)), Math.round(toPixelY(0)));
+      const endVal = Math.min(maxDEDX, maxDLDX);
+      ctx.lineTo(Math.round(toPixelX(endVal)), Math.round(toPixelY(endVal)));
+      ctx.stroke();
+
+      // Text label along the line
+      ctx.save();
+      const labelDEDX = 7.5;
+      const px = Math.round(toPixelX(labelDEDX));
+      const py = Math.round(toPixelY(labelDEDX));
+      ctx.translate(px, py);
+      const angle = -Math.atan2(graphHeight, graphWidth);
+      ctx.rotate(angle);
+      ctx.fillStyle = 'rgba(45, 212, 176, 0.85)';
+      ctx.font = '500 11px DM Mono, monospace';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'bottom';
+      ctx.fillText('RESPUESTA IDEAL (Sin Quenching)', 0, -4);
+      ctx.restore();
+      ctx.restore();
+    }
+
+    // Draw Asymptote line (dL/dx = S/kB) if kB > 0 and the asymptote is within our graph area
+    if (kB > 0.01) {
+      const asymptoteY = S / kB;
+      if (asymptoteY < maxDLDX) {
+        const py = Math.round(toPixelY(asymptoteY));
+
+        ctx.save();
+        // Glow underlay
+        ctx.strokeStyle = 'rgba(232, 85, 85, 0.25)';
+        ctx.lineWidth = 3.0;
+        ctx.shadowColor = 'var(--red)';
+        ctx.shadowBlur = 6;
+        ctx.beginPath();
+        ctx.moveTo(Math.round(mLeft), py);
+        ctx.lineTo(Math.round(width - mRight), py);
+        ctx.stroke();
+
+        // Sharp dotted core
+        ctx.strokeStyle = 'var(--red)';
+        ctx.setLineDash([3, 4]);
+        ctx.lineWidth = 1.2;
+        ctx.shadowBlur = 0;
+        ctx.beginPath();
+        ctx.moveTo(Math.round(mLeft), py);
+        ctx.lineTo(Math.round(width - mRight), py);
+        ctx.stroke();
+
+        // Text label with background box for legibility
+        ctx.font = '500 12px DM Mono, monospace';
+        const labelText = `LÍMITE DE SATURACIÓN (S/k_B) = ${(asymptoteY).toFixed(2)}`;
+        const textW = ctx.measureText(labelText).width;
+        ctx.fillStyle = 'rgba(10, 14, 18, 0.95)';
+        ctx.fillRect(Math.round(mLeft + 8), Math.round(py - 19), Math.round(textW + 10), 16);
+        
+        ctx.fillStyle = '#ff6b6b';
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(labelText, Math.round(mLeft + 13), Math.round(py - 11));
+        ctx.restore();
+      }
+    }
+
+    // Draw Birks Curve in three passes (Glow, Medium, Sharp Core)
+    // Pass 1: Neon Glow underlay
+    ctx.save();
+    ctx.strokeStyle = curveGrad;
+    ctx.lineWidth = 5.5;
+    ctx.shadowBlur = 15;
+    if (kB < 0.005) {
+      ctx.shadowColor = 'rgba(45, 212, 176, 0.75)';
+    } else if (kB < 0.02) {
+      ctx.shadowColor = 'rgba(240, 168, 50, 0.7)';
+    } else {
+      ctx.shadowColor = 'rgba(232, 85, 85, 0.7)';
+    }
+    ctx.globalAlpha = 0.35;
+    ctx.beginPath();
+    let first = true;
+    for (let dedx = 0; dedx <= maxDEDX; dedx += 0.15) {
+      const dldx = (S * dedx) / (1 + kB * dedx);
+      const px = toPixelX(dedx);
+      const py = toPixelY(dldx);
+      if (first) {
+        ctx.moveTo(px, py);
+        first = false;
+      } else {
+        ctx.lineTo(px, py);
+      }
+    }
+    ctx.stroke();
+    ctx.restore();
+
+    // Pass 2: Medium glowing core
+    ctx.save();
+    ctx.strokeStyle = curveGrad;
+    ctx.lineWidth = 3.2;
+    ctx.shadowBlur = 6;
+    if (kB < 0.005) {
+      ctx.shadowColor = 'rgba(45, 212, 176, 0.85)';
+    } else if (kB < 0.02) {
+      ctx.shadowColor = 'rgba(240, 168, 50, 0.8)';
+    } else {
+      ctx.shadowColor = 'rgba(232, 85, 85, 0.8)';
+    }
+    ctx.beginPath();
+    first = true;
+    for (let dedx = 0; dedx <= maxDEDX; dedx += 0.15) {
+      const dldx = (S * dedx) / (1 + kB * dedx);
+      const px = toPixelX(dedx);
+      const py = toPixelY(dldx);
+      if (first) {
+        ctx.moveTo(px, py);
+        first = false;
+      } else {
+        ctx.lineTo(px, py);
+      }
+    }
+    ctx.stroke();
+    ctx.restore();
+
+    // Pass 3: Crisp, sharp white/light-cyan core
+    ctx.save();
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.88)';
+    ctx.lineWidth = 1.1;
+    ctx.beginPath();
+    first = true;
+    for (let dedx = 0; dedx <= maxDEDX; dedx += 0.15) {
+      const dldx = (S * dedx) / (1 + kB * dedx);
+      const px = toPixelX(dedx);
+      const py = toPixelY(dldx);
+      if (first) {
+        ctx.moveTo(px, py);
+        first = false;
+      } else {
+        ctx.lineTo(px, py);
+      }
+    }
+    ctx.stroke();
+    ctx.restore();
+
+    // Particles markers with pulse & ripples (step >= 3)
+    if (step >= 3) {
+      const particles = [
+        { name: 'e⁻ (Electrón)', dedx: 1.5, color: '#2dd4b0', r: 4.5 },
+        { name: 'p⁺ (Protón)', dedx: 6.0, color: '#f0a832', r: 5.5 },
+        { name: 'α (Alfa)', dedx: 12.0, color: '#e85555', r: 7.0 }
+      ];
+
+      particles.forEach(p => {
+        const dldx = (S * p.dedx) / (1 + kB * p.dedx);
+        const px = Math.round(toPixelX(p.dedx));
+        const py = Math.round(toPixelY(dldx));
+
+        // Sinusoidal pulsing scale out of phase based on dedx
+        const pulse = Math.sin(Date.now() / 200 + p.dedx * 1.5) * 0.18 + 1.0;
+        const radius = Math.round(p.r * pulse);
+
+        // Draw outer sonar expanding ring
+        const sonarElapsed = (Date.now() / 1500 + p.dedx * 0.3) % 1.0;
+        const sonarRadius = Math.round(p.r * (1 + sonarElapsed * 1.4));
+        const sonarOpacity = Math.max(0, 1 - sonarElapsed) * 0.45;
+
+        ctx.save();
+        ctx.strokeStyle = p.color;
+        ctx.globalAlpha = sonarOpacity;
+        ctx.lineWidth = 0.8;
+        ctx.beginPath();
+        ctx.arc(px, py, sonarRadius, 0, 2 * Math.PI);
+        ctx.stroke();
+        ctx.restore();
+
+        ctx.save();
+        // 1. Draw outer pulsing shadow/halo
+        ctx.fillStyle = p.color;
+        ctx.globalAlpha = 0.15;
+        ctx.beginPath();
+        ctx.arc(px, py, Math.round(radius * 2.2), 0, 2 * Math.PI);
+        ctx.fill();
+        
+        // 2. Draw outer ring
+        ctx.globalAlpha = 0.5;
+        ctx.strokeStyle = p.color;
+        ctx.lineWidth = 1.0;
+        ctx.beginPath();
+        ctx.arc(px, py, Math.round(radius * 1.35), 0, 2 * Math.PI);
+        ctx.stroke();
+
+        // 3. Draw filled core with shadow
+        ctx.globalAlpha = 1.0;
+        ctx.fillStyle = p.color;
+        ctx.shadowColor = p.color;
+        ctx.shadowBlur = 8;
+        ctx.beginPath();
+        ctx.arc(px, py, Math.round(radius * 0.85), 0, 2 * Math.PI);
+        ctx.fill();
+
+        // 4. White center core
+        ctx.shadowBlur = 0;
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(px, py, Math.round(radius * 0.3), 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.restore();
+
+        // Label above marker with dark backdrop for high contrast
+        ctx.save();
+        ctx.font = '500 12px DM Mono, monospace';
+        const textWidth = ctx.measureText(p.name).width;
+        
+        ctx.fillStyle = 'rgba(10, 14, 18, 0.95)';
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+        ctx.lineWidth = 1.0;
+        
+        // Draw small rounded border for marker labels
+        const labelBoxW = Math.round(textWidth + 12);
+        const labelBoxH = 20;
+        const labelBoxX = Math.round(px - labelBoxW / 2);
+        const labelBoxY = Math.round(py - radius - 24);
+        
+        drawRoundRect(labelBoxX, labelBoxY, labelBoxW, labelBoxH, 4);
+        ctx.fill();
+        ctx.stroke();
+        
+        ctx.fillStyle = '#ffffff';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(p.name, px, Math.round(labelBoxY + labelBoxH / 2));
+        ctx.restore();
+      });
+    }
+
+    // Draw Interactive Crosshair & Tooltip Box
+    if (isHovered && mouseX >= mLeft && mouseX <= width - mRight && mouseY >= mTop && mouseY <= height - mBottom) {
+      const hoveredValX = toValueX(mouseX);
+      const dldx = (S * hoveredValX) / (1 + kB * hoveredValX);
+      const curvePx = toPixelX(hoveredValX);
+      const curvePy = toPixelY(dldx);
+
+      // Draw dotted crosshair Snapped to the curve
+      ctx.save();
+      ctx.strokeStyle = 'rgba(45, 212, 176, 0.3)';
+      ctx.setLineDash([2, 3]);
+      ctx.lineWidth = 0.8;
+      ctx.beginPath();
+      // Vertical crosshair
+      ctx.moveTo(Math.round(curvePx), Math.round(mTop));
+      ctx.lineTo(Math.round(curvePx), Math.round(height - mBottom));
+      // Horizontal crosshair
+      ctx.moveTo(Math.round(mLeft), Math.round(curvePy));
+      ctx.lineTo(Math.round(width - mRight), Math.round(curvePy));
+      ctx.stroke();
+      ctx.restore();
+
+      // Highlight point on the curve
+      ctx.save();
+      const pulseScale = 1 + 0.25 * Math.sin(Date.now() / 150);
+      const activeColor = (kB === 0) ? '#2dd4b0' : (kB < 0.025 ? '#f0a832' : '#e85555');
+      ctx.fillStyle = activeColor;
+      ctx.shadowColor = activeColor;
+      ctx.shadowBlur = 10;
+      ctx.beginPath();
+      ctx.arc(Math.round(curvePx), Math.round(curvePy), 5.5 * pulseScale, 0, 2 * Math.PI);
+      ctx.fill();
+
+      ctx.shadowBlur = 0;
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.arc(Math.round(curvePx), Math.round(curvePy), 2.2, 0, 2 * Math.PI);
+      ctx.fill();
+      ctx.restore();
+
+      // Calculate measurements
+      const idealDLDX = S * hoveredValX;
+      const quenchingLoss = idealDLDX > 0 ? ((1 - dldx / idealDLDX) * 100) : 0;
+      
+      let regimeText = 'Lineal';
+      let regimeColor = '#2dd4b0';
+      if (hoveredValX > 8.5) {
+        regimeText = 'Saturación';
+        regimeColor = '#e85555';
+      } else if (hoveredValX > 3.5) {
+        regimeText = 'Transición';
+        regimeColor = '#f0a832';
+      }
+
+      // Render sleek glassmorphic physics HUD tooltip box
+      const boxW = 180;
+      const boxH = 100;
+      let boxX = curvePx + 14;
+      if (boxX + boxW > width - mRight) {
+        boxX = curvePx - boxW - 14;
+      }
+      let boxY = curvePy - boxH / 2;
+      if (boxY < mTop) boxY = mTop + 2;
+      if (boxY + boxH > height - mBottom) boxY = height - mBottom - boxH - 2;
+
+      boxX = Math.round(boxX);
+      boxY = Math.round(boxY);
+
+      ctx.save();
+      ctx.fillStyle = 'rgba(9, 13, 16, 0.95)';
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)';
+      ctx.lineWidth = 1.0;
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.7)';
+      ctx.shadowBlur = 12;
+
+      // Rounded glass box
+      drawRoundRect(boxX, boxY, boxW, boxH, 6);
+      ctx.fill();
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+
+      // Small header line in tooltip
+      ctx.font = '500 10px DM Mono, monospace';
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.65)';
+      ctx.textBaseline = 'top';
+      ctx.fillText('TELEMETRÍA: MODELO BIRKS', Math.round(boxX + 12), Math.round(boxY + 12));
+
+      // Info text
+      ctx.font = '500 12px DM Mono, monospace';
+      ctx.textAlign = 'left';
+
+      // Line 1: dE/dx
+      ctx.fillStyle = '#b0acab';
+      ctx.fillText('dE/dx (LET) :', Math.round(boxX + 12), Math.round(boxY + 28));
+      ctx.fillStyle = '#ffffff';
+      ctx.fillText(`${hoveredValX.toFixed(2)} MeV`, Math.round(boxX + 98), Math.round(boxY + 28));
+
+      // Line 2: dL/dx
+      ctx.fillStyle = '#b0acab';
+      ctx.fillText('dL/dx (Luz) :', Math.round(boxX + 12), Math.round(boxY + 44));
+      ctx.fillStyle = activeColor;
+      ctx.fillText(`${dldx.toFixed(2)} arb.`, Math.round(boxX + 98), Math.round(boxY + 44));
+
+      // Line 3: Quenching Loss
+      ctx.fillStyle = '#b0acab';
+      ctx.fillText('Pérdida Q.  :', Math.round(boxX + 12), Math.round(boxY + 60));
+      ctx.fillStyle = quenchingLoss === 0 ? '#2dd4b0' : (quenchingLoss < 25 ? '#2dd4b0' : (quenchingLoss < 50 ? '#f0a832' : '#e85555'));
+      ctx.fillText(`-${quenchingLoss.toFixed(1)}%`, Math.round(boxX + 98), Math.round(boxY + 60));
+
+      // Line 4: Regime
+      ctx.fillStyle = '#b0acab';
+      ctx.fillText('Régimen     :', Math.round(boxX + 12), Math.round(boxY + 76));
+      ctx.fillStyle = regimeColor;
+      ctx.fillText(regimeText, Math.round(boxX + 98), Math.round(boxY + 76));
+
+      ctx.restore();
+    }
+  }
+
+  function updateSimulationState(step) {
+    if (step === lastStep) return;
+    lastStep = step;
+
+    if (step >= 4) {
+      if (controlsContainer) controlsContainer.classList.remove('controls-disabled');
+      if (slider) slider.disabled = false;
+    } else {
+      if (controlsContainer) controlsContainer.classList.add('controls-disabled');
+      if (slider) slider.disabled = true;
+
+      // Set preset kB values based on step
+      if (step === 0 || step === 1) {
+        kB = 0.000;
+      } else if (step === 2) {
+        kB = 0.015;
+      } else if (step === 3) {
+        kB = 0.025;
+      }
+      if (slider) slider.value = Math.round(kB * 1000);
+      updateUI();
+    }
+  }
+
+  function animate() {
+    const step = (typeof currentStep !== 'undefined') ? currentStep : 1;
+    updateSimulationState(step);
+    draw(step);
+    requestAnimationFrame(animate);
+  }
+
+  animate();
+})();
+</script>
+<script src="navigation.js"></script>
+</body>
+</html>

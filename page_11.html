@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quenching en detectores de centelleo plástico - La Ecuación FRET</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div id="deck">
+
+<div class="slide" id="slide-11">
+  <div class="slide-num">11 / 24</div>
+  <div class="slide-eyebrow">Capítulo 4 · Mecanismo molecular</div>
+  <h2 class="slide-title">La Ecuación <em>FRET</em></h2>
+  <p class="slide-subtitle">La transferencia no radiativa se rige por una ley cuántica hiper-local.</p>
+  <div class="persona-row">
+    <span class="persona-tag pt-marcos">Fundamento Teórico</span>
+  </div>
+
+  <div class="two-col stretch">
+    <div class="col-stretch" style="gap: 14px;">
+      <div class="card card-teal reveal-item" data-step="1" style="flex: 1; display: flex; flex-direction: column; justify-content: flex-start; min-height: min-content;">
+        <div class="card-label">La Probabilidad de Transferencia</div>
+        <p style="font-size: 15px; color: var(--text2); line-height: 1.5; margin-bottom: 8px;">
+          La probabilidad de que una molécula excitada transfiera su energía de forma no radiativa a otra vecina está dada por:
+        </p>
+        <div class="eq-block" style="font-size: 22.5px; padding: 12px; margin: 6px 0; text-align: center;">
+          $$p(r) = \frac{1}{1 + \left(\frac{r}{R_f}\right)^6}$$
+        </div>
+        <p style="font-size: 13px; color: var(--text3); margin-top: 4px;">
+          Donde $r$ es la distancia espacial y $R_f$ es el radio de Förster.
+        </p>
+      </div>
+
+      <div class="card card-amber reveal-item" data-step="2" style="flex: 1; display: flex; flex-direction: column; justify-content: flex-start; min-height: min-content;">
+        <div class="card-label">Radio de Förster (R_f)</div>
+        <p style="font-size: 15px; color: var(--text2); line-height: 1.5;">
+          Es la distancia crítica a la cual la probabilidad de transferencia es exactamente del **50%**. En centelleadores orgánicos comunes, $R_f$ se encuentra en un rango estrecho entre **2 y 6 nanómetros**.
+        </p>
+      </div>
+    </div>
+
+    <div class="reveal-item col-stretch" data-step="3" style="gap: 14px;">
+      <div class="card card-red" style="padding: 16px; flex: 1; display: flex; flex-direction: column; justify-content: flex-start; min-height: min-content;">
+        <div class="card-label">Dependencia a la sexta potencia ($1/r^6$)</div>
+        <p style="font-size: 15px; color: var(--text2); line-height: 1.5; margin-bottom: 8px;">
+          La potencia de orden 6 hace que el efecto sea de alcance extremadamente corto, actuando virtualmente por "contacto nanométrico":
+        </p>
+        <ul class="nice" style="gap: 6px; font-size: 14px;">
+          <li>A distancia $r = R_f$, la probabilidad de pérdida es $p = 50\%$.</li>
+          <li>A distancia doble $r = 2 R_f$, la probabilidad cae a **menos del 2%** ($1/65 \approx 1.5\%$).</li>
+        </ul>
+        <p style="font-size: 13px; color: var(--text3); margin-top: 8px; font-style: italic;">
+          Fuera de la vecindad inmediata de pocos nanómetros, el efecto FRET es completamente despreciable.
+        </p>
+      </div>
+
+      <div class="callout red reveal-item" data-step="4">
+        <strong>Punto clave:</strong> El quenching es un fenómeno que se activa sólo cuando los depósitos de energía están confinados en volúmenes del tamaño de macromoléculas.
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<div id="nav">
+  <button id="btn-prev">←</button>
+  <div class="nav-dots" id="nav-dots"></div>
+  <span id="nav-counter"></span>
+  <button id="btn-next">→</button>
+</div>
+
+<script src="navigation.js"></script>
+</body>
+</html>

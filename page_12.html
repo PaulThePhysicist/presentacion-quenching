@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quenching en detectores de centelleo plástico - Quenching como Parámetro de Diseño</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+  #btn-fire:hover {
+    background: rgba(45, 212, 176, 0.22) !important;
+    border-color: rgba(45, 212, 176, 0.5) !important;
+    box-shadow: 0 0 10px rgba(45, 212, 176, 0.15);
+    color: #ffffff !important;
+  }
+  #btn-fire:active {
+    transform: scale(0.98);
+  }
+  #btn-auto.active {
+    background: rgba(45, 212, 176, 0.18) !important;
+    border-color: rgba(45, 212, 176, 0.6) !important;
+    color: var(--teal) !important;
+    box-shadow: 0 0 10px rgba(45, 212, 176, 0.2);
+    font-weight: bold;
+  }
+  #btn-auto:hover {
+    background: var(--bg3) !important;
+    border-color: var(--border2) !important;
+    color: #ffffff !important;
+  }
+  #btn-auto.active:hover {
+    background: rgba(45, 212, 176, 0.25) !important;
+    border-color: rgba(45, 212, 176, 0.8) !important;
+    color: #ffffff !important;
+  }
+  #btn-auto:active {
+    transform: scale(0.98);
+  }
+  #btn-reset:hover {
+    background: var(--bg3) !important;
+    border-color: var(--border2) !important;
+    color: #ffffff !important;
+  }
+  #btn-reset:active {
+    transform: scale(0.98);
+  }
+  #fret-rf {
+    width: 100%;
+  }
+  #fret-rf::-webkit-slider-thumb {
+    transition: background 0.15s ease, box-shadow 0.15s ease;
+  }
+  #fret-rf::-webkit-slider-thumb:hover {
+    background: var(--amber) !important;
+    box-shadow: 0 0 8px rgba(240, 168, 50, 0.6) !important;
+  }
+  #fret-density {
+    transition: border-color 0.2s, background-color 0.2s;
+  }
+  #fret-density:hover {
+    border-color: var(--teal2) !important;
+    background-color: var(--bg3) !important;
+  }
+  @keyframes flashGreen {
+    0% { background: rgba(45, 212, 176, 0.35); box-shadow: 0 0 12px rgba(45, 212, 176, 0.25); }
+    100% { background: rgba(255, 255, 255, 0.02); box-shadow: none; }
+  }
+  @keyframes flashRed {
+    0% { background: rgba(232, 85, 85, 0.3); box-shadow: 0 0 12px rgba(232, 85, 85, 0.2); }
+    100% { background: rgba(255, 255, 255, 0.02); box-shadow: none; }
+  }
+  .stat-flash-green {
+    animation: flashGreen 0.6s ease-out;
+  }
+  .stat-flash-red {
+    animation: flashRed 0.6s ease-out;
+  }
+</style>
+</head>
+<body>
+
+<div id="deck">
+
+<div class="slide" id="slide-12">
+  <div class="slide-num">12 / 24</div>
+  <div class="slide-eyebrow">Capítulo 4 · Mecanismo molecular</div>
+  <h2 class="slide-title">Quenching como <em>Parámetro de Diseño</em></h2>
+  <p class="slide-subtitle">Al emerger de la microestructura molecular, el quenching no es un defecto fijo sino una variable controlable.</p>
+  <div class="persona-row">
+    <span class="persona-tag pt-marcos">Ventaja Blue Physics</span>
+    <span class="persona-tag pt-camilo">Implementación Monte Carlo</span>
+  </div>
+
+  <div class="two-col" style="flex: 1; min-height: 0;">
+    <!-- COLUMNA IZQUIERDA: Concepto de kB emergente -->
+    <div style="display: flex; flex-direction: column; gap: 12px; height: 100%;">
+      <div class="card card-teal reveal-item" data-step="1" style="flex: 1; display: flex; flex-direction: column; justify-content: flex-start; min-height: min-content;">
+        <div class="card-label">kB como propiedad emergente</div>
+        <p style="font-size: 14.5px; color: var(--text2); line-height: 1.5;">
+          En el modelo FRET, el coeficiente $k_B$ no es una constante inmutable. Emerge de:
+        </p>
+        <ul class="nice" style="gap: 4px; font-size: 13.5px; margin-top: 6px;">
+          <li>La concentración del dopante fluoróforo en el polímero.</li>
+          <li>La eficiencia de transferencia entre la matriz y el dopante.</li>
+          <li>La distribución geométrica de los centros de centelleo.</li>
+        </ul>
+      </div>
+
+      <div class="card card-amber reveal-item" data-step="2" style="flex: 1; display: flex; flex-direction: column; justify-content: flex-start; min-height: min-content;">
+        <div class="card-label">Diseño racional del detector</div>
+        <p style="font-size: 14.5px; color: var(--text2); line-height: 1.5;">
+          Alterar la formulación química del centelleador modifica el radio de Förster $R_f$. Esto nos permite ajustar la susceptibilidad al quenching para maximizar la auto-compensación del detector en haces clínicos.
+        </p>
+      </div>
+
+      <div class="callout reveal-item" data-step="3" style="font-size: 13.5px; flex: 0.8; display: flex; align-items: center; min-height: min-content; margin-top: 0;">
+        <div>
+          <strong>Importante:</strong> No se trata de fabricar a ciegas. Simular la microestructura molecular nos permite diseñar el material con el quenching óptimo antes de ir al laboratorio.
+        </div>
+      </div>
+    </div>
+
+    <!-- COLUMNA DERECHA: Simulador interactivo FRET -->
+    <div class="reveal-item" data-step="4" style="display: flex; flex-direction: column; gap: 10px; height: 100%;">
+      <div class="card" style="padding: 10px 14px; display: flex; flex-direction: column; gap: 8px; flex: 1; min-height: 380px;">
+        <div class="card-label">Simulador Molecular FRET</div>
+        
+        <!-- Controles -->
+        <div style="display: flex; flex-direction: column; gap: 8px; background: var(--bg3); padding: 8px; border-radius: 6px; border: 1px solid var(--border);">
+          <div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 10px;">
+            <div style="display: flex; flex-direction: column; gap: 4px;">
+              <label style="font-size: 10.5px; font-family: var(--mono); color: var(--text3);">Partícula incidente:</label>
+              <select id="fret-density" style="background: var(--bg4); color: var(--text2); border: 1px solid var(--border); border-radius: 4px; font-size: 11px; padding: 2px 4px; font-family: var(--mono); outline: none; cursor: pointer; height: 24px;">
+                <option value="low">e⁻ 1 MeV (Baja dE/dx, Lineal)</option>
+                <option value="high">e⁻ 10 keV (Alta dE/dx, Quenching)</option>
+              </select>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 4px;">
+              <label style="font-size: 10.5px; font-family: var(--mono); color: var(--text3); display: flex; justify-content: space-between;">
+                <span>Radio R_f:</span> <span id="fret-rf-val" style="color: var(--amber);">4.0 nm</span>
+              </label>
+              <input type="range" id="fret-rf" min="2.0" max="6.0" step="0.5" value="4.0" style="cursor: pointer; height: 20px;">
+            </div>
+          </div>
+          <div style="display: flex; gap: 6px;">
+            <button id="btn-fire" style="flex: 1.5; height: 24px; padding: 0; background: var(--teal-dim); border: 1px solid rgba(45,212,176,0.3); border-radius: 4px; color: var(--teal); font-family: var(--sans); font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.2s;">⚡ Disparar</button>
+            <button id="btn-auto" style="flex: 1.8; height: 24px; padding: 0; background: var(--bg4); border: 1px solid var(--border); border-radius: 4px; color: var(--text2); font-family: var(--sans); font-size: 11px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 4px;">🔄 Auto-disparo</button>
+            <button id="btn-reset" style="flex: 1.2; height: 24px; padding: 0; background: var(--bg4); border: 1px solid var(--border); border-radius: 4px; color: var(--text2); font-family: var(--sans); font-size: 11px; cursor: pointer; transition: all 0.2s;">Reiniciar</button>
+          </div>
+        </div>
+
+        <!-- Canvas -->
+        <div style="position: relative; flex: 1; min-height: 180px; max-height: 400px; background: #080a0b; border-radius: 6px; border: 1px solid var(--border); overflow: hidden;">
+          <canvas id="mol-canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: block;"></canvas>
+          <!-- Leyenda Química HUD -->
+          <div style="position: absolute; top: 8px; right: 8px; background: rgba(13, 15, 16, 0.88); border: 1px solid var(--border); border-radius: 4px; padding: 5px 7px; display: flex; flex-direction: column; gap: 4px; font-size: 8.5px; font-family: var(--mono); pointer-events: none; z-index: 10; box-shadow: 0 4px 10px rgba(0,0,0,0.5);">
+            <div style="display: flex; align-items: center; gap: 4px; color: var(--text2);">
+              <span style="display: inline-block; width: 6px; height: 6px; background: rgba(91, 156, 246, 0.25); border: 1px solid rgba(91, 156, 246, 0.85); border-radius: 50%;"></span>
+              Monómero (Matriz PS)
+            </div>
+            <div style="display: flex; align-items: center; gap: 4px; color: var(--text2);">
+              <span style="display: inline-block; width: 8px; height: 4px; background: rgba(45, 212, 176, 0.2); border: 1px solid var(--teal); border-radius: 1px;"></span>
+              Fluoróforo (p-Terfenilo)
+            </div>
+            <div style="display: flex; align-items: center; gap: 4px; color: var(--text2);">
+              <span style="display: inline-block; width: 8px; height: 4px; background: rgba(232, 85, 85, 0.25); border: 1px solid var(--red); border-radius: 1px;"></span>
+              FRET (Quenching)
+            </div>
+          </div>
+        </div>
+
+        <!-- Métricas del simulador -->
+        <div style="display: grid; grid-template-columns: 1fr 1.2fr 1fr; gap: 6px;">
+          <div id="stat-card-photons" style="background: rgba(255,255,255,0.02); border: 1px solid var(--border); padding: 6px 4px; border-radius: 6px; text-align: center; transition: all 0.3s;">
+            <div style="font-size: 8.5px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 2px;">Fotones</div>
+            <div id="fret-stat-photons" style="font-size: 15.5px; font-family: var(--mono); color: var(--teal); font-weight: bold;">0</div>
+          </div>
+          <div id="stat-card-losses" style="background: rgba(255,255,255,0.02); border: 1px solid var(--border); padding: 6px 4px; border-radius: 6px; text-align: center; transition: all 0.3s;">
+            <div style="font-size: 8.5px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 2px;">Pérdidas (FRET)</div>
+            <div id="fret-stat-losses" style="font-size: 15.5px; font-family: var(--mono); color: var(--red); font-weight: bold;">0</div>
+          </div>
+          <div id="stat-card-eff" style="background: rgba(255,255,255,0.02); border: 1px solid var(--border); padding: 6px 4px; border-radius: 6px; text-align: center; transition: all 0.3s;">
+            <div style="font-size: 8.5px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 2px;">Eficiencia</div>
+            <div id="fret-stat-eff" style="font-size: 15.5px; font-family: var(--mono); color: var(--amber); font-weight: bold;">100%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<div id="nav">
+  <button id="btn-prev">←</button>
+  <div class="nav-dots" id="nav-dots"></div>
+  <span id="nav-counter"></span>
+  <button id="btn-next">→</button>
+</div>
+
+<script src="navigation.js"></script>
+<script>
+(function() {
+  const canvas = document.getElementById('mol-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const container = canvas.parentElement;
+
+  let width = 0;
+  let height = 0;
+  let dpr = window.devicePixelRatio || 1;
+
+  let rfNm = 4.0;
+  let rfPx = rfNm * 25;
+
+  let electron = null;
+  let polymerChains = [];
+  let fluorophores = [];
+  let excitons = [];
+  let photons = [];
+  let heatParticles = [];
+  let waveRipples = [];
+  let activeFretLinks = [];
+
+  let photonCount = 0;
+  let lossCount = 0;
+
+  let autoFireActive = false;
+  let autoFireCooldown = 0;
+
+  let mouse = { x: -1000, y: -1000, active: false };
+
+  const btnFire = document.getElementById('btn-fire');
+  const btnAuto = document.getElementById('btn-auto');
+  const btnReset = document.getElementById('btn-reset');
+  const rfSlider = document.getElementById('fret-rf');
+  const rfValDisp = document.getElementById('fret-rf-val');
+  const densitySelect = document.getElementById('fret-density');
+
+  const statPhotons = document.getElementById('fret-stat-photons');
+  const statLosses = document.getElementById('fret-stat-losses');
+  const statEff = document.getElementById('fret-stat-eff');
+
+  const cardPhotons = document.getElementById('stat-card-photons');
+  const cardLosses = document.getElementById('stat-card-losses');
+  const cardEff = document.getElementById('stat-card-eff');
+
+  // Hexagon drawing helper
+  function drawBenzeneRing(cx, cy, R, angle, excitedRatio = 0, isFluorophore = false, qRatio = 0) {
+    const hexPoints = [];
+    for (let s = 0; s < 6; s++) {
+      const a = angle + (s * Math.PI) / 3;
+      hexPoints.push({
+        x: cx + R * Math.cos(a),
+        y: cy + R * Math.sin(a)
+      });
+    }
+
+    // Determine colors
+    let strokeStyle = 'rgba(91, 156, 246, 0.3)';
+    let fillStyle = 'rgba(91, 156, 246, 0.05)';
+    let glowColor = 'rgba(91, 156, 246, 0)';
+
+    if (isFluorophore) {
+      if (excitedRatio > 0) {
+        if (qRatio > 0) {
+          // Amber/Red quenching
+          strokeStyle = `rgba(232, 85, 85, ${0.4 + excitedRatio * 0.6})`;
+          fillStyle = `rgba(240, 168, 50, ${0.05 + excitedRatio * 0.25})`;
+          glowColor = `rgba(240, 168, 50, ${excitedRatio * 0.6})`;
+        } else {
+          // Teal scintillation
+          strokeStyle = `rgba(45, 212, 176, ${0.4 + excitedRatio * 0.6})`;
+          fillStyle = `rgba(45, 212, 176, ${0.05 + excitedRatio * 0.25})`;
+          glowColor = `rgba(45, 212, 176, ${excitedRatio * 0.6})`;
+        }
+      } else {
+        strokeStyle = 'rgba(45, 212, 176, 0.45)';
+        fillStyle = 'rgba(45, 212, 176, 0.08)';
+      }
+    } else {
+      if (excitedRatio > 0) {
+        // Glowing monomer
+        strokeStyle = `rgba(91, 156, 246, ${0.4 + excitedRatio * 0.6})`;
+        fillStyle = `rgba(91, 156, 246, ${0.05 + excitedRatio * 0.35})`;
+        glowColor = `rgba(91, 156, 246, ${excitedRatio * 0.5})`;
+      }
+    }
+
+    ctx.save();
+    if (glowColor && excitedRatio > 0) {
+      ctx.shadowColor = glowColor;
+      ctx.shadowBlur = 4 + excitedRatio * 6;
+    }
+
+    ctx.strokeStyle = strokeStyle;
+    ctx.fillStyle = fillStyle;
+    ctx.lineWidth = isFluorophore ? 1.5 : 1;
+
+    // Draw main hexagon
+    ctx.beginPath();
+    ctx.moveTo(hexPoints[0].x, hexPoints[0].y);
+    for (let s = 1; s < 6; s++) {
+      ctx.lineTo(hexPoints[s].x, hexPoints[s].y);
+    }
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // Draw double bonds (alternating)
+    const insetFactor = 0.22;
+    for (let s of [0, 2, 4]) {
+      const p1 = hexPoints[s];
+      const p2 = hexPoints[(s + 1) % 6];
+      const p1InsetX = p1.x + insetFactor * (cx - p1.x);
+      const p1InsetY = p1.y + insetFactor * (cy - p1.y);
+      const p2InsetX = p2.x + insetFactor * (cx - p2.x);
+      const p2InsetY = p2.y + insetFactor * (cy - p2.y);
+      ctx.beginPath();
+      ctx.moveTo(p1InsetX, p1InsetY);
+      ctx.lineTo(p2InsetX, p2InsetY);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  function drawPTerphenyl(f) {
+    const D = 18; // center-to-center distance
+    const R = 7.5;
+    const theta = f.angle;
+
+    // Check excited frames
+    let excitedRatio = 0;
+    let qRatio = 0;
+    if (f.excited) {
+      excitedRatio = f.excitedTime / 40;
+      if (f.quenched) {
+        qRatio = 1;
+      }
+    }
+
+    // 3 rings connected
+    const centers = [
+      { x: f.x - D * Math.cos(theta), y: f.y - D * Math.sin(theta) },
+      { x: f.x, y: f.y },
+      { x: f.x + D * Math.cos(theta), y: f.y + D * Math.sin(theta) }
+    ];
+
+    // Draw connecting lines underneath
+    ctx.strokeStyle = f.excited ? (f.quenched ? 'rgba(232, 85, 85, 0.7)' : 'rgba(45, 212, 176, 0.7)') : 'rgba(45, 212, 176, 0.4)';
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.moveTo(centers[0].x, centers[0].y);
+    ctx.lineTo(centers[2].x, centers[2].y);
+    ctx.stroke();
+
+    // Draw 3 rings
+    centers.forEach(c => {
+      drawBenzeneRing(c.x, c.y, R, theta, excitedRatio, true, qRatio);
+    });
+  }
+
+  function generatePolymerChains() {
+    polymerChains = [];
+    const spacingX = 26;
+    const numChains = 4;
+    const yPositions = [35, 75, 115, 155];
+
+    for (let c = 0; c < numChains; c++) {
+      const yBase = yPositions[c];
+      const points = [];
+      const steps = Math.ceil((width + 40) / spacingX);
+      for (let i = 0; i <= steps; i++) {
+        const x = -20 + i * spacingX;
+        const yOffset = (i % 2 === 0) ? -5 : 5;
+        const y = yBase + yOffset;
+
+        const hasRing = (i % 2 === 1);
+        const ringDir = (c % 2 === 0) ? 1 : -1;
+
+        points.push({
+          x: x,
+          y: y,
+          hasRing: hasRing,
+          ringDir: ringDir,
+          excited: false,
+          excitedTime: 0
+        });
+      }
+      polymerChains.push(points);
+    }
+  }
+
+  // Genera posiciones fijas de dopantes basadas en un ancho porcentual
+  function generateFluorophores() {
+    fluorophores = [];
+    const coords = [
+      { rx: 0.15, ry: 55, angle: 15 * Math.PI / 180 },
+      { rx: 0.35, ry: 135, angle: -10 * Math.PI / 180 },
+      { rx: 0.55, ry: 55, angle: 25 * Math.PI / 180 },
+      { rx: 0.75, ry: 135, angle: -15 * Math.PI / 180 },
+      { rx: 0.90, ry: 90, angle: 5 * Math.PI / 180 }
+    ];
+
+    coords.forEach((c, idx) => {
+      fluorophores.push({
+        id: idx,
+        x: width * c.rx,
+        y: c.ry,
+        angle: c.angle,
+        excited: false,
+        excitedTime: 0,
+        quenched: false
+      });
+    });
+  }
+
+  function triggerCardFlash(card, className) {
+    card.classList.remove(className);
+    void card.offsetWidth; // trigger reflow
+    card.classList.add(className);
+  }
+
+  function updateEffDisplay() {
+    statPhotons.textContent = photonCount;
+    statLosses.textContent = lossCount;
+    if (photonCount + lossCount === 0) {
+      statEff.textContent = '100%';
+    } else {
+      const eff = Math.round((photonCount / (photonCount + lossCount)) * 100);
+      statEff.textContent = eff + '%';
+    }
+  }
+
+  function fireElectron() {
+    if (electron && electron.active) return; // wait till finish
+
+    const mode = densitySelect.value;
+    const yStart = 40 + Math.random() * 100;
+
+    if (mode === 'low') {
+      electron = {
+        active: true,
+        type: 'low',
+        x: 0,
+        y: yStart,
+        vx: 10,
+        vy: (Math.random() - 0.5) * 0.5,
+        energy: 1.0,
+        path: []
+      };
+    } else {
+      electron = {
+        active: true,
+        type: 'high',
+        x: 0,
+        y: yStart,
+        vx: 4.8,
+        vy: (Math.random() - 0.5) * 1.5,
+        energy: 1.0,
+        path: []
+      };
+    }
+
+    btnFire.disabled = true;
+    btnFire.style.opacity = '0.5';
+  }
+
+  btnFire.addEventListener('click', fireElectron);
+
+  btnAuto.addEventListener('click', () => {
+    autoFireActive = !autoFireActive;
+    if (autoFireActive) {
+      btnAuto.classList.add('active');
+      if (!electron || !electron.active) {
+        fireElectron();
+      }
+    } else {
+      btnAuto.classList.remove('active');
+    }
+  });
+
+  btnReset.addEventListener('click', () => {
+    photonCount = 0;
+    lossCount = 0;
+    updateEffDisplay();
+    cardPhotons.className = '';
+    cardLosses.className = '';
+    cardEff.className = '';
+  });
+
+  rfSlider.addEventListener('input', (e) => {
+    rfNm = parseFloat(e.target.value);
+    rfValDisp.textContent = rfNm.toFixed(1) + ' nm';
+    rfPx = rfNm * 25;
+  });
+
+  canvas.addEventListener('mousemove', (e) => {
+    const rect = canvas.getBoundingClientRect();
+    mouse.x = e.clientX - rect.left;
+    mouse.y = e.clientY - rect.top;
+    mouse.active = true;
+  });
+
+  canvas.addEventListener('mouseleave', () => {
+    mouse.active = false;
+  });
+
+  // Física y simulación
+  function updatePhysics() {
+    // 1. Movimiento del electrón y excitación
+    if (electron && electron.active) {
+      electron.path.push({ x: electron.x, y: electron.y });
+      if (electron.path.length > 25) electron.path.shift();
+
+      if (electron.type === 'low') {
+        electron.x += electron.vx;
+        electron.y += electron.vy;
+
+        // Excitaciones dispersas
+        polymerChains.forEach(chain => {
+          chain.forEach(pt => {
+            if (pt.hasRing && !pt.excited) {
+              const dx = pt.x - electron.x;
+              const dy = pt.y - electron.y;
+              const dist = Math.sqrt(dx*dx + dy*dy);
+              if (dist < 28 && Math.random() < 0.08) {
+                pt.excited = true;
+                pt.excitedTime = 30;
+                launchExciton(pt);
+              }
+            }
+          });
+        });
+
+        if (electron.x > width + 10) {
+          electron.active = false;
+          btnFire.disabled = false;
+          btnFire.style.opacity = '1';
+        }
+      } else {
+        // Electrón lento de 10 keV con Bragg Peak
+        electron.energy -= 0.0075;
+
+        if (electron.energy <= 0.05) {
+          // Burst de Bragg Peak al detenerse
+          triggerBraggPeak(electron.x, electron.y);
+          electron.active = false;
+          btnFire.disabled = false;
+          btnFire.style.opacity = '1';
+        } else {
+          const speed = 4.8 * Math.sqrt(electron.energy);
+          // Dispersión angular mayor a menor energía
+          const scatter = (Math.random() - 0.5) * (0.35 / Math.max(0.1, electron.energy));
+          const currentAngle = Math.atan2(electron.vy, electron.vx) + scatter;
+
+          electron.vx = speed * Math.cos(currentAngle);
+          electron.vy = speed * Math.sin(currentAngle);
+
+          electron.x += electron.vx;
+          electron.y += electron.vy;
+
+          if (electron.y < 15) { electron.y = 15; electron.vy = -electron.vy; }
+          if (electron.y > height - 15) { electron.y = height - 15; electron.vy = -electron.vy; }
+
+          // Más probabilidad de excitar conforme se frena (Bragg curve)
+          const pExcite = 0.045 / Math.max(0.06, electron.energy);
+          polymerChains.forEach(chain => {
+            chain.forEach(pt => {
+              if (pt.hasRing && !pt.excited) {
+                const dx = pt.x - electron.x;
+                const dy = pt.y - electron.y;
+                const dist = Math.sqrt(dx*dx + dy*dy);
+                if (dist < 28 && Math.random() < pExcite) {
+                  pt.excited = true;
+                  pt.excitedTime = 30;
+                  launchExciton(pt);
+                }
+              }
+            });
+          });
+
+          if (electron.x > width + 10) {
+            electron.active = false;
+            btnFire.disabled = false;
+            btnFire.style.opacity = '1';
+          }
+        }
+      }
+    }
+
+    // 2. Temporizador de excitación del monómero
+    polymerChains.forEach(chain => {
+      chain.forEach(pt => {
+        if (pt.excited) {
+          pt.excitedTime--;
+          if (pt.excitedTime <= 0) {
+            pt.excited = false;
+          }
+        }
+      });
+    });
+
+    // 3. Propagación de excitones
+    excitons.forEach(ex => {
+      ex.progress += ex.speed;
+      if (ex.progress >= 1.0) {
+        ex.active = false;
+        triggerFluorophoreActivation(ex.target);
+      } else {
+        // Ruta sinusoidal (onda cuántica)
+        const dx = ex.target.x - ex.startX;
+        const dy = ex.target.y - ex.startY;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+
+        const bx = ex.startX + dx * ex.progress;
+        const by = ex.startY + dy * ex.progress;
+
+        const nx = -dy / (dist || 1);
+        const ny = dx / (dist || 1);
+        const amp = 8 * Math.sin(ex.progress * Math.PI * 4.5);
+
+        ex.x = bx + nx * amp;
+        ex.y = by + ny * amp;
+      }
+    });
+    excitons = excitons.filter(ex => ex.active);
+
+    // 4. Temporizador de dopantes
+    fluorophores.forEach(f => {
+      if (f.excited) {
+        f.excitedTime--;
+        if (f.excitedTime <= 0) {
+          f.excited = false;
+          f.quenched = false;
+        }
+      }
+    });
+
+    // 5. Líneas FRET resonantes temporales
+    activeFretLinks.forEach(link => {
+      link.time--;
+    });
+    activeFretLinks = activeFretLinks.filter(link => link.time > 0);
+
+    // 6. Fotones emitidos
+    photons.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.alpha -= 0.025;
+    });
+    photons = photons.filter(p => p.alpha > 0);
+
+    // 7. Calor residual / pérdidas
+    heatParticles.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.alpha -= 0.03;
+    });
+    heatParticles = heatParticles.filter(p => p.alpha > 0);
+
+    // 8. Ondas concéntricas de centelleo
+    waveRipples.forEach(w => {
+      w.r += 1.4;
+      w.alpha = 1 - (w.r / w.maxR);
+    });
+    waveRipples = waveRipples.filter(w => w.alpha > 0);
+
+    // 9. Auto-disparo continuo
+    if (autoFireActive) {
+      if (!electron || !electron.active) {
+        autoFireCooldown++;
+        if (autoFireCooldown > 45) {
+          fireElectron();
+          autoFireCooldown = 0;
+        }
+      } else {
+        autoFireCooldown = 0;
+      }
+    }
+  }
+
+  function launchExciton(monomer) {
+    let nearest = null;
+    let minDist = Infinity;
+    fluorophores.forEach(f => {
+      const dx = f.x - monomer.x;
+      const dy = f.y - monomer.y;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      if (dist < minDist) {
+        minDist = dist;
+        nearest = f;
+      }
+    });
+
+    if (nearest) {
+      excitons.push({
+        active: true,
+        x: monomer.x,
+        y: monomer.y,
+        startX: monomer.x,
+        startY: monomer.y,
+        target: nearest,
+        progress: 0,
+        speed: 0.025 + Math.random() * 0.008
+      });
+    }
+  }
+
+  function triggerBraggPeak(ex, ey) {
+    polymerChains.forEach(chain => {
+      chain.forEach(pt => {
+        if (pt.hasRing && !pt.excited) {
+          const dx = pt.x - ex;
+          const dy = pt.y - ey;
+          const dist = Math.sqrt(dx*dx + dy*dy);
+          if (dist < 65) {
+            pt.excited = true;
+            pt.excitedTime = 40;
+            launchExciton(pt);
+          }
+        }
+      });
+    });
+  }
+
+  function triggerFluorophoreActivation(f) {
+    f.excited = true;
+    f.excitedTime = 40;
+
+    const mode = densitySelect.value;
+    let pQuench = 0.15; // Centelleo dominante a 1 MeV (85% eficiencia)
+
+    if (mode === 'high') {
+      pQuench = 0.65; // Quenching dominante a 10 keV ( Bragg peak denso )
+    }
+
+    // Afectado por el Radio de Förster Rf
+    pQuench += (rfNm - 4.0) * 0.14;
+    pQuench = Math.max(0.08, Math.min(0.92, pQuench));
+
+    if (Math.random() < pQuench) {
+      // Pérdida por transferencia FRET no-radiativa / calor
+      f.quenched = true;
+      lossCount++;
+      triggerCardFlash(cardLosses, 'stat-flash-red');
+
+      // Buscar acoplamiento a otro dopante cercano (efecto FRET homólogo/quenching)
+      let partner = null;
+      let minD = Infinity;
+      fluorophores.forEach(other => {
+        if (other.id !== f.id) {
+          const dx = other.x - f.x;
+          const dy = other.y - f.y;
+          const d = Math.sqrt(dx*dx + dy*dy);
+          if (d < minD) {
+            minD = d;
+            partner = other;
+          }
+        }
+      });
+
+      if (partner) {
+        activeFretLinks.push({
+          x1: f.x,
+          y1: f.y,
+          x2: partner.x,
+          y2: partner.y,
+          time: 25
+        });
+        partner.excited = true;
+        partner.excitedTime = 25;
+        partner.quenched = true;
+      }
+
+      // Emisión de calor (partículas térmicas naranjas)
+      for (let i = 0; i < 10; i++) {
+        heatParticles.push({
+          x: f.x,
+          y: f.y,
+          vx: (Math.random() - 0.5) * 1.6,
+          vy: -Math.random() * 1.5 - 0.3,
+          size: 1.5 + Math.random() * 2,
+          alpha: 1.0
+        });
+      }
+    } else {
+      // Centelleo radiativo exitoso
+      f.quenched = false;
+      photonCount++;
+      triggerCardFlash(cardPhotons, 'stat-flash-green');
+
+      // Ripple de onda de luz
+      waveRipples.push({
+        x: f.x,
+        y: f.y,
+        r: 3,
+        maxR: 45,
+        alpha: 1.0
+      });
+
+      // Fotones volando hacia arriba
+      for (let i = 0; i < 2; i++) {
+        const angle = -Math.PI/2 + (Math.random() - 0.5) * 0.9;
+        const spd = 2.0 + Math.random() * 2.0;
+        photons.push({
+          x: f.x,
+          y: f.y,
+          vx: spd * Math.cos(angle),
+          vy: spd * Math.sin(angle),
+          alpha: 1.0
+        });
+      }
+    }
+
+    updateEffDisplay();
+  }
+
+  // Renderizado
+  function draw() {
+    ctx.clearRect(0, 0, width, height);
+
+    // 1. Backbone del polímero
+    polymerChains.forEach(chain => {
+      ctx.beginPath();
+      ctx.moveTo(chain[0].x, chain[0].y);
+      for (let i = 1; i < chain.length; i++) {
+        ctx.lineTo(chain[i].x, chain[i].y);
+      }
+      ctx.strokeStyle = 'rgba(91, 156, 246, 0.12)';
+      ctx.lineWidth = 1.8;
+      ctx.stroke();
+    });
+
+    // 2. Anillos de benceno colgantes (Matriz)
+    polymerChains.forEach(chain => {
+      chain.forEach(pt => {
+        if (pt.hasRing) {
+          const cy = pt.y + pt.ringDir * 18;
+          let excitedRatio = 0;
+          if (pt.excited) {
+            excitedRatio = pt.excitedTime / 30;
+          }
+          drawBenzeneRing(pt.x, cy, 7.0, 0, excitedRatio, false, 0);
+        }
+      });
+    });
+
+    // 3. Dopantes p-terfenilo
+    fluorophores.forEach(f => {
+      drawPTerphenyl(f);
+    });
+
+    // 4. Acoplamientos FRET activos (vibración roja)
+    activeFretLinks.forEach(link => {
+      ctx.save();
+      ctx.beginPath();
+      const steps = 14;
+      ctx.moveTo(link.x1, link.y1);
+      const dx = link.x2 - link.x1;
+      const dy = link.y2 - link.y1;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      const nx = -dy / (dist || 1);
+      const ny = dx / (dist || 1);
+
+      for (let i = 1; i < steps; i++) {
+        const t = i / steps;
+        const px = link.x1 + dx * t;
+        const py = link.y1 + dy * t;
+        const wave = Math.sin(t * Math.PI * 4.5 + Date.now() * 0.05);
+        const vib = wave * 2.5 + (Math.random() - 0.5) * 1.2;
+        ctx.lineTo(px + nx * vib, py + ny * vib);
+      }
+      ctx.lineTo(link.x2, link.y2);
+      ctx.strokeStyle = `rgba(232, 85, 85, ${link.time / 25})`;
+      ctx.lineWidth = 2.0;
+      ctx.shadowColor = 'rgba(232, 85, 85, 0.6)';
+      ctx.shadowBlur = 6;
+      ctx.stroke();
+      ctx.restore();
+    });
+
+    // 5. Excitones activos
+    excitons.forEach(ex => {
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(ex.x, ex.y, 4, 0, 2*Math.PI);
+      ctx.fillStyle = '#5b9cf6';
+      ctx.shadowColor = '#5b9cf6';
+      ctx.shadowBlur = 8;
+      ctx.fill();
+      ctx.restore();
+    });
+
+    // 6. Trazado del electrón
+    if (electron && electron.active && electron.path.length > 1) {
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(electron.path[0].x, electron.path[0].y);
+      for (let i = 1; i < electron.path.length; i++) {
+        ctx.lineTo(electron.path[i].x, electron.path[i].y);
+      }
+      ctx.strokeStyle = 'rgba(91, 156, 246, 0.75)';
+      ctx.lineWidth = 2.5;
+      ctx.shadowColor = '#5b9cf6';
+      ctx.shadowBlur = 6;
+      ctx.stroke();
+      ctx.restore();
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(electron.x, electron.y, 4.5, 0, 2 * Math.PI);
+      ctx.fillStyle = '#ffffff';
+      ctx.shadowColor = '#5b9cf6';
+      ctx.shadowBlur = 10;
+      ctx.fill();
+      ctx.restore();
+    }
+
+    // 7. Ripples de luz
+    waveRipples.forEach(w => {
+      ctx.strokeStyle = `rgba(45, 212, 176, ${w.alpha})`;
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.arc(w.x, w.y, w.r, 0, 2*Math.PI);
+      ctx.stroke();
+    });
+
+    // 8. Partículas fotónicas
+    photons.forEach(p => {
+      ctx.save();
+      ctx.fillStyle = `rgba(45, 212, 176, ${p.alpha})`;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 2.5, 0, 2*Math.PI);
+      ctx.fill();
+
+      ctx.strokeStyle = `rgba(45, 212, 176, ${p.alpha * 0.45})`;
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.moveTo(p.x, p.y);
+      ctx.lineTo(p.x - p.vx * 2.5, p.y - p.vy * 2.5);
+      ctx.stroke();
+      ctx.restore();
+    });
+
+    // 9. Calor de quenching
+    heatParticles.forEach(p => {
+      ctx.fillStyle = `rgba(240, 168, 50, ${p.alpha})`;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size, 0, 2*Math.PI);
+      ctx.fill();
+    });
+
+    // 10. Sonda interactiva FRET del ratón
+    if (mouse.active) {
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(mouse.x, mouse.y, rfPx, 0, 2*Math.PI);
+      ctx.strokeStyle = 'rgba(240, 168, 50, 0.16)';
+      ctx.fillStyle = 'rgba(240, 168, 50, 0.015)';
+      ctx.lineWidth = 1;
+      ctx.setLineDash([4, 4]);
+      ctx.fill();
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      ctx.strokeStyle = 'rgba(240, 168, 50, 0.45)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(mouse.x - 7, mouse.y); ctx.lineTo(mouse.x + 7, mouse.y);
+      ctx.moveTo(mouse.x, mouse.y - 7); ctx.lineTo(mouse.x, mouse.y + 7);
+      ctx.stroke();
+
+      fluorophores.forEach(f => {
+        const dx = f.x - mouse.x;
+        const dy = f.y - mouse.y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist < rfPx * 1.5) {
+          const eff = 1 / (1 + Math.pow(dist / rfPx, 6));
+          const effPct = Math.round(eff * 100);
+
+          ctx.beginPath();
+          ctx.moveTo(mouse.x, mouse.y);
+          ctx.lineTo(f.x, f.y);
+          ctx.strokeStyle = `rgba(240, 168, 50, ${0.12 + eff * 0.7})`;
+          ctx.lineWidth = 1.2;
+          ctx.stroke();
+
+          const mx = (mouse.x + f.x) / 2;
+          const my = (mouse.y + f.y) / 2;
+
+          ctx.font = '500 8.5px DM Mono, monospace';
+          const txt = `E:${effPct}%`;
+          const txtWidth = ctx.measureText(txt).width;
+
+          ctx.fillStyle = '#080a0b';
+          ctx.strokeStyle = `rgba(240, 168, 50, ${0.35 + eff * 0.5})`;
+          ctx.lineWidth = 0.8;
+          ctx.beginPath();
+          ctx.roundRect(mx - txtWidth/2 - 4, my - 6, txtWidth + 8, 12, 3);
+          ctx.fill();
+          ctx.stroke();
+
+          ctx.fillStyle = `rgba(240, 168, 50, ${0.75 + eff * 0.25})`;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(txt, mx, my);
+        }
+      });
+      ctx.restore();
+    }
+  }
+
+  function loop() {
+    updatePhysics();
+    draw();
+    requestAnimationFrame(loop);
+  }
+
+  function resize() {
+    const rect = container.getBoundingClientRect();
+    width = rect.width;
+    height = rect.height;
+
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+    canvas.style.width = width + 'px';
+    canvas.style.height = height + 'px';
+
+    ctx.restore();
+    ctx.save();
+    ctx.scale(dpr, dpr);
+
+    generatePolymerChains();
+    generateFluorophores();
+  }
+
+  const resizeObserver = new ResizeObserver(() => {
+    resize();
+  });
+  resizeObserver.observe(container);
+
+  resize();
+  requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>

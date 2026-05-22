@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quenching en detectores de centelleo plástico - Las Tres Etapas del Centelleo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+  .flow-node {
+    background: var(--bg4);
+    border: 1px solid var(--border);
+    padding: 4px 8px;
+    border-radius: 6px;
+    color: var(--text3);
+    transition: all 0.3s ease;
+    text-align: center;
+    min-width: 58px;
+  }
+  .flow-arrow {
+    color: var(--text3);
+    font-weight: bold;
+    transition: all 0.3s ease;
+  }
+  .flow-node.active-stage {
+    background: var(--bg3);
+    border-color: var(--teal);
+    color: var(--teal);
+    box-shadow: 0 0 10px rgba(45, 212, 176, 0.15);
+  }
+  .flow-node.active-stage-amber {
+    background: var(--bg3);
+    border-color: var(--amber);
+    color: var(--amber);
+    box-shadow: 0 0 10px rgba(240, 168, 50, 0.15);
+  }
+  .flow-node.active-stage-red {
+    background: var(--bg3);
+    border-color: var(--red);
+    color: var(--red);
+    box-shadow: 0 0 10px rgba(232, 85, 85, 0.15);
+  }
+  .flow-node.active-stage-blue {
+    background: var(--bg3);
+    border-color: var(--blue);
+    color: var(--blue);
+    box-shadow: 0 0 10px rgba(91, 156, 246, 0.15);
+  }
+  .flow-node.active-stage-teal {
+    background: var(--bg3);
+    border-color: var(--teal);
+    color: var(--teal);
+    box-shadow: 0 0 10px rgba(45, 212, 176, 0.15);
+  }
+  
+  #quenching-effect-slider {
+    width: 100%;
+    margin-top: 4px;
+  }
+  
+  #quenching-effect-slider::-webkit-slider-thumb:hover {
+    background: var(--red) !important;
+    box-shadow: 0 0 8px rgba(232, 85, 85, 0.6) !important;
+  }
+  
+  .slider-disabled {
+    opacity: 0.3;
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+
+<div id="deck">
+
+<div class="slide" id="slide-4">
+  <div class="slide-num">4 / 24</div>
+  <div class="slide-eyebrow">Capítulo 2 · ¿Qué es el quenching?</div>
+  <h2 class="slide-title">Las Tres Etapas del <em>Centelleo</em></h2>
+  <p class="slide-subtitle">La cadena física de conversión desde la energía depositada hasta la señal registrada.</p>
+  <div class="persona-row">
+    <span class="persona-tag pt-marcos">Física Básica</span>
+  </div>
+
+  <div class="two-col stretch">
+    <!-- Columna izquierda: Etapas -->
+    <div class="col-stretch" style="gap: 14px;">
+      <div class="card card-teal reveal-item card-stretch" data-step="1">
+        <div class="card-label">1. Depósito de energía</div>
+        <p style="font-size: 16px; color: var(--text2); line-height: 1.5;">
+          Una partícula cargada (típicamente un electrón secundario puesto en movimiento por un fotón del haz de 6 MV) atraviesa el centelleador plástico y deposita energía mediante ionización y excitación.
+        </p>
+      </div>
+
+      <div class="card card-amber reveal-item card-stretch" data-step="2">
+        <div class="card-label">2. Transferencia molecular</div>
+        <p style="font-size: 16px; color: var(--text2); line-height: 1.5;">
+          La energía depositada en la matriz del polímero (como poliestireno) se transfiere eficientemente a las moléculas de un dopante fluorescente disperso.
+        </p>
+      </div>
+
+      <div class="card card-blue reveal-item card-stretch" data-step="3">
+        <div class="card-label">3. Emisión y lectura</div>
+        <p style="font-size: 16px; color: var(--text2); line-height: 1.5;">
+          El dopante fluorescente se desexcita emitiendo fotones de luz visible, los cuales viajan por la fibra óptica hasta un detector fotosensible (PMT o fotodiodo) para su lectura.
+        </p>
+      </div>
+    </div>
+
+    <!-- Columna derecha: Gráfica interactiva -->
+    <div class="reveal-item col-stretch" data-step="1" style="gap: 14px;">
+      <div class="card card-stretch" style="gap: 12px; justify-content: space-between;">
+        <div class="card-label" style="margin-bottom: 0;">Cadena de conversión del PSD</div>
+        
+        <!-- HUD de Dosis y Eficiencia -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; background: var(--bg3); padding: 8px; border-radius: 8px; border: 1px solid var(--border);">
+          <div style="text-align: center;">
+            <div style="font-size: 9px; color: var(--text3); font-family: var(--mono); text-transform: uppercase;">Dosis Física</div>
+            <div style="font-size: 16px; font-family: var(--mono); color: var(--amber); font-weight: bold;">100 cGy</div>
+          </div>
+          <div style="text-align: center; border-left: 1px solid var(--border); border-right: 1px solid var(--border);">
+            <div style="font-size: 9px; color: var(--text3); font-family: var(--mono); text-transform: uppercase;">Luz en Fibra</div>
+            <div id="hud-efficiency" style="font-size: 16px; font-family: var(--mono); color: var(--teal); font-weight: bold;">70%</div>
+          </div>
+          <div style="text-align: center;">
+            <div style="font-size: 9px; color: var(--text3); font-family: var(--mono); text-transform: uppercase;">Dosis Medida</div>
+            <div id="hud-measured-dose" style="font-size: 16px; font-family: var(--mono); color: var(--teal); font-weight: bold;">70 cGy</div>
+          </div>
+        </div>
+
+        <!-- Contenedor del Canvas de simulación -->
+        <div class="canvas-stretch-wrapper">
+          <canvas id="conversion-canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: block;"></canvas>
+          <div id="status-badge" style="position: absolute; top: 8px; right: 8px; background: rgba(13, 15, 16, 0.85); border: 1px solid rgba(232, 85, 85, 0.25); border-radius: 4px; padding: 3px 6px; font-size: 9.5px; font-family: var(--mono); color: var(--red); pointer-events: none; transition: all 0.2s;">
+            ⚠️ Subestimado
+          </div>
+        </div>
+
+        <!-- Slider de Control de Quenching -->
+        <div id="slider-container" style="display: flex; flex-direction: column; gap: 4px; background: var(--bg3); padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border); transition: opacity 0.3s;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px;">
+            <span style="font-size: 11px; font-family: var(--mono); color: var(--text2);">Pérdida por Quenching:</span>
+            <span id="quenching-val-disp" class="val-badge" style="background: var(--red-dim); color: var(--red); border-color: rgba(232, 85, 85, 0.2);">30%</span>
+          </div>
+          <input type="range" id="quenching-effect-slider" min="0" max="80" step="5" value="30" style="width: 100%; cursor: pointer;">
+        </div>
+
+        <!-- Diagrama de Flujo Conceptual -->
+        <div class="flowchart-container" style="display: flex; justify-content: space-between; align-items: center; font-family: var(--mono); font-size: 10px; padding-top: 4px;">
+          <div class="flow-node" id="node-dosis">Dosis</div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-node" id="node-excitacion" style="position: relative;">
+            Excitación
+            <div id="flow-quenching-branch" style="position: absolute; top: 100%; left: 50%; transform: translateX(-50%); color: var(--red); font-size: 8px; white-space: nowrap; margin-top: 2px; opacity: 0; transition: opacity 0.3s;">
+              quenching ↓
+            </div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-node" id="node-fotones">Fotones</div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-node" id="node-senal">Señal</div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-node" id="node-dosis-calc">Dosis?</div>
+        </div>
+
+      </div>
+
+      <div class="callout reveal-item" data-step="4">
+        <strong>Punto clave:</strong> El quenching de ionización actúa en la segunda etapa, reduciendo la eficiencia con la que la excitación molecular se convierte en fotones detectables.
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<div id="nav">
+  <button id="btn-prev">←</button>
+  <div class="nav-dots" id="nav-dots"></div>
+  <span id="nav-counter"></span>
+  <button id="btn-next">→</button>
+</div>
+
+<script src="navigation.js"></script>
+<script>
+(function() {
+  const canvas = document.getElementById('conversion-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  
+  let width = 0;
+  let height = 0;
+  let dpr = window.devicePixelRatio || 1;
+
+  // State
+  let quenchingPct = 30; // initial
+  let activeStep = 0;
+  let lastStep = -1;
+  let lastQuenchingPct = -1;
+
+  // Particle systems
+  let beamParticles = [];
+  let PSDExcitations = [];
+  let fiberPhotons = [];
+  let heatLosses = [];
+  let pmtFlashes = [];
+  let pmtPulses = []; // electrical signals
+
+  // UI elements
+  const slider = document.getElementById('quenching-effect-slider');
+  const sliderDisp = document.getElementById('quenching-val-disp');
+  const hudEff = document.getElementById('hud-efficiency');
+  const hudDose = document.getElementById('hud-measured-dose');
+  const badge = document.getElementById('status-badge');
+  const sliderContainer = document.getElementById('slider-container');
+  
+  const nodeDosis = document.getElementById('node-dosis');
+  const nodeExcitacion = document.getElementById('node-excitacion');
+  const nodeFotones = document.getElementById('node-fotones');
+  const nodeSenal = document.getElementById('node-senal');
+  const nodeDosisCalc = document.getElementById('node-dosis-calc');
+  const quenchingBranchText = document.getElementById('flow-quenching-branch');
+
+  // Resize handler
+  function resize() {
+    const rect = canvas.getBoundingClientRect();
+    width = rect.width;
+    height = rect.height;
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+    ctx.scale(dpr, dpr);
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  // Slider event listener
+  if (slider) {
+    slider.addEventListener('input', function() {
+      quenchingPct = parseInt(this.value, 10);
+      updateUI();
+    });
+  }
+
+  function updateUI() {
+    if (sliderDisp) {
+      sliderDisp.textContent = quenchingPct + '%';
+      if (quenchingPct === 0) {
+        sliderDisp.style.color = 'var(--teal)';
+        sliderDisp.style.background = 'var(--teal-dim)';
+        sliderDisp.style.borderColor = 'rgba(45, 212, 176, 0.2)';
+      } else {
+        sliderDisp.style.color = 'var(--red)';
+        sliderDisp.style.background = 'var(--red-dim)';
+        sliderDisp.style.borderColor = 'rgba(232, 85, 85, 0.2)';
+      }
+    }
+    
+    const eff = 100 - quenchingPct;
+    if (hudEff) hudEff.textContent = eff + '%';
+    if (hudDose) hudDose.textContent = eff + ' cGy';
+
+    if (badge) {
+      if (quenchingPct === 0) {
+        badge.textContent = '✓ Lineal';
+        badge.style.color = 'var(--teal)';
+        badge.style.borderColor = 'rgba(45, 212, 176, 0.25)';
+        badge.style.background = 'rgba(45, 212, 176, 0.08)';
+      } else {
+        badge.textContent = `⚠️ Subestimado (-${quenchingPct}%)`;
+        badge.style.color = 'var(--red)';
+        badge.style.borderColor = 'rgba(232, 85, 85, 0.25)';
+        badge.style.background = 'rgba(232, 85, 85, 0.08)';
+      }
+    }
+  }
+  
+  updateUI();
+
+  // Animation ticks
+  let frame = 0;
+  function animate() {
+    frame++;
+    
+    // Retrieve global currentStep from navigation.js
+    const step = (typeof currentStep !== 'undefined') ? currentStep : 1;
+    activeStep = step;
+    
+    updateSimulationState(step);
+    updatePhysics();
+    draw(step);
+    
+    requestAnimationFrame(animate);
+  }
+
+  // Handle active steps display and slider availability
+  function updateSimulationState(step) {
+    const stepChanged = (step !== lastStep);
+    const quenchingChanged = (quenchingPct !== lastQuenchingPct);
+    
+    if (!stepChanged && !quenchingChanged) return;
+    
+    if (stepChanged) {
+      lastStep = step;
+      // Enable/disable slider
+      if (sliderContainer) {
+        if (step >= 4) {
+          sliderContainer.classList.remove('slider-disabled');
+          slider.disabled = false;
+        } else {
+          sliderContainer.classList.add('slider-disabled');
+          slider.disabled = true;
+          // set default step-based values for quenching
+          if (step === 2) {
+            quenchingPct = 40; // show some quenching in step 2
+            slider.value = 40;
+          } else if (step === 1 || step === 0) {
+            quenchingPct = 0; // no quenching visible in step 1/0
+            slider.value = 0;
+          } else if (step === 3) {
+            quenchingPct = 30; // some standard quenching
+            slider.value = 30;
+          }
+          updateUI();
+        }
+      }
+    }
+    
+    if (stepChanged || quenchingChanged) {
+      lastQuenchingPct = quenchingPct;
+      
+      // Reset highlighting
+      const allNodes = [nodeDosis, nodeExcitacion, nodeFotones, nodeSenal, nodeDosisCalc];
+      allNodes.forEach(n => {
+        if (n) {
+          n.className = 'flow-node';
+        }
+      });
+      if (quenchingBranchText) quenchingBranchText.style.opacity = '0';
+
+      // Set highlights based on slide step
+      if (step === 1 || step === 0) {
+        if (nodeDosis) nodeDosis.classList.add('active-stage-amber');
+        if (nodeExcitacion) nodeExcitacion.classList.add('active-stage');
+      } else if (step === 2) {
+        if (nodeExcitacion) nodeExcitacion.classList.add('active-stage-red');
+        if (quenchingBranchText) quenchingBranchText.style.opacity = '1';
+      } else if (step === 3) {
+        if (nodeExcitacion) nodeExcitacion.classList.add('active-stage');
+        if (nodeFotones) nodeFotones.classList.add('active-stage-teal');
+        if (nodeSenal) nodeSenal.classList.add('active-stage-blue');
+      } else if (step >= 4) {
+        if (nodeDosis) nodeDosis.classList.add('active-stage-amber');
+        if (nodeExcitacion) nodeExcitacion.classList.add('active-stage');
+        if (nodeFotones) nodeFotones.classList.add('active-stage-teal');
+        if (nodeSenal) nodeSenal.classList.add('active-stage-blue');
+        if (nodeDosisCalc) {
+          if (quenchingPct === 0) {
+            nodeDosisCalc.classList.add('active-stage');
+          } else {
+            nodeDosisCalc.classList.add('active-stage-red');
+          }
+        }
+        if (quenchingPct > 0 && quenchingBranchText) quenchingBranchText.style.opacity = '1';
+      }
+    }
+  }
+
+  function updatePhysics() {
+    // 1. Spawn incident beam particles (x = 10, y = 70 to 110)
+    const spawnRate = (activeStep === 2) ? 12 : 8;
+    if (frame % spawnRate === 0) {
+      beamParticles.push({
+        x: 10,
+        y: height / 2 + (Math.random() - 0.5) * 30,
+        vx: 4.5 + Math.random() * 1.5,
+        vy: (Math.random() - 0.5) * 0.4,
+        size: 2.5 + Math.random() * 2
+      });
+    }
+
+    // Move beam particles
+    beamParticles.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+
+      // PSD bounds: x = 70 to 110, y = 50 to 130
+      const psdCenterX = 90;
+      const psdWidth = 36;
+      if (p.x >= psdCenterX - psdWidth/2 && p.x <= psdCenterX + psdWidth/2) {
+        // High-energy excitation roll inside PSD
+        if (Math.random() < 0.18) {
+          PSDExcitations.push({
+            x: p.x + (Math.random() - 0.5) * 6,
+            y: p.y + (Math.random() - 0.5) * 6,
+            life: 20 + Math.random() * 15,
+            maxLife: 35,
+            size: 3 + Math.random() * 3
+          });
+
+          // Trigger branch (Quenching vs Scintillation)
+          const actualQuench = (activeStep <= 1) ? 0 : quenchingPct;
+          
+          if (activeStep >= 2) {
+            if (Math.random() * 100 < actualQuench) {
+              // Spawn heat loss particles
+              for (let i = 0; i < 2; i++) {
+                heatLosses.push({
+                  x: p.x,
+                  y: p.y,
+                  vx: (Math.random() - 0.5) * 1.0,
+                  vy: 1.2 + Math.random() * 1.0,
+                  alpha: 1.0,
+                  size: 2 + Math.random() * 2
+                });
+              }
+            } else if (activeStep >= 3) {
+              // Spawn light photons
+              fiberPhotons.push({
+                x: psdCenterX + psdWidth/2 - 2,
+                y: p.y + (Math.random() - 0.5) * 4,
+                vx: 2.5 + Math.random() * 1.2,
+                vy: (Math.random() - 0.5) * 1.5,
+                alpha: 1.0,
+                size: 2 + Math.random() * 2
+              });
+            }
+          } else {
+            // In step 0/1, still spawn photons to avoid visual pop on step transition
+            fiberPhotons.push({
+              x: psdCenterX + psdWidth/2 - 2,
+              y: p.y + (Math.random() - 0.5) * 4,
+              vx: 2.5 + Math.random() * 1.2,
+              vy: (Math.random() - 0.5) * 1.5,
+              alpha: 1.0,
+              size: 2 + Math.random() * 2
+            });
+          }
+        }
+      }
+    });
+
+    // Remove offscreen beam particles
+    beamParticles = beamParticles.filter(p => p.x < 120);
+
+    // Update PSD excitations life
+    PSDExcitations.forEach(e => {
+      e.life--;
+    });
+    PSDExcitations = PSDExcitations.filter(e => e.life > 0);
+
+    // Update heat losses
+    heatLosses.forEach(h => {
+      h.x += h.vx;
+      h.y += h.vy;
+      h.alpha -= 0.025;
+    });
+    heatLosses = heatLosses.filter(h => h.alpha > 0);
+
+    // Move fiber photons
+    const fiberTop = height / 2 - 11;
+    const fiberBottom = height / 2 + 11;
+    const fiberEnd = 275;
+
+    fiberPhotons.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+
+      // Bounce off fiber cladding
+      if (p.y <= fiberTop + 1) {
+        p.y = fiberTop + 1.5;
+        p.vy = -p.vy;
+      }
+      if (p.y >= fiberBottom - 1) {
+        p.y = fiberBottom - 1.5;
+        p.vy = -p.vy;
+      }
+
+      // Enter PMT
+      if (p.x >= fiberEnd) {
+        p.active = false;
+        pmtFlashes.push({
+          x: fiberEnd,
+          y: p.y,
+          life: 12
+        });
+
+        // Trigger electric signal pulse
+        if (Math.random() < 0.8 && activeStep >= 3) {
+          pmtPulses.push({
+            x: fiberEnd + 10,
+            y: height / 2,
+            t: 0,
+            speed: 4,
+            alpha: 1.0
+          });
+        }
+      }
+    });
+    fiberPhotons = fiberPhotons.filter(p => p.x < fiberEnd);
+
+    // Update PMT flashes
+    pmtFlashes.forEach(f => f.life--);
+    pmtFlashes = pmtFlashes.filter(f => f.life > 0);
+
+    // Move electrical PMT pulses
+    pmtPulses.forEach(p => {
+      p.x += p.speed;
+      p.t += 0.25;
+      p.alpha = Math.max(0, 1 - (p.x - 285) / 65);
+    });
+    pmtPulses = pmtPulses.filter(p => p.x < 350);
+  }
+
+  function draw(step) {
+    ctx.clearRect(0, 0, width, height);
+
+    // Coordinate constants
+    const centerY = height / 2;
+    const psdCenterX = 90;
+    const psdWidth = 36;
+    const psdHeight = 52;
+    
+    const fiberX = psdCenterX + psdWidth/2;
+    const fiberW = 150;
+    const fiberH = 22;
+
+    const pmtX = fiberX + fiberW;
+    const pmtW = 38;
+    const pmtH = 40;
+
+    // Define opacity scaling for step guidance
+    const beamOpacity = 1.0;
+    const psdOpacity = 1.0;
+    const fiberOpacity = (step >= 3) ? 1.0 : 0.18;
+    const pmtOpacity = (step >= 3) ? 1.0 : 0.18;
+    const signalOpacity = (step >= 3) ? 1.0 : 0.15;
+
+    // --- DRAW COMPONENT LABELS (MONO HUD) ---
+    ctx.font = '8.5px DM Mono, monospace';
+    ctx.textAlign = 'center';
+    
+    // Beam Label
+    ctx.fillStyle = `rgba(240, 168, 50, ${step === 1 ? 1.0 : 0.55})`;
+    ctx.fillText('Haz MV', 35, centerY - 32);
+
+    // PSD Label
+    ctx.fillStyle = `rgba(45, 212, 176, ${step <= 2 ? 1.0 : 0.65})`;
+    ctx.fillText('PSD', psdCenterX, centerY - 32);
+
+    // Fiber Label
+    ctx.fillStyle = `rgba(91, 156, 246, ${step === 3 ? 1.0 : 0.55 * fiberOpacity})`;
+    ctx.fillText('fibra', fiberX + fiberW/2, centerY - 15);
+
+    // PMT Label
+    ctx.fillStyle = `rgba(167, 139, 250, ${step === 3 ? 1.0 : 0.55 * pmtOpacity})`;
+    ctx.fillText('PMT', pmtX + pmtW/2, centerY - 25);
+
+    // Digital Screen Label
+    ctx.fillStyle = `rgba(255, 255, 255, ${step >= 4 ? 0.85 : 0.35})`;
+    ctx.fillText('Dosis?', pmtX + pmtW + 22 + 21, centerY - 18);
+
+    // --- DRAW PHYSICAL SHAPES ---
+
+    // 1. The Fiber Optic cladding
+    ctx.save();
+    ctx.globalAlpha = fiberOpacity;
+    ctx.strokeStyle = 'rgba(91, 156, 246, 0.38)';
+    ctx.fillStyle = 'rgba(91, 156, 246, 0.04)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.roundRect(fiberX, centerY - fiberH/2, fiberW, fiberH, 2);
+    ctx.fill();
+    ctx.stroke();
+    ctx.restore();
+
+    // 2. PMT Body
+    ctx.save();
+    ctx.globalAlpha = pmtOpacity;
+    ctx.strokeStyle = 'rgba(167, 139, 250, 0.45)';
+    ctx.fillStyle = 'rgba(167, 139, 250, 0.1)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.roundRect(pmtX, centerY - pmtH/2, pmtW, pmtH, 6);
+    ctx.fill();
+    ctx.stroke();
+    // Grid lines inside PMT
+    ctx.strokeStyle = 'rgba(167, 139, 250, 0.2)';
+    ctx.lineWidth = 1;
+    for (let lx = pmtX + 8; lx < pmtX + pmtW; lx += 8) {
+      ctx.beginPath();
+      ctx.moveTo(lx, centerY - pmtH/2 + 2);
+      ctx.lineTo(lx, centerY + pmtH/2 - 2);
+      ctx.stroke();
+    }
+    ctx.restore();
+
+    // 3. PMT to Display connection (Signal Cable)
+    ctx.save();
+    ctx.globalAlpha = signalOpacity;
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(pmtX + pmtW, centerY);
+    ctx.lineTo(pmtX + pmtW + 22, centerY);
+    ctx.stroke();
+    ctx.restore();
+
+    // 4. Digital Display Unit (calculated dose)
+    ctx.save();
+    ctx.globalAlpha = (step >= 4) ? 1.0 : 0.25;
+    const dispX = pmtX + pmtW + 22;
+    const dispW = 42;
+    const dispH = 26;
+    ctx.fillStyle = '#131618';
+    ctx.strokeStyle = (step >= 4) ? (quenchingPct === 0 ? 'var(--teal)' : 'rgba(232, 85, 85, 0.5)') : 'var(--border)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.roundRect(dispX, centerY - dispH/2, dispW, dispH, 5);
+    ctx.fill();
+    ctx.stroke();
+    
+    // Draw calculated value in display
+    ctx.fillStyle = (step >= 4) ? (quenchingPct === 0 ? 'var(--teal)' : 'var(--red)') : 'var(--text3)';
+    ctx.font = '10px DM Mono, monospace';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(`${100 - quenchingPct}`, dispX + dispW/2, centerY);
+    ctx.restore();
+
+    // 5. Scintillator (PSD Cylinder)
+    ctx.save();
+    ctx.globalAlpha = psdOpacity;
+    // Back ellipse
+    ctx.fillStyle = 'rgba(45, 212, 176, 0.25)';
+    ctx.strokeStyle = 'rgba(45, 212, 176, 0.5)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.ellipse(psdCenterX, centerY + psdHeight/2, psdWidth/2, 6, 0, 0, 2*Math.PI);
+    ctx.fill();
+    ctx.stroke();
+    
+    // Cylinder body
+    const psdGradient = ctx.createLinearGradient(psdCenterX - psdWidth/2, centerY, psdCenterX + psdWidth/2, centerY);
+    psdGradient.addColorStop(0, 'rgba(26, 143, 120, 0.25)');
+    psdGradient.addColorStop(0.3, 'rgba(45, 212, 176, 0.1)');
+    psdGradient.addColorStop(0.7, 'rgba(45, 212, 176, 0.3)');
+    psdGradient.addColorStop(1, 'rgba(26, 143, 120, 0.45)');
+    
+    ctx.fillStyle = psdGradient;
+    ctx.beginPath();
+    ctx.moveTo(psdCenterX - psdWidth/2, centerY - psdHeight/2);
+    ctx.lineTo(psdCenterX + psdWidth/2, centerY - psdHeight/2);
+    ctx.lineTo(psdCenterX + psdWidth/2, centerY + psdHeight/2);
+    ctx.lineTo(psdCenterX - psdWidth/2, centerY + psdHeight/2);
+    ctx.closePath();
+    ctx.fill();
+    
+    // Left and right vertical borders
+    ctx.strokeStyle = 'rgba(45, 212, 176, 0.45)';
+    ctx.beginPath();
+    ctx.moveTo(psdCenterX - psdWidth/2, centerY - psdHeight/2);
+    ctx.lineTo(psdCenterX - psdWidth/2, centerY + psdHeight/2);
+    ctx.moveTo(psdCenterX + psdWidth/2, centerY - psdHeight/2);
+    ctx.lineTo(psdCenterX + psdWidth/2, centerY + psdHeight/2);
+    ctx.stroke();
+
+    // Top cap
+    ctx.fillStyle = 'rgba(45, 212, 176, 0.4)';
+    ctx.strokeStyle = 'rgba(45, 212, 176, 0.6)';
+    ctx.beginPath();
+    ctx.ellipse(psdCenterX, centerY - psdHeight/2, psdWidth/2, 6, 0, 0, 2*Math.PI);
+    ctx.fill();
+    ctx.stroke();
+    ctx.restore();
+
+    // --- ANIMATED PARTICLES DRAWING ---
+
+    // 6. Draw beam particles (electrons)
+    ctx.save();
+    beamParticles.forEach(p => {
+      ctx.fillStyle = `rgba(240, 168, 50, ${beamOpacity})`;
+      ctx.shadowColor = 'rgba(240, 168, 50, 0.7)';
+      ctx.shadowBlur = 6;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size, 0, 2 * Math.PI);
+      ctx.fill();
+    });
+    ctx.restore();
+
+    // 7. Draw PSD molecular excitations
+    ctx.save();
+    PSDExcitations.forEach(e => {
+      const alpha = e.life / e.maxLife;
+      ctx.strokeStyle = `rgba(45, 212, 176, ${alpha})`;
+      ctx.shadowColor = 'rgba(45, 212, 176, 0.8)';
+      ctx.shadowBlur = 8;
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.arc(e.x, e.y, e.size * (1 + (1-alpha)*0.6), 0, 2 * Math.PI);
+      ctx.stroke();
+      
+      // Small core
+      ctx.fillStyle = `rgba(255, 255, 255, ${alpha * 0.9})`;
+      ctx.beginPath();
+      ctx.arc(e.x, e.y, 1.5, 0, 2*Math.PI);
+      ctx.fill();
+    });
+    ctx.restore();
+
+    // 8. Draw heat loss particles (Quenching)
+    ctx.save();
+    heatLosses.forEach(h => {
+      ctx.fillStyle = `rgba(232, 85, 85, ${h.alpha * 0.85})`;
+      ctx.beginPath();
+      ctx.arc(h.x, h.y, h.size, 0, 2 * Math.PI);
+      ctx.fill();
+    });
+    ctx.restore();
+
+    // 9. Draw photons in fiber optic
+    ctx.save();
+    ctx.globalAlpha = fiberOpacity;
+    fiberPhotons.forEach(p => {
+      ctx.fillStyle = `rgba(45, 212, 176, ${p.alpha})`;
+      ctx.shadowColor = 'rgba(45, 212, 176, 0.9)';
+      ctx.shadowBlur = 6;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size, 0, 2 * Math.PI);
+      ctx.fill();
+    });
+    ctx.restore();
+
+    // 10. Draw PMT cathode flashes
+    ctx.save();
+    ctx.globalAlpha = pmtOpacity;
+    pmtFlashes.forEach(f => {
+      const rad = 14 * (1 - f.life / 12);
+      ctx.strokeStyle = `rgba(255, 255, 255, ${f.life / 12})`;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.arc(f.x, f.y, rad, -Math.PI/2, Math.PI/2);
+      ctx.stroke();
+    });
+    ctx.restore();
+
+    // 11. Draw PMT electrical signal pulses
+    ctx.save();
+    ctx.globalAlpha = signalOpacity;
+    pmtPulses.forEach(p => {
+      ctx.strokeStyle = `rgba(240, 168, 50, ${p.alpha * 0.9})`;
+      ctx.lineWidth = 2;
+      ctx.shadowColor = 'rgba(240, 168, 50, 0.7)';
+      ctx.shadowBlur = 4;
+      
+      ctx.beginPath();
+      for (let offset = -8; offset <= 8; offset += 0.5) {
+        const cx = p.x + offset;
+        const cy = p.y + Math.sin((p.x - cx) * 0.8 + p.t) * 4 * Math.cos(offset / 10);
+        if (offset === -8) {
+          ctx.moveTo(cx, cy);
+        } else {
+          ctx.lineTo(cx, cy);
+        }
+      }
+      ctx.stroke();
+    });
+    ctx.restore();
+  }
+
+  // Start loop
+  animate();
+})();
+</script>
+<script src="navigation.js"></script>
+</body>
+</html>

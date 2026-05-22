@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quenching en detectores de centelleo plástico - El Defecto Oculto</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div id="deck">
+
+<div class="slide" id="slide-3">
+  <div class="slide-num">3 / 24</div>
+  <div class="slide-eyebrow">Capítulo 1 · El detector ideal</div>
+  <h2 class="slide-title">El Defecto Oculto: <em>Quenching</em></h2>
+  <p class="slide-subtitle">La presunción de idealidad del centelleador plástico ocultaba un fenómeno de pérdida sistemática de luz por alta densidad de energía.</p>
+  <div class="persona-row">
+    <span class="persona-tag pt-marcos">Física Básica</span>
+  </div>
+
+  <div class="two-col stretch">
+    <div class="col-stretch" style="gap: 16px;">
+      <div class="card card-red reveal-item card-stretch" data-step="1">
+        <div class="card-label">Quenching de Ionización</div>
+        <p style="font-size: 17px; color: var(--text2); line-height: 1.6;">
+          Es la pérdida de eficiencia luminosa que ocurre en el material cuando la energía se deposita de manera muy concentrada. Aunque el volumen sensible absorbe la dosis correctamente en términos de energía física, **no toda esa energía se traduce en emisión de luz**.
+        </p>
+      </div>
+
+      <div class="card reveal-item card-stretch" data-step="2">
+        <div class="card-label">El supuesto en haces clínicos de fotones MV</div>
+        <p style="font-size: 17px; color: var(--text2); line-height: 1.6;">
+          En la práctica clínica más común (haces de fotones de megavoltaje, como 6 MV o 15 MV), la comunidad médica y de dosimetría **asumía implícitamente que el quenching de ionización era inexistente** o enteramente despreciable debido a la alta energía del haz.
+        </p>
+      </div>
+    </div>
+
+    <div class="reveal-item col-stretch" data-step="3" style="gap: 16px;">
+      <div class="card card-teal card-stretch">
+        <div class="card-label">La discordancia metrológica</div>
+        <p style="font-size: 17px; color: var(--text2); line-height: 1.6; margin-bottom: 12px;">
+          Esta subestimación del quenching creaba una brecha teórica: el detector es ideal en composición química y volumen, pero miente en su respuesta óptica a nivel espectral de bajas energías.
+        </p>
+        <div style="background: var(--bg4); border-radius: 8px; padding: 12px; border-left: 3px solid var(--red);">
+          <span style="font-family: var(--mono); font-size: 13.5px; color: var(--red);">Consecuencia física:</span>
+          <div style="font-size: 17px; margin-top: 4px; color: var(--text);">
+            La dosis física absorbida es mayor que la dosis ópticamente reportada: $D_{\text{abs}} > D_{\text{opt}}$
+          </div>
+        </div>
+      </div>
+
+      <div class="callout red reveal-item" data-step="4">
+        <strong>Transición:</strong> Para comprender por qué este supuesto clínico de que el quenching "no existe" en megavoltaje es incorrecto, es crucial desmenuzar las etapas físicas del centelleo.
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<div id="nav">
+  <button id="btn-prev">←</button>
+  <div class="nav-dots" id="nav-dots"></div>
+  <span id="nav-counter"></span>
+  <button id="btn-next">→</button>
+</div>
+
+<script src="navigation.js"></script>
+</body>
+</html>

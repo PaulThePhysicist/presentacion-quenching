@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quenching en detectores de centelleo plástico - Linealidad vs Interferencia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div id="deck">
+
+<div class="slide" id="slide-5">
+  <div class="slide-num">5 / 24</div>
+  <div class="slide-eyebrow">Capítulo 2 · ¿Qué es el quenching?</div>
+  <h2 class="slide-title">Linealidad vs <em>Interferencia</em></h2>
+  <p class="slide-subtitle">La base de la dosimetría reside en la proporcionalidad, pero el quenching introduce interacciones destructivas.</p>
+  <div class="persona-row">
+    <span class="persona-tag pt-marcos">Física Básica</span>
+  </div>
+
+  <div class="two-col stretch">
+    <div class="col-stretch" style="gap: 16px;">
+      <div class="card card-teal reveal-item card-stretch" data-step="1">
+        <div class="card-label">Condiciones ideales: Linealidad</div>
+        <p style="font-size: 16.5px; color: var(--text2); line-height: 1.6;">
+          En condiciones ideales, la intensidad luminosa es **directamente proporcional a la dosis absorbida**. Cada molécula excitada actúa de forma aislada e independiente, emitiendo un fotón al desexcitarse:
+        </p>
+        <div style="background: var(--bg4); border-radius: 8px; padding: 12px; margin-top: 8px; text-align: center; font-family: var(--mono); color: var(--teal); font-size: 18px;">
+          $\text{Luz emitida} \propto \text{Dosis absorbida}$
+        </div>
+      </div>
+
+      <div class="card card-red reveal-item card-stretch" data-step="2">
+        <div class="card-label">El origen de la interferencia</div>
+        <p style="font-size: 16.5px; color: var(--text2); line-height: 1.6;">
+          Cuando la densidad de ionización es localmente muy alta, las moléculas se excitan **en extrema proximidad**. Al estar tan juntas, interactúan entre sí en lugar de actuar independientemente, rompiendo la proporcionalidad.
+        </p>
+      </div>
+    </div>
+
+    <div class="reveal-item col-stretch" data-step="3" style="gap: 16px;">
+      <div class="card card-stretch">
+        <div class="card-label">Vías de desexcitación no radiativas</div>
+        <p style="font-size: 16.5px; color: var(--text2); line-height: 1.6; margin-bottom: 12px;">
+          En lugar de emitir luz, la proximidad espacial de las excitaciones favorece la disipación de la energía a través de vías alternativas no ópticas:
+        </p>
+        
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <div style="display: flex; gap: 10px; align-items: flex-start; background: rgba(240, 168, 50, 0.05); padding: 10px; border-radius: 8px; border: 1px solid rgba(240, 168, 50, 0.15);">
+            <div style="color: var(--amber); font-weight: bold; font-size: 20px; line-height: 1;">~</div>
+            <div style="font-size: 15px; color: var(--text2); line-height: 1.45;">
+              <strong style="color: var(--text);">Vibración Térmica:</strong> La energía se disipa como calor o vibraciones en la red polimérica. El fotón simplemente no nace.
+            </div>
+          </div>
+          
+          <div style="display: flex; gap: 10px; align-items: flex-start; background: rgba(232, 85, 85, 0.05); padding: 10px; border-radius: 8px; border: 1px solid rgba(232, 85, 85, 0.15);">
+            <div style="color: var(--red); font-weight: bold; font-size: 20px; line-height: 1;">×</div>
+            <div style="font-size: 15px; color: var(--text2); line-height: 1.45;">
+              <strong style="color: var(--text);">Aniquilación Singlete-Singlete:</strong> Colisiones de excitaciones moleculares que degradan la energía en estados de no centelleo.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout red reveal-item" data-step="4">
+        <strong>Importante:</strong> Esta pérdida sistemática significa que la respuesta óptica no es un fiel reflejo de la dosis si el espectro de energía local de las partículas secundarias favorece estas vías destructivas.
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<div id="nav">
+  <button id="btn-prev">←</button>
+  <div class="nav-dots" id="nav-dots"></div>
+  <span id="nav-counter"></span>
+  <button id="btn-next">→</button>
+</div>
+
+<script src="navigation.js"></script>
+</body>
+</html>

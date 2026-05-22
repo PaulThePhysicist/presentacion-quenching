@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quenching en detectores de centelleo plástico - La Paradoja: ¿Es Universal?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div id="deck">
+
+<div class="slide" id="slide-18">
+  <div class="slide-num">18 / 24</div>
+  <div class="slide-eyebrow">Capítulo 6 · El hallazgo de Gingras</div>
+  <h2 class="slide-title">La Paradoja: ¿Es <em>Universal</em>?</h2>
+  <p class="slide-subtitle">El TRS-483 tenía razón, pero por las razones físicas equivocadas.</p>
+  <div class="persona-row">
+    <span class="persona-tag pt-marcos">Pregunta Clave</span>
+  </div>
+
+  <div class="two-col stretch">
+    <div class="col-stretch" style="gap: 12px;">
+      <div class="card card-red reveal-item card-stretch" data-step="1">
+        <div class="card-label">La Paradoja Física</div>
+        <p style="font-size: 16px; color: var(--text2); line-height: 1.55;">
+          El factor de corrección unitario ($k \approx 1$) prescrito por la IAEA en el protocolo <strong>TRS-483</strong> no se debe a que el detector sea perfectamente "agua-equivalente" e inerte. Se debe a que dos defectos de signo opuesto se compensan dinámicamente.
+        </p>
+      </div>
+      
+      <div class="card card-teal reveal-item card-stretch" data-step="2">
+        <div class="card-label">Consecuencia Crítica</div>
+        <p style="font-size: 16px; color: var(--text2); line-height: 1.55;">
+          Dos imperfecciones reales (la perturbación del material plástico y la pérdida de luz por quenching) se cancelan. <strong>Una coincidencia instrumental, no una propiedad fundamental.</strong>
+        </p>
+      </div>
+    </div>
+
+    <div class="col-stretch" style="gap: 12px;">
+      <div class="card card-amber reveal-item card-stretch" style="padding: 16px;">
+        <div class="card-label" style="color: var(--amber); text-transform: uppercase; letter-spacing: 0.05em; font-size: 11px; font-family: var(--mono); margin-bottom: 6px;">La Pregunta Abierta</div>
+        <p style="font-size: 16.5px; color: var(--text); line-height: 1.55; font-weight: 500; font-style: italic; margin-bottom: 10px;">
+          "¿Es esta compensación universal para cualquier centelleador plástico o es un comportamiento exclusivo del BCF-60?"
+        </p>
+        <p style="font-size: 14.5px; color: var(--text2); line-height: 1.5;">
+          Si cambiamos el polímero base, el tipo de fluoróforo o la concentración, la relación entre $P_{\text{scint}}$ y $k_{\text{ioq}}$ cambia, pudiendo romper la compensación y hacer que el detector mienta sin aviso previo.
+        </p>
+      </div>
+      
+      <div class="callout reveal-item" data-step="4" style="font-size: 13.5px;">
+        <strong>Importante:</strong> No podemos asumir que un nuevo material para el detector de Blue Physics se comportará con corrección unitaria sin simular primero su respuesta espectral.
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<div id="nav">
+  <button id="btn-prev">←</button>
+  <div class="nav-dots" id="nav-dots"></div>
+  <span id="nav-counter"></span>
+  <button id="btn-next">→</button>
+</div>
+
+<script src="navigation.js"></script>
+</body>
+</html>

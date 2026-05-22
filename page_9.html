@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quenching en detectores de centelleo plástico - Sensibilidad Metodológica</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+  .controls-disabled {
+    opacity: 0.35;
+    pointer-events: none;
+  }
+  .hud-badge {
+    font-size: 10px;
+    font-family: var(--mono);
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 1px solid rgba(255,255,255,0.05);
+    transition: all 0.2s ease;
+  }
+  .hud-badge.green {
+    background: var(--teal-dim);
+    color: var(--teal);
+    border-color: rgba(45, 212, 176, 0.25);
+    box-shadow: 0 0 8px rgba(45, 212, 176, 0.15);
+  }
+  .hud-badge.red {
+    background: var(--red-dim);
+    color: var(--red);
+    border-color: rgba(232, 85, 85, 0.25);
+    box-shadow: 0 0 8px rgba(232, 85, 85, 0.15);
+  }
+  .hud-badge.amber {
+    background: var(--amber-dim);
+    color: var(--amber);
+    border-color: rgba(240, 168, 50, 0.25);
+    box-shadow: 0 0 8px rgba(240, 168, 50, 0.15);
+  }
+  .canvas-stretch-wrapper {
+    background: radial-gradient(circle at 50% 50%, #0d1216 0%, #050709 100%) !important;
+    border: 1px solid rgba(45, 212, 176, 0.15) !important;
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8), 0 0 15px rgba(45, 212, 176, 0.03);
+    border-radius: 12px !important;
+    position: relative;
+  }
+  .canvas-stretch-wrapper::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%),
+                linear-gradient(90deg, rgba(45, 212, 176, 0.02), rgba(240, 168, 50, 0.01), rgba(232, 85, 85, 0.02));
+    background-size: 100% 4px, 6px 100%;
+    opacity: 0.18;
+    pointer-events: none;
+    z-index: 2;
+  }
+  .canvas-stretch-wrapper::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 50%;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0) 100%);
+    pointer-events: none;
+    z-index: 4;
+  }
+  #kb-slider {
+    background: rgba(255, 255, 255, 0.05) !important;
+    height: 6px !important;
+    border-radius: 3px !important;
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+    transition: all 0.2s ease;
+  }
+  #kb-slider::-webkit-slider-thumb {
+    width: 14px !important;
+    height: 14px !important;
+    background: var(--teal) !important;
+    border: 2px solid #0d0f10 !important;
+    box-shadow: 0 0 6px rgba(45, 212, 176, 0.4) !important;
+    transition: all 0.2s ease;
+  }
+  #kb-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.15);
+    background: #ffffff !important;
+    box-shadow: 0 0 10px rgba(45, 212, 176, 0.8) !important;
+  }
+  #kb-controls-container {
+    background: rgba(26, 30, 34, 0.5) !important;
+    border: 1px solid rgba(255,255,255,0.04) !important;
+    backdrop-filter: blur(8px);
+    border-color: rgba(45, 212, 176, 0.25) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+</style>
+</head>
+<body>
+
+<div id="deck">
+
+<div class="slide" id="slide-9" style="padding-top: 18px; padding-bottom: 18px;">
+  <div class="slide-num">9 / 24</div>
+  <div class="slide-eyebrow" style="margin-bottom: 4px;">Capítulo 3 · La ley de Birks</div>
+  <h2 class="slide-title" style="margin-bottom: 4px; font-size: clamp(28px, 3.5vw, 42px);">Sensibilidad <em>Metodológica</em></h2>
+  <p class="slide-subtitle" style="margin-bottom: 6px; font-size: 15px;">El coeficiente $k_B$ es altamente sensible a las condiciones bajo las cuales se extrae.</p>
+  <div class="persona-row" style="margin-bottom: 8px;">
+    <span class="persona-tag pt-mc" style="padding: 2px 8px; font-size: 11.5px;">Contexto Clínico</span>
+    <span class="persona-tag pt-marcos" style="padding: 2px 8px; font-size: 11.5px;">Fundamento Teórico</span>
+  </div>
+
+  <div class="two-col stretch" style="grid-template-columns: 1fr 1.2fr; gap: 12px;">
+    <div class="col-stretch" style="gap: 8px;">
+      <div class="card card-teal reveal-item card-stretch" data-step="1" style="padding: 10px 14px; flex: 1.1;">
+        <div class="card-label" style="font-size: 10.5px; margin-bottom: 6px;">¿Por qué tanta variación?</div>
+        <p style="font-size: 13.5px; color: var(--text2); line-height: 1.45;">
+          La dispersión del $k_B$ en la literatura no es una variación del material real. Se debe a que su extracción depende de:
+        </p>
+        <ul class="nice" style="gap: 4px; font-size: 12.5px; margin-top: 6px; padding-left: 12px;">
+          <li style="font-size: 12.5px; padding-left: 16px;">El código Monte Carlo y los cortes de transporte utilizados.</li>
+          <li style="font-size: 12.5px; padding-left: 16px;">El rango de energías de las partículas cubierto en el ajuste.</li>
+          <li style="font-size: 12.5px; padding-left: 16px;">La consideración de los electrones secundarios o de la radiación delta.</li>
+        </ul>
+      </div>
+
+      <div class="card card-amber reveal-item card-stretch" data-step="2" style="padding: 10px 14px; flex: 0.9;">
+        <div class="card-label" style="font-size: 10.5px; margin-bottom: 6px;">Implicaciones para MDSIM1</div>
+        <p style="font-size: 13.5px; color: var(--text2); line-height: 1.45;">
+          El material de Blue Physics no tiene su $k_B$ determinado experimentalmente. En MDSIM1 partimos del valor de referencia del BCF-60 ($0.019\text{ g}\cdot\text{cm}^{-2}\cdot\text{MeV}^{-1}$) y realizamos un análisis de sensibilidad. Medir este coeficiente in-house será eventualmente necesario.
+        </p>
+      </div>
+
+      <div class="callout reveal-item" data-step="3" style="padding: 8px 12px; font-size: 13px; margin-top: 2px;">
+        <strong>Nota:</strong> Mover el slider permite apreciar visualmente cómo pequeñas variaciones en $k_B$ cambian radicalmente la respuesta de centelleo.
+      </div>
+    </div>
+
+    <!-- Panel de gráfica interactiva -->
+    <div class="reveal-item col-stretch" data-step="4" style="gap: 8px;">
+      <div class="card card-stretch" style="display: flex; flex-direction: column; gap: 8px; min-height: 280px; justify-content: space-between; padding: 10px 14px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0;">
+          <div class="card-label" style="margin-bottom: 0; font-size: 10.5px;">Gráfico Interactivo: Análisis de Sensibilidad</div>
+          <div id="quench-badge" class="hud-badge amber" style="pointer-events: none; flex-shrink: 0;">
+            Quenching Moderado
+          </div>
+        </div>
+        
+        <!-- HUD de Parámetros -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; background: var(--bg3); padding: 6px; border-radius: 8px; border: 1px solid var(--border);">
+          <div style="text-align: center;">
+            <div style="font-size: 8.5px; color: var(--text3); font-family: var(--mono); text-transform: uppercase;">Coeficiente k_B</div>
+            <div id="hud-kb" style="font-size: 12.5px; font-family: var(--mono); color: var(--teal); font-weight: bold; margin-top: 1px;">0.019 g/cm²/MeV</div>
+          </div>
+          <div style="text-align: center; border-left: 1px solid var(--border);">
+            <div style="font-size: 8.5px; color: var(--text3); font-family: var(--mono); text-transform: uppercase;">Pérdida a 10 keV</div>
+            <div id="hud-loss" style="font-size: 12.5px; font-family: var(--mono); color: var(--red); font-weight: bold; margin-top: 1px;">-29.5%</div>
+          </div>
+        </div>
+
+        <!-- Canvas -->
+        <div class="canvas-stretch-wrapper" style="min-height: 150px;">
+          <canvas id="birks-canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: block; z-index: 3;"></canvas>
+        </div>
+
+        <!-- Slider de Control de k_B -->
+        <div id="kb-controls-container" style="display: flex; flex-direction: column; gap: 4px; background: var(--bg3); padding: 6px 10px; border-radius: 8px; border: 1px solid var(--border); transition: opacity 0.3s;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px;">
+            <span style="font-size: 10.5px; font-family: var(--mono); color: var(--text2);">Ajustar Coeficiente k_B:</span>
+            <span id="kb-slider-val-disp" style="font-size: 11px; font-family: var(--mono); color: var(--teal); font-weight: bold;">0.019</span>
+          </div>
+          <input type="range" id="kb-slider" min="2" max="30" step="1" value="19" style="width: 100%; cursor: pointer;">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<div id="nav">
+  <button id="btn-prev">←</button>
+  <div class="nav-dots" id="nav-dots"></div>
+  <span id="nav-counter"></span>
+  <button id="btn-next">→</button>
+</div>
+
+<script src="navigation.js"></script>
+<script>
+(function() {
+  const canvas = document.getElementById('birks-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  
+  let width = 0;
+  let height = 0;
+  let dpr = window.devicePixelRatio || 1;
+
+  // State
+  let kB = 0.019; // reference value for BCF-60
+  let mouseX = -1;
+  let mouseY = -1;
+  let isHovered = false;
+
+  // DOM elements
+  const slider = document.getElementById('kb-slider');
+  const sliderDisp = document.getElementById('kb-slider-val-disp');
+  const hudKB = document.getElementById('hud-kb');
+  const hudLoss = document.getElementById('hud-loss');
+  const badge = document.getElementById('quench-badge');
+
+  const wrapper = canvas.parentElement;
+  const resizeObserver = new ResizeObserver(entries => {
+    for (let entry of entries) {
+      dpr = window.devicePixelRatio || 1;
+      const rect = wrapper.getBoundingClientRect();
+      width = Math.round(rect.width);
+      height = Math.round(rect.height);
+      
+      canvas.style.width = width + 'px';
+      canvas.style.height = height + 'px';
+      
+      canvas.width = Math.round(width * dpr);
+      canvas.height = Math.round(height * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+  });
+  if (wrapper) {
+    resizeObserver.observe(wrapper);
+  }
+
+  canvas.addEventListener('mousemove', function(e) {
+    const rect = canvas.getBoundingClientRect();
+    mouseX = e.clientX - rect.left;
+    mouseY = e.clientY - rect.top;
+    isHovered = true;
+  });
+
+  canvas.addEventListener('mouseleave', function() {
+    isHovered = false;
+    mouseX = -1;
+    mouseY = -1;
+  });
+
+  if (slider) {
+    slider.addEventListener('input', function() {
+      // 2 to 30 maps to kB from 0.002 to 0.030
+      kB = parseInt(this.value, 10) / 1000;
+      updateUI();
+    });
+  }
+
+  function drawRoundRect(x, y, w, h, r) {
+    if (w < 2 * r) r = w / 2;
+    if (h < 2 * r) r = h / 2;
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+  }
+
+  function updateUI() {
+    if (sliderDisp) sliderDisp.textContent = kB.toFixed(3);
+    
+    // Calculate loss at 10 keV (dE/dx = 22)
+    const idealVal = 22;
+    const realVal = 22 / (1 + kB * 22);
+    const loss = ((1 - realVal / idealVal) * 100);
+    
+    if (hudKB) {
+      hudKB.textContent = kB.toFixed(3) + " g/cm²/MeV";
+      if (kB <= 0.010) {
+        hudKB.style.color = "var(--teal)";
+        hudKB.style.textShadow = "0 0 8px rgba(45, 212, 176, 0.45)";
+      } else if (kB < 0.025) {
+        hudKB.style.color = "var(--amber)";
+        hudKB.style.textShadow = "0 0 8px rgba(240, 168, 50, 0.45)";
+      } else {
+        hudKB.style.color = "var(--red)";
+        hudKB.style.textShadow = "0 0 8px rgba(232, 85, 85, 0.45)";
+      }
+    }
+    
+    if (hudLoss) {
+      hudLoss.textContent = "-" + loss.toFixed(1) + "%";
+      if (loss < 15) {
+        hudLoss.style.color = "var(--teal)";
+        hudLoss.style.textShadow = "0 0 8px rgba(45, 212, 176, 0.45)";
+      } else if (loss < 35) {
+        hudLoss.style.color = "var(--amber)";
+        hudLoss.style.textShadow = "0 0 8px rgba(240, 168, 50, 0.45)";
+      } else {
+        hudLoss.style.color = "var(--red)";
+        hudLoss.style.textShadow = "0 0 8px rgba(232, 85, 85, 0.45)";
+      }
+    }
+
+    if (badge) {
+      if (loss < 15) {
+        badge.textContent = "Quenching Leve";
+        badge.className = "hud-badge green";
+      } else if (loss < 35) {
+        badge.textContent = "Quenching Moderado";
+        badge.className = "hud-badge amber";
+      } else {
+        badge.textContent = "⚠️ Quenching Fuerte";
+        badge.className = "hud-badge red";
+      }
+    }
+  }
+
+  updateUI();
+
+  // Animation loop
+  function draw() {
+    if (width === 0 || height === 0) return;
+    ctx.clearRect(0, 0, width, height);
+
+    // Margins - matches Slide 7 to prevent text cutoffs
+    const mLeft = 48;
+    const mRight = 16;
+    const mTop = 28;
+    const mBottom = 40;
+
+    const graphWidth = width - mLeft - mRight;
+    const graphHeight = height - mTop - mBottom;
+
+    // Draw background subtle radial glow (shifts based on kB)
+    const radialGlow = ctx.createRadialGradient(
+      width / 2, height / 2, 10,
+      width / 2, height / 2, Math.max(width, height) / 1.3
+    );
+    
+    // We map color based on the current kB/loss
+    const idealVal = 22;
+    const realVal = 22 / (1 + kB * 22);
+    const loss = ((1 - realVal / idealVal) * 100);
+    
+    if (loss < 15) {
+      radialGlow.addColorStop(0, 'rgba(45, 212, 176, 0.08)');
+      radialGlow.addColorStop(0.5, 'rgba(45, 212, 176, 0.02)');
+    } else if (loss < 35) {
+      radialGlow.addColorStop(0, 'rgba(240, 168, 50, 0.07)');
+      radialGlow.addColorStop(0.5, 'rgba(45, 212, 176, 0.01)');
+    } else {
+      radialGlow.addColorStop(0, 'rgba(232, 85, 85, 0.07)');
+      radialGlow.addColorStop(0.5, 'rgba(240, 168, 50, 0.01)');
+    }
+    radialGlow.addColorStop(1, 'rgba(0, 0, 0, 0)');
+    ctx.fillStyle = radialGlow;
+    ctx.fillRect(0, 0, width, height);
+
+    // Corner telemetries
+    ctx.save();
+    ctx.font = '500 11px DM Mono, monospace';
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+    ctx.textBaseline = 'top';
+    ctx.textAlign = 'left';
+    ctx.fillText('[TELEM: BCF-60_SENSITIVITY]', Math.round(mLeft + 4), 8);
+    ctx.textAlign = 'right';
+    ctx.fillText('[RANGE: 0-24 MeV/(g/cm²)]', Math.round(width - mRight - 4), 8);
+    ctx.restore();
+
+    // Draw grid lines
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.025)';
+    ctx.lineWidth = 0.8;
+    const gridXValues = [];
+    const gridYValues = [];
+    for (let x_g = mLeft; x_g <= width - mRight; x_g += graphWidth / 6) {
+      gridXValues.push(x_g);
+      ctx.beginPath();
+      ctx.moveTo(Math.round(x_g), Math.round(mTop));
+      ctx.lineTo(Math.round(x_g), Math.round(height - mBottom));
+      ctx.stroke();
+    }
+    for (let y_g = mTop; y_g <= height - mBottom; y_g += graphHeight / 5) {
+      gridYValues.push(y_g);
+      ctx.beginPath();
+      ctx.moveTo(Math.round(mLeft), Math.round(y_g));
+      ctx.lineTo(Math.round(width - mRight), Math.round(y_g));
+      ctx.stroke();
+    }
+
+    // Draw small '+' cross hairs at grid intersections for telemetry look
+    ctx.save();
+    ctx.strokeStyle = 'rgba(45, 212, 176, 0.08)';
+    ctx.lineWidth = 0.8;
+    gridXValues.forEach(gx => {
+      gridYValues.forEach(gy => {
+        const rGx = Math.round(gx);
+        const rGy = Math.round(gy);
+        ctx.beginPath();
+        ctx.moveTo(rGx - 2.5, rGy);
+        ctx.lineTo(rGx + 2.5, rGy);
+        ctx.moveTo(rGx, rGy - 2.5);
+        ctx.lineTo(rGx, rGy + 2.5);
+        ctx.stroke();
+      });
+    });
+    ctx.restore();
+
+    // Physics parameters for plot
+    const maxDEDX = 24;
+    const maxLuz = 24;
+
+    // Helper conversion functions
+    function toPixelX(dedx) {
+      return mLeft + (dedx / maxDEDX) * graphWidth;
+    }
+    function toPixelY(luz) {
+      return height - mBottom - (luz / maxLuz) * graphHeight;
+    }
+    function toValueX(px) {
+      return ((px - mLeft) / graphWidth) * maxDEDX;
+    }
+
+    // Ticks and Labels on X Axis (0, 5, 10, 15, 20, 24)
+    ctx.font = '500 12px DM Mono, monospace';
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    const xTicks = [0, 5, 10, 15, 20, 24];
+    xTicks.forEach(tick => {
+      const px = Math.round(toPixelX(tick));
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.35)';
+      ctx.beginPath();
+      ctx.moveTo(px, Math.round(height - mBottom));
+      ctx.lineTo(px, Math.round(height - mBottom + 4));
+      ctx.stroke();
+      ctx.fillText(tick, px, Math.round(height - mBottom + 6));
+    });
+
+    // Ticks and Labels on Y Axis (5, 10, 15, 20, 24)
+    ctx.font = '500 12px DM Mono, monospace';
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    const yTicks = [5, 10, 15, 20, 24];
+    yTicks.forEach(tick => {
+      const py = Math.round(toPixelY(tick));
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.35)';
+      ctx.beginPath();
+      ctx.moveTo(Math.round(mLeft), py);
+      ctx.lineTo(Math.round(mLeft - 4), py);
+      ctx.stroke();
+      ctx.fillText(tick, Math.round(mLeft - 7), py);
+    });
+
+    // Draw coordinate axes
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.moveTo(Math.round(mLeft), Math.round(mTop - 5));
+    ctx.lineTo(Math.round(mLeft), Math.round(height - mBottom));
+    ctx.lineTo(Math.round(width - mRight + 5), Math.round(height - mBottom));
+    ctx.stroke();
+
+    // Draw axis arrows
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+    // Y arrow
+    ctx.beginPath();
+    ctx.moveTo(Math.round(mLeft - 2.5), Math.round(mTop - 5));
+    ctx.lineTo(Math.round(mLeft + 2.5), Math.round(mTop - 5));
+    ctx.lineTo(Math.round(mLeft), Math.round(mTop - 9));
+    ctx.closePath();
+    ctx.fill();
+    // X arrow
+    ctx.beginPath();
+    ctx.moveTo(Math.round(width - mRight + 5), Math.round(height - mBottom - 2.5));
+    ctx.lineTo(Math.round(width - mRight + 5), Math.round(height - mBottom + 2.5));
+    ctx.lineTo(Math.round(width - mRight + 9), Math.round(height - mBottom));
+    ctx.closePath();
+    ctx.fill();
+
+    // Axis Labels
+    ctx.font = '500 12px DM Mono, monospace';
+    ctx.fillStyle = '#ffffff';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('Luz', Math.round(mLeft), Math.round(mTop - 15));
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText('dE/dx (MeV·g⁻¹·cm²)', Math.round(mLeft + graphWidth/2), Math.round(height - mBottom + 22));
+
+    // Draw Quenched Zone Shading (dE/dx >= 3.5)
+    const xStart = toPixelX(3.5);
+    const xEnd = toPixelX(maxDEDX);
+    ctx.save();
+    const zoneGrad = ctx.createLinearGradient(xStart, 0, xEnd, 0);
+    zoneGrad.addColorStop(0, 'rgba(240, 168, 50, 0.03)');
+    zoneGrad.addColorStop(1, 'rgba(232, 85, 85, 0.08)');
+    ctx.fillStyle = zoneGrad;
+    ctx.fillRect(Math.round(xStart), Math.round(mTop), Math.round(xEnd - xStart), Math.round(graphHeight));
+
+    // Threshold dashed line at dE/dx = 3.5
+    ctx.strokeStyle = 'rgba(240, 168, 50, 0.35)';
+    ctx.lineWidth = 1.0;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(Math.round(xStart), Math.round(mTop));
+    ctx.lineTo(Math.round(xStart), Math.round(height - mBottom));
+    ctx.stroke();
+
+    // Threshold text label
+    ctx.setLineDash([]);
+    ctx.fillStyle = 'rgba(240, 168, 50, 0.85)';
+    ctx.font = '500 10px DM Mono, monospace';
+    ctx.textAlign = 'right';
+    ctx.fillText('≈125 keV', Math.round(xStart - 6), Math.round(mTop + 14));
+    ctx.restore();
+
+    // Draw Ideal response curve (dashed blue line)
+    ctx.save();
+    ctx.strokeStyle = 'rgba(91, 156, 246, 0.5)';
+    ctx.setLineDash([4, 4]);
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(Math.round(toPixelX(0)), Math.round(toPixelY(0)));
+    ctx.lineTo(Math.round(toPixelX(24)), Math.round(toPixelY(24)));
+    ctx.stroke();
+    ctx.restore();
+
+    // Curve gradient for Real Birks curve
+    const curveGrad = ctx.createLinearGradient(mLeft, 0, width - mRight, 0);
+    curveGrad.addColorStop(0.0, '#2dd4b0'); // cian/teal (quenched leves)
+    curveGrad.addColorStop(0.4, '#38dfa8');
+    curveGrad.addColorStop(0.7, '#f0a832'); // amber (quenched mod)
+    curveGrad.addColorStop(1.0, '#e85555'); // red (quenched fuerte)
+
+    // Draw Real Birks Curve (Triple Capa Neón)
+    // Pass 1: Neon Glow underlay
+    ctx.save();
+    ctx.strokeStyle = curveGrad;
+    ctx.lineWidth = 5.0;
+    ctx.shadowBlur = 12;
+    if (loss < 15) {
+      ctx.shadowColor = 'rgba(45, 212, 176, 0.65)';
+    } else if (loss < 35) {
+      ctx.shadowColor = 'rgba(240, 168, 50, 0.6)';
+    } else {
+      ctx.shadowColor = 'rgba(232, 85, 85, 0.6)';
+    }
+    ctx.globalAlpha = 0.3;
+    ctx.beginPath();
+    let first = true;
+    for (let dedx = 0; dedx <= maxDEDX; dedx += 0.2) {
+      const luz = dedx / (1 + kB * dedx);
+      const px = toPixelX(dedx);
+      const py = toPixelY(luz);
+      if (first) {
+        ctx.moveTo(px, py);
+        first = false;
+      } else {
+        ctx.lineTo(px, py);
+      }
+    }
+    ctx.stroke();
+    ctx.restore();
+
+    // Pass 2: Medium glowing core
+    ctx.save();
+    ctx.strokeStyle = curveGrad;
+    ctx.lineWidth = 2.8;
+    ctx.shadowBlur = 5;
+    if (loss < 15) {
+      ctx.shadowColor = 'rgba(45, 212, 176, 0.85)';
+    } else if (loss < 35) {
+      ctx.shadowColor = 'rgba(240, 168, 50, 0.8)';
+    } else {
+      ctx.shadowColor = 'rgba(232, 85, 85, 0.8)';
+    }
+    ctx.beginPath();
+    first = true;
+    for (let dedx = 0; dedx <= maxDEDX; dedx += 0.2) {
+      const luz = dedx / (1 + kB * dedx);
+      const px = toPixelX(dedx);
+      const py = toPixelY(luz);
+      if (first) {
+        ctx.moveTo(px, py);
+        first = false;
+      } else {
+        ctx.lineTo(px, py);
+      }
+    }
+    ctx.stroke();
+    ctx.restore();
+
+    // Pass 3: Crisp, sharp white/light-cyan core
+    ctx.save();
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.85)';
+    ctx.lineWidth = 1.0;
+    ctx.beginPath();
+    first = true;
+    for (let dedx = 0; dedx <= maxDEDX; dedx += 0.2) {
+      const luz = dedx / (1 + kB * dedx);
+      const px = toPixelX(dedx);
+      const py = toPixelY(luz);
+      if (first) {
+        ctx.moveTo(px, py);
+        first = false;
+      } else {
+        ctx.lineTo(px, py);
+      }
+    }
+    ctx.stroke();
+    ctx.restore();
+
+    // Draw Static Legend at top-left of the chart (clean and clear)
+    ctx.save();
+    const legX = Math.round(toPixelX(3.5) + 24);
+    const legY = mTop + 16;
+    ctx.font = '500 10px DM Mono, monospace';
+    ctx.textBaseline = 'middle';
+    ctx.textAlign = 'left';
+
+    // 1. Real (Birks)
+    ctx.strokeStyle = '#2dd4b0';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(legX, legY);
+    ctx.lineTo(legX + 15, legY);
+    ctx.stroke();
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+    ctx.fillText('Real (Birks)', legX + 22, legY);
+
+    // 2. Ideal (sin quenching)
+    ctx.strokeStyle = '#5b9cf6';
+    ctx.lineWidth = 1.2;
+    ctx.setLineDash([3, 2]);
+    ctx.beginPath();
+    ctx.moveTo(legX, legY + 14);
+    ctx.lineTo(legX + 15, legY + 14);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+    ctx.fillText('Ideal (sin quenching)', legX + 22, legY + 14);
+
+    // 3. Quenched region area indicator
+    ctx.fillStyle = 'rgba(240, 168, 50, 0.2)';
+    ctx.fillRect(legX, legY + 25, 15, 8);
+    ctx.strokeStyle = 'rgba(240, 168, 50, 0.5)';
+    ctx.lineWidth = 0.8;
+    ctx.strokeRect(legX, legY + 25, 15, 8);
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+    ctx.fillText('zona con quenching (<125 keV)', legX + 22, legY + 29);
+    ctx.restore();
+
+    // Draw Sonda a 10 keV (dE/dx = 22) - Pulsing probe particle
+    const probeX = 22;
+    const probeYReal = probeX / (1 + kB * probeX);
+    const probeYIdeal = probeX;
+    
+    const pPx = Math.round(toPixelX(probeX));
+    const pPyReal = Math.round(toPixelY(probeYReal));
+    const pPyIdeal = Math.round(toPixelY(probeYIdeal));
+
+    // Draw vertical dotted line from curve to X axis & curve to ideal curve
+    ctx.save();
+    ctx.strokeStyle = 'rgba(232, 85, 85, 0.35)';
+    ctx.setLineDash([2, 2]);
+    ctx.lineWidth = 1.0;
+    
+    // line from ideal to bottom axis
+    ctx.beginPath();
+    ctx.moveTo(pPx, pPyIdeal);
+    ctx.lineTo(pPx, Math.round(height - mBottom));
+    ctx.stroke();
+
+    // Highlight the gap (loss) in red
+    ctx.strokeStyle = '#e85555';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(pPx, pPyIdeal);
+    ctx.lineTo(pPx, pPyReal);
+    ctx.stroke();
+    ctx.restore();
+
+    // Draw pulsing probe dot
+    const pulse = Math.sin(Date.now() / 180) * 0.15 + 1.0;
+    const baseR = 5.5;
+    const radius = Math.round(baseR * pulse);
+
+    // Sonar expanding ring
+    const sonarElapsed = (Date.now() / 1200) % 1.0;
+    const sonarRadius = Math.round(baseR * (1 + sonarElapsed * 1.5));
+    const sonarOpacity = Math.max(0, 1 - sonarElapsed) * 0.5;
+
+    ctx.save();
+    ctx.strokeStyle = '#e85555';
+    ctx.globalAlpha = sonarOpacity;
+    ctx.lineWidth = 1.0;
+    ctx.beginPath();
+    ctx.arc(pPx, pPyReal, sonarRadius, 0, 2 * Math.PI);
+    ctx.stroke();
+    ctx.restore();
+
+    ctx.save();
+    // Halo
+    ctx.fillStyle = '#e85555';
+    ctx.globalAlpha = 0.15;
+    ctx.beginPath();
+    ctx.arc(pPx, pPyReal, Math.round(radius * 2.2), 0, 2 * Math.PI);
+    ctx.fill();
+
+    // Ring
+    ctx.globalAlpha = 0.5;
+    ctx.strokeStyle = '#e85555';
+    ctx.lineWidth = 1.0;
+    ctx.beginPath();
+    ctx.arc(pPx, pPyReal, Math.round(radius * 1.35), 0, 2 * Math.PI);
+    ctx.stroke();
+
+    // Core
+    ctx.globalAlpha = 1.0;
+    ctx.fillStyle = '#e85555';
+    ctx.shadowColor = '#e85555';
+    ctx.shadowBlur = 8;
+    ctx.beginPath();
+    ctx.arc(pPx, pPyReal, Math.round(radius * 0.85), 0, 2 * Math.PI);
+    ctx.fill();
+
+    // White dot
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = '#ffffff';
+    ctx.beginPath();
+    ctx.arc(pPx, pPyReal, Math.round(radius * 0.3), 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.restore();
+
+    // Label for probe particle
+    ctx.save();
+    ctx.font = '500 11px DM Mono, monospace';
+    const probeLabelText = `p⁺ 10 keV (Pérdida: -${loss.toFixed(1)}%)`;
+    const labelTextWidth = ctx.measureText(probeLabelText).width;
+    
+    ctx.fillStyle = 'rgba(10, 14, 18, 0.95)';
+    ctx.strokeStyle = 'rgba(232, 85, 85, 0.35)';
+    ctx.lineWidth = 1.0;
+    
+    const lW = Math.round(labelTextWidth + 12);
+    const lH = 20;
+    const lX = Math.round(pPx - lW - 10); // positioned to the left of the probe
+    const lY = Math.round(pPyReal - 10);
+    
+    drawRoundRect(lX, lY, lW, lH, 4);
+    ctx.fill();
+    ctx.stroke();
+    
+    ctx.fillStyle = '#ff6b6b';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(probeLabelText, Math.round(lX + lW / 2), Math.round(lY + lH / 2));
+    ctx.restore();
+
+    // Draw Interactive Crosshair & Tooltip Box
+    if (isHovered && mouseX >= mLeft && mouseX <= width - mRight && mouseY >= mTop && mouseY <= height - mBottom) {
+      const hoveredValX = toValueX(mouseX);
+      const yReal = hoveredValX / (1 + kB * hoveredValX);
+      const curvePx = toPixelX(hoveredValX);
+      const curvePy = toPixelY(yReal);
+
+      // Draw dotted crosshair Snapped to the curve
+      ctx.save();
+      ctx.strokeStyle = 'rgba(45, 212, 176, 0.3)';
+      ctx.setLineDash([2, 3]);
+      ctx.lineWidth = 0.8;
+      ctx.beginPath();
+      // Vertical crosshair
+      ctx.moveTo(Math.round(curvePx), Math.round(mTop));
+      ctx.lineTo(Math.round(curvePx), Math.round(height - mBottom));
+      // Horizontal crosshair
+      ctx.moveTo(Math.round(mLeft), Math.round(curvePy));
+      ctx.lineTo(Math.round(width - mRight), Math.round(curvePy));
+      ctx.stroke();
+      ctx.restore();
+
+      // Highlight point on the curve
+      ctx.save();
+      const pulseScale = 1 + 0.25 * Math.sin(Date.now() / 150);
+      const activeColor = (loss < 15) ? '#2dd4b0' : (loss < 35 ? '#f0a832' : '#e85555');
+      ctx.fillStyle = activeColor;
+      ctx.shadowColor = activeColor;
+      ctx.shadowBlur = 10;
+      ctx.beginPath();
+      ctx.arc(Math.round(curvePx), Math.round(curvePy), 5.5 * pulseScale, 0, 2 * Math.PI);
+      ctx.fill();
+
+      ctx.shadowBlur = 0;
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.arc(Math.round(curvePx), Math.round(curvePy), 2.2, 0, 2 * Math.PI);
+      ctx.fill();
+      ctx.restore();
+
+      // Calculate measurements
+      const yIdeal = hoveredValX;
+      const quenchingLoss = yIdeal > 0 ? ((1 - yReal / yIdeal) * 100) : 0;
+      
+      let regimeText = 'Atol. Leve';
+      let regimeColor = '#2dd4b0';
+      if (hoveredValX >= 3.5) {
+        regimeText = 'Zona Quenched';
+        regimeColor = '#f0a832';
+      }
+      if (quenchingLoss >= 35) {
+        regimeText = 'Quench Fuerte';
+        regimeColor = '#e85555';
+      }
+
+      // Render sleek glassmorphic physics HUD tooltip box
+      const boxW = 180;
+      const boxH = 100;
+      let boxX = curvePx + 14;
+      if (boxX + boxW > width - mRight) {
+        boxX = curvePx - boxW - 14;
+      }
+      let boxY = curvePy - boxH / 2;
+      if (boxY < mTop) boxY = mTop + 2;
+      if (boxY + boxH > height - mBottom) boxY = height - mBottom - boxH - 2;
+
+      boxX = Math.round(boxX);
+      boxY = Math.round(boxY);
+
+      ctx.save();
+      ctx.fillStyle = 'rgba(9, 13, 16, 0.95)';
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)';
+      ctx.lineWidth = 1.0;
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.7)';
+      ctx.shadowBlur = 12;
+
+      // Rounded glass box
+      drawRoundRect(boxX, boxY, boxW, boxH, 6);
+      ctx.fill();
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+
+      // Small header line in tooltip
+      ctx.font = '500 10px DM Mono, monospace';
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.65)';
+      ctx.textBaseline = 'top';
+      ctx.fillText('TELEMETRÍA: ATENUACIÓN BCF-60', Math.round(boxX + 12), Math.round(boxY + 12));
+
+      // Info text
+      ctx.font = '500 12px DM Mono, monospace';
+      ctx.textAlign = 'left';
+
+      // Line 1: dE/dx
+      ctx.fillStyle = '#b0acab';
+      ctx.fillText('dE/dx (LET) :', Math.round(boxX + 12), Math.round(boxY + 28));
+      ctx.fillStyle = '#ffffff';
+      ctx.fillText(`${hoveredValX.toFixed(2)} MeV`, Math.round(boxX + 98), Math.round(boxY + 28));
+
+      // Line 2: Luz
+      ctx.fillStyle = '#b0acab';
+      ctx.fillText('Luz (norm.) :', Math.round(boxX + 12), Math.round(boxY + 44));
+      ctx.fillStyle = activeColor;
+      ctx.fillText(`${yReal.toFixed(2)} u.a.`, Math.round(boxX + 98), Math.round(boxY + 44));
+
+      // Line 3: Quenching Loss
+      ctx.fillStyle = '#b0acab';
+      ctx.fillText('Pérdida Q.  :', Math.round(boxX + 12), Math.round(boxY + 60));
+      ctx.fillStyle = quenchingLoss === 0 ? '#2dd4b0' : (quenchingLoss < 15 ? '#2dd4b0' : (quenchingLoss < 35 ? '#f0a832' : '#e85555'));
+      ctx.fillText(`-${quenchingLoss.toFixed(1)}%`, Math.round(boxX + 98), Math.round(boxY + 60));
+
+      // Line 4: Regime
+      ctx.fillStyle = '#b0acab';
+      ctx.fillText('Estado      :', Math.round(boxX + 12), Math.round(boxY + 76));
+      ctx.fillStyle = regimeColor;
+      ctx.fillText(regimeText, Math.round(boxX + 98), Math.round(boxY + 76));
+
+      ctx.restore();
+    }
+  }
+
+  function animate() {
+    draw();
+    requestAnimationFrame(animate);
+  }
+  
+  animate();
+})();
+</script>
+</body>
+</html>

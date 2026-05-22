@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quenching en detectores de centelleo plástico - FRET: Más allá de Birks</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+  .controls-disabled {
+    opacity: 0.35;
+    pointer-events: none;
+  }
+  .hud-badge {
+    font-size: 10px;
+    font-family: var(--mono);
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 1px solid rgba(255,255,255,0.05);
+    transition: all 0.2s ease;
+  }
+  .hud-badge.green {
+    background: var(--teal-dim);
+    color: var(--teal);
+    border-color: rgba(45, 212, 176, 0.2);
+  }
+  .hud-badge.red {
+    background: var(--red-dim);
+    color: var(--red);
+    border-color: rgba(232, 85, 85, 0.2);
+  }
+  .hud-badge.blue {
+    background: var(--blue-dim);
+    color: var(--blue);
+    border-color: rgba(91, 156, 246, 0.2);
+  }
+  #fret-slider::-webkit-slider-thumb:hover {
+    background: var(--teal) !important;
+    box-shadow: 0 0 8px rgba(45, 212, 176, 0.6) !important;
+  }
+</style>
+</head>
+<body>
+
+<div id="deck">
+
+<div class="slide" id="slide-10">
+  <div class="slide-num">10 / 24</div>
+  <div class="slide-eyebrow">Capítulo 4 · Mecanismo molecular</div>
+  <h2 class="slide-title">FRET: Más allá de <em>Birks</em></h2>
+  <p class="slide-subtitle">Las limitaciones físicas del modelo empírico de Birks impulsaron un enfoque a nivel molecular.</p>
+  <div class="persona-row">
+    <span class="persona-tag pt-marcos">Fundamento Teórico</span>
+  </div>
+
+  <div class="two-col" style="grid-template-columns: 1fr 1.2fr; gap: 18px; flex: 1; min-height: 0;">
+    <!-- Columna izquierda: Descripción y Límites -->
+    <div style="display: flex; flex-direction: column; gap: 14px; height: 100%;">
+      <div class="card card-red reveal-item" data-step="1" style="flex: 1; display: flex; flex-direction: column; justify-content: flex-start; min-height: min-content;">
+        <div class="card-label">Límites de la Ley de Birks</div>
+        <p style="font-size: 15px; color: var(--text2); line-height: 1.45;">
+          Birks asume que el quenching es función únicamente del $dE/dx$. Sin embargo, para protones y iones de diferente especie con el **mismo LET ($dE/dx$)**, la luz producida difiere apreciablemente. Birks no puede modelar este efecto dependiente de la partícula.
+        </p>
+      </div>
+
+      <div class="card card-teal reveal-item" data-step="2" style="flex: 1; display: flex; flex-direction: column; justify-content: flex-start; min-height: min-content;">
+        <div class="card-label">El Modelo de Ogawa (2018)</div>
+        <p style="font-size: 15px; color: var(--text2); line-height: 1.45;">
+          Ogawa et al. propusieron modelar el quenching mediante el mecanismo cuántico **FRET** (<em>Förster Resonance Energy Transfer</em>). La energía se transfiere de forma no radiativa por acoplamiento dipolo-dipolo.
+        </p>
+      </div>
+
+      <div class="card card-blue reveal-item" data-step="3" style="padding: 14px 16px; flex: 1.2; display: flex; flex-direction: column; justify-content: flex-start; min-height: min-content;">
+        <div class="card-label" style="font-size: 12px; margin-bottom: 6px;">Cambio de Paradigma Físico</div>
+        <ul class="nice" style="gap: 6px; font-size: 13px; margin: 0; padding-left: 12px;">
+          <li>Calcula la posición espacial 3D de cada depósito de energía a nivel nanométrico.</li>
+          <li>Evalúa la proximidad física entre moléculas excitadas.</li>
+          <li>Determina la probabilidad de transferencia resonante no radiativa (pérdida de luz).</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Columna derecha: Simulación interactiva de FRET y Aniquilación -->
+    <div class="reveal-item" data-step="1" style="display: flex; flex-direction: column; gap: 14px; height: 100%;">
+      <div class="card" style="flex: 1; display: flex; flex-direction: column; gap: 12px; min-height: 380px;">
+        <div class="card-label" style="margin-bottom: 0;">Dinámica Molecular FRET vs Aniquilación S-S</div>
+        
+        <!-- HUD de FRET -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; background: var(--bg3); padding: 8px; border-radius: 8px; border: 1px solid var(--border);">
+          <div style="text-align: center;">
+            <div style="font-size: 9px; color: var(--text3); font-family: var(--mono); text-transform: uppercase;">Dosis Local</div>
+            <div id="hud-fret-density" style="font-size: 14px; font-family: var(--mono); color: var(--teal); font-weight: bold; margin-top: 2px;">Baja</div>
+          </div>
+          <div style="text-align: center; border-left: 1px solid var(--border); border-right: 1px solid var(--border);">
+            <div style="font-size: 9px; color: var(--text3); font-family: var(--mono); text-transform: uppercase;">Canal Principal</div>
+            <div id="hud-fret-mechanism" style="font-size: 14px; font-family: var(--mono); color: var(--teal); font-weight: bold; margin-top: 2px;">Radiativo</div>
+          </div>
+          <div style="text-align: center;">
+            <div style="font-size: 9px; color: var(--text3); font-family: var(--mono); text-transform: uppercase;">Eficiencia</div>
+            <div id="hud-fret-efficiency" style="font-size: 14px; font-family: var(--mono); color: var(--teal); font-weight: bold; margin-top: 2px;">98%</div>
+          </div>
+        </div>
+
+        <!-- Canvas -->
+        <div style="position: relative; width: 100%; flex: 1; min-height: 180px; max-height: 400px; background: radial-gradient(circle at 50% 50%, rgba(45,212,176,0.06) 0%, #050708 100%); border-radius: 8px; border: 1px solid rgba(255,255,255,0.08); box-shadow: inset 0 0 20px rgba(0,0,0,0.6); overflow: hidden;">
+          <canvas id="fret-canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: block;"></canvas>
+          <div id="fret-badge" class="hud-badge green" style="position: absolute; top: 8px; right: 8px; pointer-events: none;">
+            FRET Dominante
+          </div>
+        </div>
+
+        <!-- Control Slider -->
+        <div id="fret-controls-container" class="controls-disabled" style="display: flex; flex-direction: column; gap: 4px; background: var(--bg3); padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border); transition: opacity 0.3s;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px;">
+            <span style="font-size: 11px; font-family: var(--mono); color: var(--text2);">Densidad de Excitaciones / Dosis Local:</span>
+            <span id="fret-slider-val-disp" style="font-size: 11.5px; font-family: var(--mono); color: var(--teal); font-weight: bold;">Baja (15%)</span>
+          </div>
+          <input type="range" id="fret-slider" min="10" max="100" step="5" value="15" style="width: 100%; cursor: pointer;">
+        </div>
+      </div>
+
+      <div class="callout reveal-item" data-step="4" style="margin-top: 0;">
+        <strong>Importante:</strong> FRET nos permite entender por qué el quenching ocurre en la microestructura molecular del material, no sólo como un parámetro numérico abstracto.
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<div id="nav">
+  <button id="btn-prev">←</button>
+  <div class="nav-dots" id="nav-dots"></div>
+  <span id="nav-counter"></span>
+  <button id="btn-next">→</button>
+</div>
+
+<script src="navigation.js"></script>
+<script>
+(function() {
+  const canvas = document.getElementById('fret-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+
+  let width = 0;
+  let height = 0;
+  let dpr = window.devicePixelRatio || 1;
+
+  // Simulation parameters
+  let density = 15; // Excitation density % (from slider)
+  let lastStep = -1;
+
+  // Molecular structures
+  let molecules = [];
+  let excitations = [];
+  let photons = [];
+  let ionizingParticles = [];
+  let ionizations = [];
+  let thermalWaves = [];
+  let thermalParticles = [];
+  let quenchingLabels = [];
+  
+  let frame = 0;
+  let vibrationLevel = 0;
+  let beamSpawnTimer = 0;
+
+  // DOM
+  const slider = document.getElementById('fret-slider');
+  const sliderDisp = document.getElementById('fret-slider-val-disp');
+  const hudDensity = document.getElementById('hud-fret-density');
+  const hudMech = document.getElementById('hud-fret-mechanism');
+  const hudEff = document.getElementById('hud-fret-efficiency');
+  const badge = document.getElementById('fret-badge');
+  const controlsContainer = document.getElementById('fret-controls-container');
+
+  function resize() {
+    const rect = canvas.getBoundingClientRect();
+    width = rect.width;
+    height = rect.height;
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+    ctx.scale(dpr, dpr);
+    initMolecules();
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  function initMolecules() {
+    molecules = [];
+    const cols = 8;
+    const rows = 4;
+    const cellW = width / cols;
+    const cellH = height / rows;
+
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        // Grid with slight randomness
+        const px = cellW * (c + 0.5) + (Math.random() - 0.5) * (cellW * 0.35);
+        const py = cellH * (r + 0.5) + (Math.random() - 0.5) * (cellH * 0.35);
+        
+        // Pick type: roughly 20% acceptors, 80% donors
+        const isAcceptor = (c * 2 + r) % 5 === 0;
+        
+        molecules.push({
+          x: px,
+          y: py,
+          type: isAcceptor ? 'acceptor' : 'donor',
+          glow: 0.0,
+          vibratePhase: Math.random() * Math.PI * 2,
+          excitationCooldown: 0
+        });
+      }
+    }
+  }
+
+  if (slider) {
+    slider.oninput = function() {
+      density = parseInt(this.value, 10);
+      updateUI();
+    };
+  }
+
+  function updateUI() {
+    if (sliderDisp) {
+      let desc = density < 30 ? 'Baja' : (density < 70 ? 'Moderada' : 'Alta (Crítica)');
+      sliderDisp.textContent = `${desc} (${density}%)`;
+      sliderDisp.style.color = density < 30 ? 'var(--teal)' : (density < 70 ? 'var(--amber)' : 'var(--red)');
+    }
+
+    if (hudDensity) {
+      hudDensity.textContent = density < 30 ? 'Baja' : (density < 70 ? 'Moderada' : 'Fuerte');
+      hudDensity.style.color = density < 30 ? 'var(--teal)' : (density < 70 ? 'var(--amber)' : 'var(--red)');
+    }
+
+    let mechanismText = 'Radiativo';
+    let efficiencyText = '98%';
+    let effColor = 'var(--teal)';
+    
+    if (density < 30) {
+      mechanismText = 'FRET Fónico';
+      efficiencyText = (100 - Math.round(density * 0.25)) + '%';
+      effColor = 'var(--teal)';
+      if (badge) {
+        badge.textContent = 'FRET Dominante';
+        badge.className = 'hud-badge green';
+      }
+    } else if (density < 70) {
+      mechanismText = 'FRET + Colisión';
+      efficiencyText = (92 - Math.round((density - 30) * 0.5)) + '%';
+      effColor = 'var(--amber)';
+      if (badge) {
+        badge.textContent = '⚠️ Colisiones Leves';
+        badge.className = 'hud-badge amber';
+      }
+    } else {
+      mechanismText = 'Aniquilación S-S';
+      efficiencyText = (72 - Math.round((density - 70) * 0.9)) + '%';
+      effColor = 'var(--red)';
+      if (badge) {
+        badge.textContent = '🚨 Quenching S-S Fuerte';
+        badge.className = 'hud-badge red';
+      }
+    }
+
+    if (hudMech) {
+      hudMech.textContent = mechanismText;
+      hudMech.style.color = density < 30 ? 'var(--teal)' : (density < 70 ? 'var(--amber)' : 'var(--red)');
+    }
+    if (hudEff) {
+      hudEff.textContent = efficiencyText;
+      hudEff.style.color = effColor;
+    }
+  }
+
+  updateUI();
+
+  function updateSimulationState(step) {
+    if (step === lastStep) return;
+    lastStep = step;
+
+    // Reset particle systems to avoid ghosting on transition
+    excitations = [];
+    photons = [];
+    ionizingParticles = [];
+    ionizations = [];
+    thermalWaves = [];
+    thermalParticles = [];
+    quenchingLabels = [];
+    vibrationLevel = 0;
+    beamSpawnTimer = 0;
+
+    if (step >= 4) {
+      if (controlsContainer) controlsContainer.classList.remove('controls-disabled');
+      if (slider) slider.disabled = false;
+    } else {
+      if (controlsContainer) controlsContainer.classList.add('controls-disabled');
+      if (slider) slider.disabled = true;
+
+      // Set presets based on step
+      if (step === 0 || step === 1) {
+        density = 15;
+      } else if (step === 2) {
+        density = 30;
+      } else if (step === 3) {
+        density = 85;
+      }
+      if (slider) slider.value = density;
+      updateUI();
+    }
+  }
+
+  function spawnIonizingParticle() {
+    const yStart = height * (0.25 + Math.random() * 0.5);
+    const angle = (Math.random() - 0.5) * 0.3; // Slight angle
+    
+    let speed, size, color, glowColor;
+    if (density < 30) {
+      speed = 9;
+      size = 3;
+      color = '#2dd4b0';
+      glowColor = 'rgba(45, 212, 176, 0.4)';
+    } else if (density < 70) {
+      speed = 7;
+      size = 5;
+      color = '#f59e0b';
+      glowColor = 'rgba(245, 158, 11, 0.4)';
+    } else {
+      speed = 5.5;
+      size = 8;
+      color = '#ef4444';
+      glowColor = 'rgba(239, 68, 68, 0.4)';
+    }
+
+    ionizingParticles.push({
+      x: -30,
+      y: yStart,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed,
+      size: size,
+      color: color,
+      glowColor: glowColor,
+      trail: []
+    });
+  }
+
+  function updatePhysics() {
+    frame++;
+
+    // 1. Decay molecular glow and cooldowns
+    molecules.forEach(m => {
+      m.glow = Math.max(0, m.glow - 0.03);
+      if (m.excitationCooldown > 0) {
+        m.excitationCooldown--;
+      }
+    });
+    vibrationLevel = Math.max(0, vibrationLevel - 0.05);
+
+    // 2. Manage Ionizing Particle spawning
+    if (ionizingParticles.length === 0) {
+      beamSpawnTimer++;
+      if (beamSpawnTimer >= 40) {
+        spawnIonizingParticle();
+        beamSpawnTimer = 0;
+      }
+    }
+
+    // 3. Update Ionizing Particles
+    for (let i = ionizingParticles.length - 1; i >= 0; i--) {
+      const ip = ionizingParticles[i];
+      
+      // Update trail
+      ip.trail.push({ x: ip.x, y: ip.y });
+      if (ip.trail.length > 10) ip.trail.shift();
+      
+      // Move
+      ip.x += ip.vx;
+      ip.y += ip.vy;
+      
+      // Check boundaries
+      if (ip.x > width + 40 || ip.y < -40 || ip.y > height + 40) {
+        ionizingParticles.splice(i, 1);
+        continue;
+      }
+
+      // Proximity check for ionization
+      let interactionRadius = density < 30 ? 45 : (density < 70 ? 70 : 100);
+      let ionizationProb = density < 30 ? 0.3 : (density < 70 ? 0.65 : 0.95);
+
+      molecules.forEach(m => {
+        if (m.type === 'donor' && m.excitationCooldown === 0) {
+          const dist = Math.hypot(m.x - ip.x, m.y - ip.y);
+          if (dist < interactionRadius) {
+            if (Math.random() < ionizationProb) {
+              m.excitationCooldown = 120; // Prevent immediate re-excitation
+              m.glow = 1.0;
+
+              // Spawn Ionization effect
+              ionizations.push({
+                x: m.x,
+                y: m.y,
+                r: 2,
+                maxR: 16 + Math.random() * 10,
+                alpha: 1.0,
+                decay: 0.04 + Math.random() * 0.02
+              });
+
+              // Excite: find nearest acceptor
+              const acceptors = molecules.filter(acc => acc.type === 'acceptor');
+              let targetAcceptor = null;
+              let minDist = 9999;
+              acceptors.forEach(acc => {
+                const d = Math.hypot(acc.x - m.x, acc.y - m.y);
+                if (d < minDist) {
+                  minDist = d;
+                  targetAcceptor = acc;
+                }
+              });
+
+              if (targetAcceptor) {
+                excitations.push({
+                  x: m.x,
+                  y: m.y,
+                  startX: m.x,
+                  startY: m.y,
+                  targetX: targetAcceptor.x,
+                  targetY: targetAcceptor.y,
+                  targetNode: targetAcceptor,
+                  t: 0.0,
+                  speed: 0.022 + Math.random() * 0.015
+                });
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // 4. Update Excitations (Resonance energy transport) & Collisions
+    for (let i = excitations.length - 1; i >= 0; i--) {
+      const e = excitations[i];
+      e.t += e.speed;
+      e.x = e.startX + (e.targetX - e.startX) * e.t;
+      e.y = e.startY + (e.targetY - e.startY) * e.t;
+
+      let annihilated = false;
+      
+      // Collision detection (Singlet-Singlet Annihilation)
+      for (let j = excitations.length - 1; j > i; j--) {
+        const other = excitations[j];
+        const d = Math.hypot(e.x - other.x, e.y - other.y);
+        
+        if (d < 24) {
+          const cx = (e.x + other.x) / 2;
+          const cy = (e.y + other.y) / 2;
+
+          // Trigger Heat Wave
+          thermalWaves.push({
+            x: cx,
+            y: cy,
+            r: 2,
+            maxR: 35 + Math.random() * 15,
+            alpha: 1.0,
+            decay: 0.025
+          });
+
+          // Trigger Thermal Sparkles (Heat sparks)
+          const sparkCount = density < 70 ? 4 : 8;
+          for (let k = 0; k < sparkCount; k++) {
+            thermalParticles.push({
+              x: cx,
+              y: cy,
+              vx: (Math.random() - 0.5) * 1.6,
+              vy: -0.6 - Math.random() * 1.5,
+              alpha: 1.0,
+              size: 1.0 + Math.random() * 1.5,
+              phase: Math.random() * Math.PI * 2,
+              speed: 0.04 + Math.random() * 0.03
+            });
+          }
+
+          // Trigger Quenching Label
+          quenchingLabels.push({
+            x: cx,
+            y: cy - 6,
+            alpha: 1.0,
+            text: 'Quenching S-S'
+          });
+
+          vibrationLevel = Math.min(7.0, vibrationLevel + 2.2);
+
+          excitations.splice(j, 1);
+          excitations.splice(i, 1);
+          annihilated = true;
+          break;
+        }
+      }
+
+      if (annihilated) continue;
+
+      // Check reached destination
+      if (e.t >= 1.0) {
+        e.targetNode.glow = 1.0;
+        
+        // Emit Photon (Luminiscence)
+        photons.push({
+          x: e.targetX,
+          y: e.targetY,
+          vx: (Math.random() - 0.5) * 1.2,
+          vy: -1.6 - Math.random() * 1.4,
+          alpha: 1.0
+        });
+
+        excitations.splice(i, 1);
+      }
+    }
+
+    // 5. Update escaping photons
+    photons.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.alpha -= 0.022;
+    });
+    photons = photons.filter(p => p.alpha > 0);
+
+    // 6. Update ionizations
+    ionizations.forEach(ion => {
+      ion.r += (ion.maxR - ion.r) * 0.09 + 0.3;
+      ion.alpha -= ion.decay;
+    });
+    ionizations = ionizations.filter(ion => ion.alpha > 0);
+
+    // 7. Update thermal waves
+    thermalWaves.forEach(w => {
+      w.r += (w.maxR - w.r) * 0.07 + 0.4;
+      w.alpha -= w.decay;
+    });
+    thermalWaves = thermalWaves.filter(w => w.alpha > 0);
+
+    // 8. Update thermal sparkles
+    thermalParticles.forEach(tp => {
+      tp.x += tp.vx + Math.sin(frame * 0.12 + tp.phase) * 0.3;
+      tp.y += tp.vy;
+      tp.alpha -= tp.speed;
+    });
+    thermalParticles = thermalParticles.filter(tp => tp.alpha > 0);
+
+    // 9. Update quenching labels
+    quenchingLabels.forEach(ql => {
+      ql.y -= 0.35;
+      ql.alpha -= 0.02;
+    });
+    quenchingLabels = quenchingLabels.filter(ql => ql.alpha > 0);
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, width, height);
+
+    // Coordinate grid drawing
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.02)';
+    ctx.lineWidth = 1;
+    for (let x_g = 0; x_g < width; x_g += 30) {
+      ctx.beginPath(); ctx.moveTo(x_g, 0); ctx.lineTo(x_g, height); ctx.stroke();
+    }
+    for (let y_g = 0; y_g < height; y_g += 30) {
+      ctx.beginPath(); ctx.moveTo(0, y_g); ctx.lineTo(width, y_g); ctx.stroke();
+    }
+
+    // Draw molecular grid (with jitter based on vibrationLevel)
+    molecules.forEach(m => {
+      const vibX = vibrationLevel * Math.sin(frame * 0.75 + m.vibratePhase) * 0.7;
+      const vibY = vibrationLevel * Math.cos(frame * 0.65 + m.vibratePhase) * 0.7;
+      
+      const drawX = m.x + vibX;
+      const drawY = m.y + vibY;
+
+      ctx.save();
+      if (m.type === 'acceptor') {
+        // Acceptor: blue-purple fluorescent core
+        const radialGrad = ctx.createRadialGradient(drawX - 2, drawY - 2, 0.8, drawX, drawY, 8.0);
+        if (m.glow > 0.01) {
+          radialGrad.addColorStop(0, '#ffffff');
+          radialGrad.addColorStop(0.3, `rgba(91, 156, 246, ${0.9 + m.glow * 0.1})`);
+          radialGrad.addColorStop(1, `rgba(167, 139, 250, 0.18)`);
+          
+          // Outer glow
+          ctx.save();
+          ctx.globalCompositeOperation = 'screen';
+          ctx.shadowColor = 'rgba(91, 156, 246, 0.8)';
+          ctx.shadowBlur = 18 * m.glow;
+          ctx.fillStyle = `rgba(91, 156, 246, ${0.1 + m.glow * 0.25})`;
+          ctx.beginPath();
+          ctx.arc(drawX, drawY, 15, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        } else {
+          radialGrad.addColorStop(0, '#bfdbfe');
+          radialGrad.addColorStop(0.4, 'rgba(91, 156, 246, 0.35)');
+          radialGrad.addColorStop(1, 'rgba(91, 156, 246, 0.1)');
+        }
+        
+        ctx.fillStyle = radialGrad;
+        ctx.beginPath();
+        ctx.arc(drawX, drawY, 7.5, 0, 2 * Math.PI);
+        ctx.fill();
+
+        ctx.strokeStyle = m.glow > 0.01 ? `rgba(167, 139, 250, ${0.6 + m.glow * 0.4})` : 'rgba(91, 156, 246, 0.22)';
+        ctx.lineWidth = 1.0;
+        ctx.stroke();
+      } else {
+        // Donor: green polymer matrix
+        const radialGrad = ctx.createRadialGradient(drawX - 1.5, drawY - 1.5, 0.5, drawX, drawY, 5.5);
+        if (m.glow > 0.01) {
+          radialGrad.addColorStop(0, '#ffffff');
+          radialGrad.addColorStop(0.3, `rgba(45, 212, 176, ${0.8 + m.glow * 0.2})`);
+          radialGrad.addColorStop(1, `rgba(45, 212, 176, 0.12)`);
+          
+          // Outer glow
+          ctx.save();
+          ctx.globalCompositeOperation = 'screen';
+          ctx.shadowColor = 'rgba(45, 212, 176, 0.8)';
+          ctx.shadowBlur = 12 * m.glow;
+          ctx.fillStyle = `rgba(45, 212, 176, ${0.08 + m.glow * 0.2})`;
+          ctx.beginPath();
+          ctx.arc(drawX, drawY, 11, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        } else {
+          radialGrad.addColorStop(0, '#a7f3d0');
+          radialGrad.addColorStop(0.4, 'rgba(45, 212, 176, 0.35)');
+          radialGrad.addColorStop(1, 'rgba(45, 212, 176, 0.06)');
+        }
+        
+        ctx.fillStyle = radialGrad;
+        ctx.beginPath();
+        ctx.arc(drawX, drawY, 5.0, 0, 2 * Math.PI);
+        ctx.fill();
+
+        ctx.strokeStyle = m.glow > 0.01 ? `rgba(45, 212, 176, ${0.5 + m.glow * 0.5})` : 'rgba(45, 212, 176, 0.16)';
+        ctx.lineWidth = 0.8;
+        ctx.stroke();
+      }
+      ctx.restore();
+    });
+
+    // Draw Ionization effects (Cyan rings + floating "+")
+    ctx.save();
+    ctx.globalCompositeOperation = 'screen';
+    ionizations.forEach(ion => {
+      ctx.strokeStyle = `rgba(45, 212, 176, ${ion.alpha * 0.65})`;
+      ctx.lineWidth = 1.2;
+      ctx.shadowColor = '#2dd4b0';
+      ctx.shadowBlur = 6 * ion.alpha;
+      ctx.beginPath();
+      ctx.arc(ion.x, ion.y, ion.r, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.fillStyle = `rgba(255, 255, 255, ${ion.alpha})`;
+      ctx.font = 'bold 9px var(--mono)';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.shadowBlur = 4;
+      const yFloat = ion.y - 10 - (1 - ion.alpha) * 10;
+      ctx.fillText('+', ion.x, yFloat);
+    });
+    ctx.restore();
+
+    // Draw Active Dipole-Dipole coupling lines (Dashed FRET lines)
+    ctx.save();
+    ctx.strokeStyle = 'rgba(45, 212, 176, 0.12)';
+    ctx.lineWidth = 0.6;
+    ctx.setLineDash([2, 3]);
+    excitations.forEach(e => {
+      ctx.beginPath();
+      ctx.moveTo(e.startX, e.startY);
+      ctx.lineTo(e.targetX, e.targetY);
+      ctx.stroke();
+    });
+    ctx.restore();
+
+    // Draw Excitations (Moving packets)
+    ctx.save();
+    ctx.globalCompositeOperation = 'screen';
+    excitations.forEach(e => {
+      ctx.fillStyle = '#ffffff';
+      ctx.shadowColor = '#2dd4b0';
+      ctx.shadowBlur = 8;
+      ctx.beginPath();
+      ctx.arc(e.x, e.y, 3.5, 0, 2 * Math.PI);
+      ctx.fill();
+
+      ctx.strokeStyle = '#2dd4b0';
+      ctx.lineWidth = 0.8;
+      ctx.beginPath();
+      ctx.arc(e.x, e.y, 5.5, 0, 2 * Math.PI);
+      ctx.stroke();
+    });
+    ctx.restore();
+
+    // Draw Escaping Photons (Blue sparklers representing light)
+    ctx.save();
+    ctx.globalCompositeOperation = 'screen';
+    photons.forEach(p => {
+      ctx.fillStyle = `rgba(255, 255, 255, ${p.alpha})`;
+      ctx.shadowColor = '#5b9cf6';
+      ctx.shadowBlur = 8 * p.alpha;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 2.5, 0, 2 * Math.PI);
+      ctx.fill();
+
+      // Tail
+      ctx.strokeStyle = `rgba(91, 156, 246, ${p.alpha * 0.35})`;
+      ctx.lineWidth = 1.6;
+      ctx.beginPath();
+      ctx.moveTo(p.x, p.y);
+      ctx.lineTo(p.x - p.vx * 1.8, p.y - p.vy * 1.8);
+      ctx.stroke();
+    });
+    ctx.restore();
+
+    // Draw Ionizing Beam Particles
+    ionizingParticles.forEach(ip => {
+      ctx.save();
+      ctx.globalCompositeOperation = 'screen';
+
+      if (ip.trail.length > 1) {
+        ctx.beginPath();
+        ctx.moveTo(ip.trail[0].x, ip.trail[0].y);
+        for (let i = 1; i < ip.trail.length; i++) {
+          ctx.lineTo(ip.trail[i].x, ip.trail[i].y);
+        }
+        
+        const grad = ctx.createLinearGradient(ip.trail[0].x, ip.trail[0].y, ip.x, ip.y);
+        grad.addColorStop(0, 'rgba(255, 255, 255, 0)');
+        grad.addColorStop(0.5, ip.glowColor);
+        grad.addColorStop(1, ip.color);
+
+        ctx.strokeStyle = grad;
+        ctx.lineWidth = ip.size * 2.0;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.shadowColor = ip.color;
+        ctx.shadowBlur = ip.size * 2.5;
+        ctx.stroke();
+      }
+
+      ctx.beginPath();
+      ctx.arc(ip.x, ip.y, ip.size * 1.4, 0, Math.PI * 2);
+      ctx.fillStyle = '#ffffff';
+      ctx.shadowColor = ip.color;
+      ctx.shadowBlur = ip.size * 3.5;
+      ctx.fill();
+
+      ctx.restore();
+    });
+
+    // Draw Thermal Waves (Heat ripples)
+    ctx.save();
+    ctx.globalCompositeOperation = 'screen';
+    thermalWaves.forEach(w => {
+      ctx.strokeStyle = `rgba(249, 115, 22, ${w.alpha * 0.8})`;
+      ctx.lineWidth = 1.8;
+      ctx.setLineDash([3, 5]);
+      ctx.shadowColor = '#f97316';
+      ctx.shadowBlur = 8 * w.alpha;
+      ctx.beginPath();
+      ctx.arc(w.x, w.y, w.r, 0, Math.PI * 2);
+      ctx.stroke();
+    });
+    ctx.restore();
+
+    // Draw Thermal Sparkles (Gold-orange heat Sparks)
+    ctx.save();
+    ctx.globalCompositeOperation = 'screen';
+    thermalParticles.forEach(tp => {
+      ctx.fillStyle = `rgba(245, 158, 11, ${tp.alpha})`;
+      ctx.shadowColor = '#f59e0b';
+      ctx.shadowBlur = 6 * tp.alpha;
+      ctx.beginPath();
+      ctx.arc(tp.x, tp.y, tp.size, 0, Math.PI * 2);
+      ctx.fill();
+    });
+    ctx.restore();
+
+    // Draw Quenching collision markers (Text + red 'x')
+    ctx.save();
+    ctx.globalCompositeOperation = 'screen';
+    quenchingLabels.forEach(ql => {
+      ctx.fillStyle = `rgba(239, 68, 68, ${ql.alpha})`;
+      ctx.font = 'bold 9.5px var(--mono)';
+      ctx.textAlign = 'center';
+      ctx.shadowColor = '#ef4444';
+      ctx.shadowBlur = 6 * ql.alpha;
+      ctx.fillText(ql.text, ql.x, ql.y);
+
+      // Red/white cross
+      ctx.fillStyle = `rgba(255, 255, 255, ${ql.alpha * 0.8})`;
+      ctx.font = 'bold 15px var(--sans)';
+      ctx.fillText('×', ql.x, ql.y + 11);
+    });
+    ctx.restore();
+  }
+
+  function animate() {
+    const step = (typeof currentStep !== 'undefined') ? currentStep : 1;
+    updateSimulationState(step);
+    updatePhysics();
+    draw();
+    requestAnimationFrame(animate);
+  }
+
+  animate();
+})();
+</script>
+</body>
+</html>

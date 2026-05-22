@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quenching en detectores de centelleo plástico - Resolución y Dinámica</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+  .toggle-btn {
+    background: var(--bg4);
+    border: 1px solid var(--border);
+    color: var(--text3);
+    padding: 3px 8px;
+    font-size: 10.5px;
+    font-family: var(--mono);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .toggle-btn:hover {
+    color: var(--text);
+    border-color: var(--text3);
+  }
+  .toggle-btn.active {
+    background: var(--teal-dim);
+    border-color: var(--teal);
+    color: var(--teal);
+    box-shadow: 0 0 8px rgba(45, 212, 176, 0.15);
+  }
+  .toggle-btn.active-amber {
+    background: var(--amber-dim);
+    border-color: var(--amber);
+    color: var(--amber);
+    box-shadow: 0 0 8px rgba(240, 168, 50, 0.15);
+  }
+  .controls-disabled {
+    opacity: 0.35;
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+
+<div id="deck">
+
+<div class="slide" id="slide-2" style="padding: clamp(12px, 2.5vh, 24px) clamp(24px, 4vw, 48px) clamp(55px, 8vh, 75px);">
+  <div class="slide-num">2 / 24</div>
+  <div class="slide-eyebrow" style="margin-bottom: 4px;">Capítulo 1 · El detector ideal</div>
+  <h2 class="slide-title" style="font-size: clamp(28px, 3.5vw, 42px); margin-bottom: 2px;">PSD: Resolución y <em>Dinámica Clínica</em></h2>
+  <p class="slide-subtitle" style="font-size: 15.5px; margin-bottom: 6px; max-width: 720px;">La miniaturización sub-milimétrica del volumen sensible evita el promediado de dosis en gradientes extremos.</p>
+  <div class="persona-row" style="margin-bottom: 8px;">
+    <span class="persona-tag pt-mc">Clínico</span>
+    <span class="persona-tag pt-camilo">Técnico / Monte Carlo</span>
+  </div>
+
+  <div class="two-col" style="grid-template-columns: 1fr 1.25fr; gap: clamp(16px, 3vw, 32px); flex: 1; min-height: 0;">
+    <!-- Columna izquierda: Conceptos clave -->
+    <div style="display: flex; flex-direction: column; gap: clamp(8px, 1.8vh, 16px); height: 100%;">
+      <div class="card card-teal reveal-item" data-step="1" style="padding: clamp(8px, 1.8vh, 16px) clamp(12px, 2vw, 20px); flex: 1; display: flex; flex-direction: column; justify-content: center; min-height: 0;">
+        <div class="card-label" style="font-size: 12.5px; margin-bottom: 4px;">Volumen sensible sub-milimétrico</div>
+        <p style="font-size: 14.5px; color: var(--text2); line-height: 1.35;">
+          Típicamente <strong style="color: var(--teal);">$1\text{ mm}$ de diámetro por $1\text{ mm}$ de longitud</strong>. En campos pequeños, los gradientes en la penumbra varían de forma extrema; un detector grande promedia la variación y subestima la dosis en el eje.
+        </p>
+      </div>
+
+      <div class="card reveal-item" data-step="2" style="padding: clamp(8px, 1.8vh, 16px) clamp(12px, 2vw, 20px); flex: 1; display: flex; flex-direction: column; justify-content: center; min-height: 0;">
+        <div class="card-label" style="font-size: 12.5px; margin-bottom: 4px;">Resolución espacial contra penumbra</div>
+        <p style="font-size: 14.5px; color: var(--text2); line-height: 1.35;">
+          El volumen microscópico del PSD resuelve localmente la penumbra clínica de los micro-colimadores de forma fidedigna, eliminando la necesidad de factores de corrección por volumen físico.
+        </p>
+      </div>
+
+      <!-- Rendimiento Operativo -->
+      <div class="card card-blue reveal-item" data-step="3" style="padding: clamp(8px, 1.8vh, 14px) clamp(10px, 1.8vw, 18px); flex: 1; display: flex; flex-direction: column; justify-content: center; min-height: 0;">
+        <div class="card-label" style="font-size: 12.5px; margin-bottom: 4px;">Rendimiento Operativo</div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 13.5px; line-height: 1.35;">
+          <div style="position: relative; padding-left: 12px;">
+            <span style="position: absolute; left: 0; color: var(--teal);">→</span>
+            <strong style="color:var(--teal)">Independiente de tasa:</strong> Respuesta idónea en haces dinámicos FFF.
+          </div>
+          <div style="position: relative; padding-left: 12px;">
+            <span style="position: absolute; left: 0; color: var(--teal);">→</span>
+            <strong style="color:var(--teal)">Lectura en tiempo real:</strong> Idóneo para dosimetría in vivo y seguridad.
+          </div>
+        </div>
+      </div>
+      
+      <div class="callout reveal-item" data-step="4" style="font-size: 14px; padding: clamp(6px, 1.5vh, 12px) clamp(10px, 1.8vw, 18px); margin-top: 0; flex: 0.8; display: flex; align-items: center; min-height: 0;">
+        <div>
+          <strong style="color: var(--teal);">Conclusión clínica:</strong> Para dosimetría en campos pequeños de alta precisión, la combinación de equivalencia al agua y volumen sub-milimétrico hace del PSD la referencia ideal.
+        </div>
+      </div>
+    </div>
+
+    <!-- Columna derecha: Gráfica interactiva -->
+    <div class="reveal-item" data-step="1" style="display: flex; flex-direction: column; height: 100%;">
+      <div class="card" style="display: flex; flex-direction: column; gap: clamp(8px, 1.5vh, 14px); padding: clamp(12px, 2.2vh, 20px) clamp(14px, 2.5vw, 24px); height: 100%;">
+        <div class="card-label" style="font-size: 12.5px; margin-bottom: 2px;">Simulador de Promediado de Volumen</div>
+        
+        <!-- HUD de Dosis y Detector -->
+        <div style="display: grid; grid-template-columns: 1.25fr 1fr 1fr; gap: 6px; background: var(--bg3); padding: 5px 6px; border-radius: 6px; border: 1px solid var(--border);">
+          <div style="text-align: center;">
+            <div style="font-size: 10px; color: var(--text3); font-family: var(--mono); text-transform: uppercase;">Detector</div>
+            <div id="hud-detector" style="font-size: 13.5px; font-family: var(--sans); color: var(--teal); font-weight: bold; margin-top: 1px;">PSD (1 mm)</div>
+          </div>
+          <div style="text-align: center; border-left: 1px solid var(--border); border-right: 1px solid var(--border);">
+            <div style="font-size: 10px; color: var(--text3); font-family: var(--mono); text-transform: uppercase;">Dosis en Eje</div>
+            <div style="font-size: 13.5px; font-family: var(--mono); color: var(--amber); font-weight: bold; margin-top: 1px;">100.0%</div>
+          </div>
+          <div style="text-align: center;">
+            <div style="font-size: 10px; color: var(--text3); font-family: var(--mono); text-transform: uppercase;">Dosis Medida</div>
+            <div id="hud-measured" style="font-size: 13.5px; font-family: var(--mono); color: var(--teal); font-weight: bold; margin-top: 1px;">100.0%</div>
+          </div>
+        </div>
+
+        <!-- Contenedor del Canvas con altura adaptada y fondo con degradado moderno -->
+        <div style="position: relative; width: 100%; flex: 1; min-height: 215px; max-height: 480px; background: radial-gradient(circle at 50% 50%, rgba(45, 212, 176, 0.04) 0%, #080a0b 100%); border-radius: 8px; border: 1px solid var(--border); overflow: hidden;">
+          <canvas id="penumbra-canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: block;"></canvas>
+          <div id="dose-badge" style="position: absolute; top: 6px; right: 6px; background: rgba(13, 15, 16, 0.85); border: 1px solid rgba(45, 212, 176, 0.25); border-radius: 4px; padding: 2px 5px; font-size: 11px; font-family: var(--mono); color: var(--teal); pointer-events: none; transition: all 0.2s;">
+            ✓ Preciso (100.0%)
+          </div>
+        </div>
+
+        <!-- Controles de Interactividad -->
+        <div id="controls-container" class="controls-disabled" style="display: grid; grid-template-columns: 1.25fr 1fr; gap: 10px; background: var(--bg3); padding: 6px 10px; border-radius: 8px; border: 1px solid var(--border); transition: opacity 0.3s; align-items: center;">
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 4px;">
+            <span style="font-size: 11.5px; font-family: var(--mono); color: var(--text2); white-space: nowrap;">Detector:</span>
+            <div style="display: flex; gap: 4px;">
+              <button id="btn-select-psd" class="toggle-btn active" style="padding: 2px 5px; font-size: 10.5px; white-space: nowrap;">PSD (1mm)</button>
+              <button id="btn-select-chamber" class="toggle-btn" style="padding: 2px 5px; font-size: 10.5px; white-space: nowrap;">Cámara (6mm)</button>
+            </div>
+          </div>
+          <div id="field-slider-group" style="display: flex; align-items: center; justify-content: space-between; gap: 6px;">
+            <span style="font-size: 11.5px; font-family: var(--mono); color: var(--text2); white-space: nowrap;">Penumbra: <span id="penumbra-val-disp" style="color: var(--amber);">2.5 mm</span></span>
+            <input type="range" id="penumbra-slider" min="1" max="8" step="0.5" value="2.5" style="flex: 1; min-width: 45px; cursor: pointer; height: 3px;">
+          </div>
+      </div>
+    </div>
+</div>
+</div>
+</div>
+</div>
+
+
+<div id="nav">
+  <button id="btn-prev">←</button>
+  <div class="nav-dots" id="nav-dots"></div>
+  <span id="nav-counter"></span>
+  <button id="btn-next">→</button>
+</div>
+
+<script src="navigation.js"></script>
+<script>
+(function() {
+  const canvas = document.getElementById('penumbra-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  
+  let width = 0;
+  let height = 0;
+  let dpr = window.devicePixelRatio || 1;
+
+  // Simulation State
+  let activeDetector = 'psd'; // 'psd' or 'chamber'
+  let penumbraWidth = 2.5;    // in mm
+  let detectorPos = 0;        // center position in mm (-15 to 15)
+  let lastStep = -1;
+  let isDragging = false;
+  let autoSweepTime = 0;
+
+  // DOM elements
+  const btnPSD = document.getElementById('btn-select-psd');
+  const btnChamber = document.getElementById('btn-select-chamber');
+  const sliderPenumbra = document.getElementById('penumbra-slider');
+  const dispPenumbra = document.getElementById('penumbra-val-disp');
+  const hudDetector = document.getElementById('hud-detector');
+  const hudMeasured = document.getElementById('hud-measured');
+  const badge = document.getElementById('dose-badge');
+  const controlsContainer = document.getElementById('controls-container');
+
+  function resize() {
+    const rect = canvas.getBoundingClientRect();
+    width = rect.width;
+    height = rect.height;
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+    ctx.scale(dpr, dpr);
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  // Physics Formulas
+  // Field Profile: flat top of width 10mm (-5 to +5) and penumbra width on each side
+  // Modeled as the difference of two sigmoids
+  function getPhysicalDose(pos) {
+    const fieldHalfWidth = 5.0; // mm
+    const k = 4.4 / penumbraWidth; // scaling for 20%-80% penumbra width
+    const sig1 = 1 / (1 + Math.exp(-k * (pos + fieldHalfWidth)));
+    const sig2 = 1 / (1 + Math.exp(-k * (pos - fieldHalfWidth)));
+    return 100 * (sig1 - sig2);
+  }
+
+  // Calculate measured dose by averaging the physical dose profile over the detector size
+  function getMeasuredDose(pos, type) {
+    const radius = (type === 'psd') ? 0.5 : 3.0; // mm (1mm vs 6mm diameter)
+    const samples = 12;
+    let sum = 0;
+    for (let i = 0; i < samples; i++) {
+      const offset = -radius + (radius * 2 * (i + 0.5)) / samples;
+      sum += getPhysicalDose(pos + offset);
+    }
+    return sum / samples;
+  }
+
+  // Event Listeners
+  if (btnPSD) {
+    btnPSD.onclick = () => {
+      activeDetector = 'psd';
+      btnPSD.className = 'toggle-btn active';
+      btnChamber.className = 'toggle-btn';
+      if (hudDetector) {
+        hudDetector.textContent = 'PSD (1 mm)';
+        hudDetector.style.color = 'var(--teal)';
+      }
+      updateUI();
+    };
+  }
+  if (btnChamber) {
+    btnChamber.onclick = () => {
+      activeDetector = 'chamber';
+      btnPSD.className = 'toggle-btn';
+      btnChamber.className = 'toggle-btn active-amber';
+      if (hudDetector) {
+        hudDetector.textContent = 'Cámara (6 mm)';
+        hudDetector.style.color = 'var(--amber)';
+      }
+      updateUI();
+    };
+  }
+  if (sliderPenumbra) {
+    sliderPenumbra.oninput = function() {
+      penumbraWidth = parseFloat(this.value);
+      if (dispPenumbra) dispPenumbra.textContent = penumbraWidth.toFixed(1) + ' mm';
+      updateUI();
+    };
+  }
+
+  // Drag interaction
+  function getMousePos(e) {
+    const rect = canvas.getBoundingClientRect();
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const x = clientX - rect.left;
+    // Map canvas x (0 to width) to physical position (-15 to +15 mm)
+    return -15 + (x / width) * 30;
+  }
+
+  function handleStart(e) {
+    const step = (typeof currentStep !== 'undefined') ? currentStep : 1;
+    if (step < 3) return; // Interaction disabled on step 1 and 2
+    isDragging = true;
+    detectorPos = Math.max(-15, Math.min(15, getMousePos(e)));
+  }
+
+  function handleMove(e) {
+    if (!isDragging) return;
+    detectorPos = Math.max(-15, Math.min(15, getMousePos(e)));
+  }
+
+  function handleEnd() {
+    isDragging = false;
+  }
+
+  canvas.addEventListener('mousedown', handleStart);
+  canvas.addEventListener('mousemove', handleMove);
+  window.addEventListener('mouseup', handleEnd);
+
+  canvas.addEventListener('touchstart', handleStart);
+  canvas.addEventListener('touchmove', handleMove);
+  window.addEventListener('touchend', handleEnd);
+
+  function updateUI() {
+    const dose = getMeasuredDose(detectorPos, activeDetector);
+    if (hudMeasured) hudMeasured.textContent = dose.toFixed(1) + '%';
+
+    // Badge update
+    const physical = getPhysicalDose(detectorPos);
+    const deviation = Math.abs(physical - dose);
+
+    if (badge) {
+      if (deviation < 1.0) {
+        badge.textContent = `✓ Preciso (${dose.toFixed(1)}%)`;
+        badge.style.color = 'var(--teal)';
+        badge.style.borderColor = 'rgba(45, 212, 176, 0.25)';
+        badge.style.background = 'rgba(45, 212, 176, 0.08)';
+      } else {
+        badge.textContent = `⚠️ Promediado (-${deviation.toFixed(1)}%)`;
+        badge.style.color = 'var(--red)';
+        badge.style.borderColor = 'rgba(232, 85, 85, 0.25)';
+        badge.style.background = 'rgba(232, 85, 85, 0.08)';
+      }
+    }
+  }
+
+  function updateSimulationState(step) {
+    if (step === lastStep) return;
+    lastStep = step;
+
+    if (step >= 3) {
+      if (controlsContainer) controlsContainer.classList.remove('controls-disabled');
+    } else {
+      if (controlsContainer) controlsContainer.classList.add('controls-disabled');
+      // Step-based lock values
+      if (step === 1 || step === 0) {
+        activeDetector = 'psd';
+        detectorPos = 0;
+        if (btnPSD) btnPSD.click();
+      } else if (step === 2) {
+        activeDetector = 'chamber';
+        detectorPos = 0;
+        if (btnChamber) btnChamber.click();
+      }
+    }
+  }
+
+  // Animation Loop
+  function draw() {
+    ctx.clearRect(0, 0, width, height);
+
+    // Map physical positions to Canvas pixels
+    function mapX(physX) {
+      return ((physX + 15) / 30) * width;
+    }
+    function mapY(valPercent) {
+      // 100% dose = 30px from top, 0% dose = height - 25px
+      const topY = 25;
+      const bottomY = height - 25;
+      return bottomY - (valPercent / 100) * (bottomY - topY);
+    }
+
+    const centerY = height / 2;
+
+    // 1. Draw Field radiation grid / beam glow
+    const beamLeft = mapX(-5);
+    const beamRight = mapX(5);
+    ctx.save();
+    const beamGlow = ctx.createLinearGradient(beamLeft, 0, beamRight, 0);
+    beamGlow.addColorStop(0, 'rgba(240, 168, 50, 0.0)');
+    beamGlow.addColorStop(0.1, 'rgba(240, 168, 50, 0.08)');
+    beamGlow.addColorStop(0.5, 'rgba(240, 168, 50, 0.12)');
+    beamGlow.addColorStop(0.9, 'rgba(240, 168, 50, 0.08)');
+    beamGlow.addColorStop(1, 'rgba(240, 168, 50, 0.0)');
+    ctx.fillStyle = beamGlow;
+    ctx.fillRect(beamLeft, 0, beamRight - beamLeft, height);
+    ctx.restore();
+
+    // 2. Draw axes and grids
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+    ctx.lineWidth = 1;
+    // Y-axis ticks
+    [0, 50, 100].forEach(v => {
+      const y = mapY(v);
+      ctx.beginPath();
+      ctx.moveTo(mapX(-15), y);
+      ctx.lineTo(mapX(15), y);
+      ctx.stroke();
+
+      ctx.fillStyle = 'var(--text3)';
+      ctx.font = '8px DM Mono, monospace';
+      ctx.textAlign = 'right';
+      ctx.fillText(v + '%', mapX(-15) - 4, y + 3);
+    });
+
+    // Center tick (0 mm)
+    ctx.beginPath();
+    ctx.moveTo(mapX(0), mapY(0));
+    ctx.lineTo(mapX(0), mapY(100) - 8);
+    ctx.stroke();
+    ctx.fillStyle = 'var(--text3)';
+    ctx.textAlign = 'center';
+    ctx.fillText('Eje 0mm', mapX(0), height - 8);
+
+    // 3. Plot Physical Dose Profile (Amber)
+    ctx.save();
+    ctx.strokeStyle = 'rgba(240, 168, 50, 0.8)';
+    ctx.shadowColor = 'rgba(240, 168, 50, 0.4)';
+    ctx.shadowBlur = 4;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    for (let px = -15; px <= 15; px += 0.2) {
+      const dose = getPhysicalDose(px);
+      const cx = mapX(px);
+      const cy = mapY(dose);
+      if (px === -15) ctx.moveTo(cx, cy);
+      else ctx.lineTo(cx, cy);
+    }
+    ctx.stroke();
+    ctx.restore();
+
+    // 4. Plot Measured Profile (Teal/Cyan)
+    ctx.save();
+    ctx.strokeStyle = (activeDetector === 'psd') ? 'rgba(45, 212, 176, 0.85)' : 'rgba(91, 156, 246, 0.85)';
+    ctx.shadowColor = (activeDetector === 'psd') ? 'rgba(45, 212, 176, 0.4)' : 'rgba(91, 156, 246, 0.4)';
+    ctx.shadowBlur = 4;
+    ctx.lineWidth = 2;
+    ctx.setLineDash([4, 3]);
+    ctx.beginPath();
+    for (let px = -15; px <= 15; px += 0.4) {
+      const mDose = getMeasuredDose(px, activeDetector);
+      const cx = mapX(px);
+      const cy = mapY(mDose);
+      if (px === -15) ctx.moveTo(cx, cy);
+      else ctx.lineTo(cx, cy);
+    }
+    ctx.stroke();
+    ctx.restore();
+
+    // 5. Draw Detector Cylinder/Circle
+    const detX = mapX(detectorPos);
+    const radiusPhys = (activeDetector === 'psd') ? 0.5 : 3.0;
+    const radiusPx = (radiusPhys / 30) * width;
+    const physicalDoseVal = getPhysicalDose(detectorPos);
+    const measuredDoseVal = getMeasuredDose(detectorPos, activeDetector);
+
+    ctx.save();
+    // Detector shading glow
+    ctx.shadowBlur = 8;
+    ctx.shadowColor = (activeDetector === 'psd') ? 'rgba(45, 212, 176, 0.6)' : 'rgba(240, 168, 50, 0.6)';
+    ctx.fillStyle = (activeDetector === 'psd') ? 'rgba(45, 212, 176, 0.25)' : 'rgba(240, 168, 50, 0.2)';
+    ctx.strokeStyle = (activeDetector === 'psd') ? 'var(--teal)' : 'var(--amber)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.arc(detX, mapY(physicalDoseVal), radiusPx, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.stroke();
+    
+    // Core center point
+    ctx.fillStyle = '#ffffff';
+    ctx.shadowBlur = 0;
+    ctx.beginPath();
+    ctx.arc(detX, mapY(physicalDoseVal), 2, 0, 2*Math.PI);
+    ctx.fill();
+    ctx.restore();
+
+    // 6. Draw labels on detector position
+    ctx.fillStyle = 'var(--text)';
+    ctx.font = '9px Instrument Sans, sans-serif';
+    ctx.textAlign = 'center';
+    
+    // Line showing current measured height vs physical height
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(detX, mapY(physicalDoseVal));
+    ctx.lineTo(detX, mapY(measuredDoseVal));
+    ctx.stroke();
+  }
+
+  function animate() {
+    autoSweepTime += 0.015;
+    const step = (typeof currentStep !== 'undefined') ? currentStep : 1;
+    
+    updateSimulationState(step);
+
+    // Auto sweep when not dragging and step >= 3
+    if (!isDragging && step >= 3) {
+      detectorPos = Math.sin(autoSweepTime) * 11;
+    }
+
+    updateUI();
+    draw();
+    
+    requestAnimationFrame(animate);
+  }
+
+  animate();
+})();
+</script>
+</body>
+</html>

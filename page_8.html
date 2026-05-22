@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quenching en detectores de centelleo plástico - El Coeficiente kB y su Dispersión</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div id="deck">
+
+<div class="slide" id="slide-8">
+  <div class="slide-num">8 / 24</div>
+  <div class="slide-eyebrow">Capítulo 3 · La ley de Birks</div>
+  <h2 class="slide-title">El Coeficiente $k_B$ y su <em>Dispersión</em></h2>
+  <p class="slide-subtitle">Aunque en teoría es una propiedad intrínseca del material, los reportes bibliográficos difieren radicalmente.</p>
+  <div class="persona-row">
+    <span class="persona-tag pt-marcos">Fundamento Teórico</span>
+  </div>
+
+  <div class="two-col stretch">
+    <div class="col-stretch" style="gap: 14px;">
+      <div class="card card-teal reveal-item card-stretch" data-step="1">
+        <div class="card-label">Propiedad Intrínseca del Material</div>
+        <p style="font-size: 16px; color: var(--text2); line-height: 1.55;">
+          En principio, $k_B$ depende únicamente de la matriz polimérica base (poliestireno, PVT, etc.), del tipo de dopante fluorescente y de su concentración química. **No debería depender de la partícula incidente (electrón vs protón).**
+        </p>
+      </div>
+
+      <div class="card card-red reveal-item card-stretch" data-step="2">
+        <div class="card-label">La paradoja de los datos experimentales</div>
+        <p style="font-size: 16px; color: var(--text2); line-height: 1.55;">
+          Para centelleadores plásticos comunes (como poliestireno o la fibra comercial BCF-12), existen valores publicados en extremos opuestos para el mismo material:
+        </p>
+        <div style="display: flex; justify-content: space-between; align-items: center; background: var(--bg4); border-radius: 8px; padding: 10px; margin-top: 8px; border-left: 3px solid var(--red);">
+          <div style="font-family: var(--mono); font-size: 13.5px; color: var(--text3);">Rango de $k_B$ reportado:</div>
+          <div style="font-family: var(--mono); font-weight: bold; color: var(--red); font-size: 14.5px;">
+            0.0005 a 0.094 $\text{g}\cdot\text{cm}^{-2}\cdot\text{MeV}^{-1}$
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="reveal-item col-stretch" data-step="3" style="gap: 14px;">
+      <div class="card card-amber card-stretch" style="align-items: center; text-align: center; padding: 18px;">
+        <div class="card-label" style="align-self: flex-start;">Factor de discrepancia</div>
+        <div style="font-family: var(--serif); font-size: clamp(40.5px, 5.62vw, 56px); color: var(--amber); margin: 6px 0; font-weight: 500;">
+          40×
+        </div>
+        <div style="font-size: 15px; color: var(--text2); line-height: 1.5; max-width: 300px;">
+          de diferencia entre los extremos publicados en la literatura científica para el mismo centelleador plástico base.
+        </div>
+      </div>
+
+      <div class="callout reveal-item" data-step="4">
+        <strong>Importante:</strong> Esta inmensa variación hace imposible tomar simplemente un valor de la literatura y considerarlo una verdad incuestionable. Requiere entender la sensibilidad de cómo se estima ese parámetro.
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<div id="nav">
+  <button id="btn-prev">←</button>
+  <div class="nav-dots" id="nav-dots"></div>
+  <span id="nav-counter"></span>
+  <button id="btn-next">→</button>
+</div>
+
+<script src="navigation.js"></script>
+</body>
+</html>

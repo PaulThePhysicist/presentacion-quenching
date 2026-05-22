@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quenching en detectores de centelleo plástico - Composición</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div id="deck">
+
+<div class="slide" id="slide-1">
+  <div class="slide-num">1 / 24</div>
+  <div class="slide-eyebrow">Capítulo 1 · El detector ideal</div>
+  <h2 class="slide-title">PSD: Composición y <em>Equivalencia al Agua</em></h2>
+  <p class="slide-subtitle">La composición de carbono e hidrógeno del centelleador plástico lo sitúa muy por encima de otras tecnologías en equivalencia al agua.</p>
+  <div class="persona-row">
+    <span class="persona-tag pt-mc">Clínico</span>
+    <span class="persona-tag pt-marcos">Física de Radiaciones</span>
+  </div>
+
+  <div class="two-col stretch">
+    <div class="col-stretch" style="gap: 16px;">
+      <div class="card card-teal reveal-item card-stretch" data-step="1">
+        <div class="card-label">¿Por qué es tan atractivo como dosímetro?</div>
+        <p style="font-size: 17px; color: var(--text2); line-height: 1.6;">
+          Primero, el contexto de por qué el PSD es tan atractivo como dosímetro en entornos de radioterapia. Sus coeficientes de atenuación y absorción se asemejan al agua mejor que cualquier otro material.
+        </p>
+      </div>
+
+      <div class="card reveal-item card-stretch" data-step="2">
+        <div class="card-label">Composición Atómica</div>
+        <p style="font-size: 17px; color: var(--text2); line-height: 1.6;">
+          Su matriz polimérica está compuesta casi en su totalidad por **carbono e hidrógeno**, lo que le otorga propiedades dosimétricas casi perfectas para interactuar con haces de fotones y electrones de alta energía.
+        </p>
+      </div>
+    </div>
+
+    <div class="reveal-item col-stretch" data-step="3" style="gap: 16px;">
+      <div class="card card-blue card-stretch">
+        <div class="card-label">Comparativa de Z efectivo ($Z_{\text{eff}}$)</div>
+        <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 8px;">
+          <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 6px;">
+            <span style="color: var(--text);">Agua ($H_2O$)</span>
+            <span style="font-family: var(--mono); color: var(--text);">7.42</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 6px;">
+            <span style="color: var(--teal); font-weight: 500;">PSD (Centelleador plástico)</span>
+            <span style="font-family: var(--mono); color: var(--teal); font-weight: bold;">≈ 5.7</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 6px;">
+            <span style="color: var(--text2);">Diamante ($C$)</span>
+            <span style="font-family: var(--mono); color: var(--text2);">6.0</span>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: var(--red);">Diodo de silicio ($Si$)</span>
+            <span style="font-family: var(--mono); color: var(--red);">14.0</span>
+          </div>
+        </div>
+        <p style="font-size: 14px; color: var(--text3); margin-top: 12px; line-height: 1.55;">
+          Un $Z_{\text{eff}}$ alto (diodo) altera drásticamente el flujo de fotones en campos pequeños. El PSD minimiza esta perturbación por su proximidad al agua.
+        </p>
+      </div>
+
+      <div class="callout reveal-item" data-step="4">
+        <strong>Ventaja física:</strong> Esta propiedad reduce la dependencia energética y evita la necesidad de grandes factores de corrección por composición material.
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<div id="nav">
+  <button id="btn-prev">←</button>
+  <div class="nav-dots" id="nav-dots"></div>
+  <span id="nav-counter"></span>
+  <button id="btn-next">→</button>
+</div>
+
+<script src="navigation.js"></script>
+</body>
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quenching en detectores de centelleo plástico - La Compensación Accidental</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+</head>
+<body>
+
+<div id="deck">
+
+<div class="slide" id="slide-17">
+  <div class="slide-num">17 / 24</div>
+  <div class="slide-eyebrow">Capítulo 6 · El hallazgo de Gingras</div>
+  <h2 class="slide-title">La Compensación <em>Accidental</em></h2>
+  <p class="slide-subtitle">Dos imperfecciones reales que van en sentidos opuestos y se cancelan mutuamente.</p>
+
+
+  <div class="two-col stretch">
+    <div class="col-stretch" style="gap: 10px;">
+      <div class="comp-reveal reveal-item card-stretch" data-step="1">
+        <div class="comp-box blue">
+          <div class="comp-name">P<sub>scint</sub></div>
+          <div class="comp-trend">↘</div>
+          <div class="comp-desc">decrece al ampliar el campo<br><span style="color:var(--blue);">perturbación material</span></div>
+        </div>
+        <div class="comp-op">×</div>
+        <div class="comp-box red2">
+          <div class="comp-name">k<sub>ioq</sub></div>
+          <div class="comp-trend">↗</div>
+          <div class="comp-desc">crece al ampliar el campo<br><span style="color:var(--red);">corrección quenching</span></div>
+        </div>
+        <div class="comp-op">≈</div>
+        <div class="comp-box teal2">
+          <div class="comp-name">producto</div>
+          <div class="comp-trend" style="color:var(--teal);">≈ 1</div>
+          <div class="comp-desc" style="color:var(--teal);">0.999 – 1.002<br>para todo campo</div>
+        </div>
+      </div>
+
+      <div class="card card-teal reveal-item card-stretch" data-step="2" style="padding: 10px 14px;">
+        <div class="card-label">Análisis de Tendencias</div>
+        <p style="font-size: 14.5px; color: var(--text2); line-height: 1.45;">
+          Al aumentar el campo, se incrementa la radiación dispersa lenta. Esto reduce la dosis relativa en el centelleador ($P_{\text{scint}}$ disminuye) pero simultáneamente aumenta el quenching ($k_{\text{ioq}}$ aumenta). Ambos efectos se cancelan casi perfectamente.
+        </p>
+      </div>
+
+      <div class="callout amber reveal-item" data-step="3" style="font-size: 13.5px; margin: 0; padding: 8px 12px;">
+        <strong>Compensación:</strong> La respuesta plana y auto-corregida no proviene de la "idealidad" del material, sino de la coincidencia exacta de dos perturbaciones de signo opuesto.
+      </div>
+    </div>
+
+    <div class="reveal-item col-stretch" data-step="4" style="gap: 10px;">
+      <div class="card card-stretch" style="padding: 10px 14px; display: flex; flex-direction: column; justify-content: space-between;">
+        <div class="stat-row" style="margin-bottom: 4px;">
+          <div class="stat-box" style="padding: 4px 8px;">
+            <div class="stat-box-label" style="font-size: 9px;">Detector</div>
+            <div style="font-size: 12.5px; font-weight: 500; font-family: var(--mono);">PRB-0002 (BCF-60)</div>
+          </div>
+          <div class="stat-box" style="padding: 4px 8px;">
+            <div class="stat-box-label" style="font-size: 9px;">Haz</div>
+            <div style="font-size: 12.5px; font-weight: 500; font-family: var(--mono);">TrueBeam 6 MV</div>
+          </div>
+          <div class="stat-box" style="padding: 4px 8px;">
+            <div class="stat-box-label" style="font-size: 9px;">k total</div>
+            <div class="stat-box-val teal" style="font-size: 13.5px;">0.999–1.002</div>
+          </div>
+        </div>
+        
+        <div class="canvas-stretch-wrapper" style="border: none; background: transparent; padding: 0;">
+          <canvas id="gingrasChart"></canvas>
+        </div>
+        
+        <div style="display: flex; gap: 10px; font-size: 10px; color: var(--text3); font-family: var(--mono); margin-top: 4px; justify-content: center;">
+          <span style="display:flex;align-items:center;gap:3px;"><span style="width:10px;height:3px;background:#5b9cf6;display:inline-block;"></span>P_scint</span>
+          <span style="display:flex;align-items:center;gap:3px;"><span style="width:10px;height:3px;background:#e85555;display:inline-block;"></span>k_ioq</span>
+          <span style="display:flex;align-items:center;gap:3px;"><span style="width:10px;height:3px;background:#2dd4b0;border-top:1.5px dashed #2dd4b0;display:inline-block;"></span>Producto</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<div id="nav">
+  <button id="btn-prev">←</button>
+  <div class="nav-dots" id="nav-dots"></div>
+  <span id="nav-counter"></span>
+  <button id="btn-next">→</button>
+</div>
+
+<script src="navigation.js"></script>
+<script>
+Chart.defaults.color = '#dcd9d4';
+Chart.defaults.font.family = "'DM Mono', monospace";
+Chart.defaults.font.size = 10;
+const gridColor = 'rgba(255,255,255,0.05)';
+
+const fieldSizes = [0.6, 1, 1.5, 2, 3, 4, 5, 6, 8, 10, 15, 20, 30];
+const fsLabels = ['0.6','1','1.5','2','3','4','5','6','8','10','15','20','30'];
+function pscint(f) { return 1.0062 - 0.00038 * Math.log(f + 0.8) * 7; }
+function kioqF(f) { return 0.9942 + 0.00038 * Math.log(f + 0.5) * 5; }
+
+const gCtx = document.getElementById('gingrasChart');
+if (gCtx) {
+  new Chart(gCtx, {
+    type: 'line',
+    data: {
+      labels: fsLabels,
+      datasets: [
+        { label: 'P_scint', data: fieldSizes.map(pscint), borderColor: '#5b9cf6', backgroundColor: 'transparent', borderWidth: 2, pointRadius: 3, pointBackgroundColor: '#5b9cf6', tension: 0.35 },
+        { label: 'k_ioq', data: fieldSizes.map(kioqF), borderColor: '#e85555', backgroundColor: 'transparent', borderWidth: 2, pointRadius: 3, pointBackgroundColor: '#e85555', tension: 0.35 },
+        { label: 'Producto', data: fieldSizes.map(f => pscint(f)*kioqF(f)), borderColor: '#2dd4b0', backgroundColor: 'transparent', borderWidth: 2, borderDash: [6,3], pointRadius: 3, pointBackgroundColor: '#2dd4b0', tension: 0.35 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => `${c.dataset.label}: ${c.parsed.y.toFixed(4)}` } } },
+      scales: {
+        x: { title: { display: true, text: 'Campo (cm × cm)', font: { size: 9 } }, grid: { color: gridColor }, ticks: { maxRotation: 0 } },
+        y: { title: { display: true, text: 'Factor de corrección', font: { size: 9 } }, min: 0.993, max: 1.007, grid: { color: gridColor }, ticks: { callback: v => v.toFixed(3) } }
+      }
+    },
+    plugins: [{
+      id: 'gUnit',
+      afterDraw(c) {
+        const { ctx, chartArea: { left, right }, scales: { y } } = c;
+        const y1 = y.getPixelForValue(1.000);
+        ctx.save(); ctx.strokeStyle = 'rgba(255,255,255,0.12)'; ctx.lineWidth = 1; ctx.setLineDash([5,4]);
+        ctx.beginPath(); ctx.moveTo(left, y1); ctx.lineTo(right, y1); ctx.stroke();
+        ctx.setLineDash([]); ctx.fillStyle = '#9a9692'; ctx.font = '9px DM Mono, monospace';
+        ctx.fillText('1.000 ideal', left+4, y1-5); ctx.restore();
+      }
+    }]
+  });
+}
+</script>
+</body>
+</html>

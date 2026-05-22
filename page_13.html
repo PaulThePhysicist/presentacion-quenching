@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quenching en detectores de centelleo plástico - El Espectro Compton Clínico</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+  .controls-disabled {
+    opacity: 0.35;
+    pointer-events: none;
+  }
+  .hud-badge {
+    font-size: 10px;
+    font-family: var(--mono);
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 1px solid rgba(255,255,255,0.05);
+    transition: all 0.2s ease;
+  }
+  .hud-badge.green {
+    background: var(--teal-dim);
+    color: var(--teal);
+    border-color: rgba(45, 212, 176, 0.2);
+  }
+  .hud-badge.red {
+    background: var(--red-dim);
+    color: var(--red);
+    border-color: rgba(232, 85, 85, 0.2);
+  }
+  .hud-badge.amber {
+    background: var(--amber-dim);
+    color: var(--amber);
+    border-color: rgba(240, 168, 50, 0.2);
+  }
+  .spectrum-btn {
+    background: var(--bg4);
+    border: 1px solid var(--border);
+    color: var(--text3);
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-family: var(--mono);
+    font-size: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .spectrum-btn:hover {
+    border-color: var(--teal);
+    color: var(--teal);
+  }
+  .spectrum-btn.active {
+    background: var(--teal-dim);
+    border-color: var(--teal);
+    color: var(--teal);
+  }
+</style>
+</head>
+<body>
+
+<div id="deck">
+
+<div class="slide" id="slide-13">
+  <div class="slide-num">13 / 24</div>
+  <div class="slide-eyebrow">Capítulo 5 · El espectro que nadie miraba</div>
+  <h2 class="slide-title">El Espectro <em>Compton Clínico</em></h2>
+  <p class="slide-subtitle">La presencia masiva de electrones de baja energía en haces de megavoltaje.</p>
+  <div class="persona-row">
+    <span class="persona-tag pt-mc">Contexto Clínico</span>
+    <span class="persona-tag pt-marcos">Física Básica</span>
+  </div>
+
+  <div class="two-col stretch" style="grid-template-columns: 1fr 1.25fr; gap: 18px;">
+    <!-- Columna izquierda: Estudio y métricas -->
+    <div class="col-stretch" style="gap: 14px;">
+      <div class="card card-teal reveal-item card-stretch" data-step="1">
+        <div class="card-label">El Estudio de Valdes Santurio (2019)</div>
+        <p style="font-size: 15px; color: var(--text2); line-height: 1.45;">
+          Modeló mediante simulación Monte Carlo (EGSnrc) un detector de centelleo de fibra BCF-60 en haces clínicos de un acelerador **Varian TrueBeam 6 MV**, utilizando archivos de espacio de fases de alta precisión.
+        </p>
+      </div>
+
+      <div class="card reveal-item card-stretch" data-step="2">
+        <div class="card-label">El origen de la cola de baja energía</div>
+        <p style="font-size: 14.5px; color: var(--text2); line-height: 1.45; margin-bottom: 4px;">
+          ¿Por qué abundan los electrones lentos en un haz de alta energía (6 MV)?
+        </p>
+        <ul class="nice" style="gap: 4px; font-size: 13px; padding-left: 12px; margin: 0;">
+          <li>Los electrones primarios de alta energía se frenan y producen lluvias de **electrones secundarios de baja energía**.</li>
+          <li>La **radiación dispersa** del cabezal y del fantoma introduce fotones de menor energía que producen electrones aún más lentos.</li>
+        </ul>
+      </div>
+
+      <div class="metric-highlight reveal-item card-stretch" data-step="3" style="padding: 12px 16px; display: flex; flex-direction: column; align-items: center; text-align: center; justify-content: center; min-height: auto;">
+        <div class="eq-label" style="margin-bottom: 2px; font-size: 11px;">Dosis absorbida por electrones &lt; 100 keV</div>
+        <div style="font-family: var(--serif); font-size: 32px; color: var(--amber); font-weight: bold; margin: 2px 0;">
+          33% a 44%
+        </div>
+        <div style="font-size: 13px; color: var(--text2); line-height: 1.4; max-width: 280px; margin-top: 2px;">
+          de la dosis total depositada en el detector. **No es una cola marginal; representa más de un tercio de la dosis.**
+        </div>
+      </div>
+    </div>
+
+    <!-- Columna derecha: Cascada Compton e Histograma -->
+    <div class="reveal-item col-stretch" data-step="1" style="gap: 14px;">
+      <div class="card card-stretch" style="display: flex; flex-direction: column; gap: 12px; min-height: 410px; justify-content: space-between;">
+        <div class="card-label" style="margin-bottom: 0;">Espectro Compton e Histograma de Electrones Seg.</div>
+        
+        <!-- HUD de Compton -->
+        <div style="display: grid; grid-template-columns: 1fr 1.2fr 1fr; gap: 8px; background: var(--bg3); padding: 8px; border-radius: 8px; border: 1px solid var(--border);">
+          <div style="text-align: center;">
+            <div style="font-size: 9px; color: var(--text3); font-family: var(--mono); text-transform: uppercase;">Espectro Fotón</div>
+            <div id="hud-photon-beam" style="font-size: 14px; font-family: var(--mono); color: var(--teal); font-weight: bold; margin-top: 2px;">6 MV</div>
+          </div>
+          <div style="text-align: center; border-left: 1px solid var(--border); border-right: 1px solid var(--border);">
+            <div style="font-size: 9px; color: var(--text3); font-family: var(--mono); text-transform: uppercase;">Fracción Quenching</div>
+            <div id="hud-quenched-fraction" style="font-size: 14px; font-family: var(--mono); color: var(--amber); font-weight: bold; margin-top: 2px;">~38% (Dosis)</div>
+          </div>
+          <div style="text-align: center;">
+            <div style="font-size: 9px; color: var(--text3); font-family: var(--mono); text-transform: uppercase;">Estado de Haz</div>
+            <div id="hud-compton-status" style="font-size: 14px; font-family: var(--mono); color: var(--teal); font-weight: bold; margin-top: 2px;">Alta Energía</div>
+          </div>
+        </div>
+
+        <!-- Canvas -->
+        <div class="canvas-stretch-wrapper">
+          <canvas id="compton-canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: block; cursor: crosshair;"></canvas>
+          <div id="compton-badge" class="hud-badge amber" style="position: absolute; top: 8px; right: 8px; pointer-events: none;">
+            Pase el cursor sobre la gráfica
+          </div>
+        </div>
+
+        <!-- Beam Selector Buttons -->
+        <div id="compton-controls-container" class="controls-disabled" style="display: flex; flex-direction: column; gap: 6px; background: var(--bg3); padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border); transition: opacity 0.3s;">
+          <div style="font-size: 11px; font-family: var(--mono); color: var(--text2); margin-bottom: 2px;">Simular Calidad del Haz de Radiación:</div>
+          <div style="display: flex; gap: 8px; justify-content: space-between;">
+            <button class="spectrum-btn active" id="btn-6mv">6 MV (TrueBeam)</button>
+            <button class="spectrum-btn" id="btn-co60">Co-60 (1.25 MeV)</button>
+            <button class="spectrum-btn" id="btn-150kv">150 kV (Ortovoltaje)</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout reveal-item" data-step="4">
+        <strong>Perspectiva Clínica:</strong> Clínicamente, esto demuestra que el quenching no es un problema exótico de haces de electrones o protones, sino una realidad en haces de fotones MV clínicos.
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<div id="nav">
+  <button id="btn-prev">←</button>
+  <div class="nav-dots" id="nav-dots"></div>
+  <span id="nav-counter"></span>
+  <button id="btn-next">→</button>
+</div>
+
+<script src="navigation.js"></script>
+<script>
+(function() {
+  const canvas = document.getElementById('compton-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+
+  let width = 0;
+  let height = 0;
+  let dpr = window.devicePixelRatio || 1;
+
+  // Simulation State
+  let selectedBeam = '6mv'; // '6mv', 'co60', '150kv'
+  let activeStep = 0;
+  let lastStep = -1;
+  let lastBeam = '';
+  let hoveredRegion = null; // 'low' (<125 keV), 'high' (>=125 keV), null
+
+  // Animation particles
+  let particles = [];
+  let tracks = [];
+  let frame = 0;
+
+  // DOM
+  const btn6mv = document.getElementById('btn-6mv');
+  const btnCo60 = document.getElementById('btn-co60');
+  const btn150kv = document.getElementById('btn-150kv');
+  const hudBeam = document.getElementById('hud-photon-beam');
+  const hudFraction = document.getElementById('hud-quenched-fraction');
+  const hudStatus = document.getElementById('hud-compton-status');
+  const badge = document.getElementById('compton-badge');
+  const controlsContainer = document.getElementById('compton-controls-container');
+
+  function resize() {
+    const rect = canvas.getBoundingClientRect();
+    width = rect.width;
+    height = rect.height;
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+    ctx.scale(dpr, dpr);
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  // Hover detection
+  canvas.addEventListener('mousemove', function(e) {
+    const rect = canvas.getBoundingClientRect();
+    const mx = e.clientX - rect.left;
+    const my = e.clientY - rect.top;
+
+    const mLeft = 32;
+    const mRight = 15;
+    const graphWidth = width - mLeft - mRight;
+    const thresholdX = mLeft + (125 / 1500) * graphWidth;
+
+    if (my >= height - 60 && my <= height - 15 && mx >= mLeft && mx <= width - mRight) {
+      if (mx < thresholdX) {
+        hoveredRegion = 'low';
+        if (badge) {
+          badge.textContent = '🔍 Quenching (<125 keV)';
+          badge.className = 'hud-badge red';
+        }
+      } else {
+        hoveredRegion = 'high';
+        if (badge) {
+          badge.textContent = '🔍 Lineal (≥125 keV)';
+          badge.className = 'hud-badge green';
+        }
+      }
+    } else {
+      hoveredRegion = null;
+      if (badge) {
+        badge.textContent = 'Pase el cursor sobre la gráfica';
+        badge.className = 'hud-badge amber';
+      }
+    }
+  });
+
+  canvas.addEventListener('mouseleave', function() {
+    hoveredRegion = null;
+    if (badge) {
+      badge.textContent = 'Pase el cursor sobre la gráfica';
+      badge.className = 'hud-badge amber';
+    }
+  });
+
+  // Buttons Event Listeners
+  function setBeam(beam) {
+    selectedBeam = beam;
+    [btn6mv, btnCo60, btn150kv].forEach(b => {
+      if (b) b.classList.remove('active');
+    });
+    if (beam === '6mv' && btn6mv) btn6mv.classList.add('active');
+    if (beam === 'co60' && btnCo60) btnCo60.classList.add('active');
+    if (beam === '150kv' && btn150kv) btn150kv.classList.add('active');
+
+    updateUI();
+    particles = [];
+    tracks = [];
+  }
+
+  if (btn6mv) btn6mv.onclick = () => setBeam('6mv');
+  if (btnCo60) btnCo60.onclick = () => setBeam('co60');
+  if (btn150kv) btn150kv.onclick = () => setBeam('150kv');
+
+  function updateUI() {
+    if (hudBeam) {
+      hudBeam.textContent = selectedBeam === '6mv' ? '6 MV' : (selectedBeam === 'co60' ? 'Cobalto-60' : '150 kVp');
+    }
+
+    let quenchFracText = '38%';
+    let statusText = 'Medio-Bajo';
+    let statusColor = 'var(--teal)';
+
+    if (selectedBeam === '6mv') {
+      quenchFracText = '33% a 44%';
+      statusText = 'Substancial';
+      statusColor = 'var(--amber)';
+    } else if (selectedBeam === 'co60') {
+      quenchFracText = '~22%';
+      statusText = 'Leve (Bajo)';
+      statusColor = 'var(--teal)';
+    } else if (selectedBeam === '150kv') {
+      quenchFracText = '~82%';
+      statusText = 'Saturado (Crítico)';
+      statusColor = 'var(--red)';
+    }
+
+    if (hudFraction) {
+      hudFraction.textContent = quenchFracText;
+      hudFraction.style.color = selectedBeam === '150kv' ? 'var(--red)' : (selectedBeam === 'co60' ? 'var(--teal)' : 'var(--amber)');
+    }
+    if (hudStatus) {
+      hudStatus.textContent = statusText;
+      hudStatus.style.color = statusColor;
+    }
+  }
+
+  updateUI();
+
+  function updateSimulationState(step) {
+    if (step === lastStep) return;
+    lastStep = step;
+
+    if (step >= 4) {
+      if (controlsContainer) controlsContainer.classList.remove('controls-disabled');
+      [btn6mv, btnCo60, btn150kv].forEach(b => { if (b) b.disabled = false; });
+    } else {
+      if (controlsContainer) controlsContainer.classList.add('controls-disabled');
+      [btn6mv, btnCo60, btn150kv].forEach(b => { if (b) b.disabled = true; });
+      setBeam('6mv');
+    }
+  }
+
+  function updatePhysics() {
+    frame++;
+
+    // Spawn incident photons from the left (x = -10)
+    // Spawn rate: orthovoltage spawns faster but low-energy, mv slower
+    const spawnRate = selectedBeam === '150kv' ? 12 : 25;
+    if (frame % spawnRate === 0) {
+      particles.push({
+        x: -10,
+        y: 20 + Math.random() * 85,
+        vx: 3.5,
+        vy: 0,
+        type: 'photon',
+        active: true
+      });
+    }
+
+    // Move particles
+    for (let i = particles.length - 1; i >= 0; i--) {
+      const p = particles[i];
+      if (p.type === 'photon') {
+        p.x += p.vx;
+        // Collision probability inside BCF-60 detector block (x: 40 to 190)
+        if (p.x >= 40 && p.x <= 180 && Math.random() < 0.1) {
+          p.active = false;
+          particles.splice(i, 1);
+          
+          // Trigger Compton Scatter collision!
+          // 1. Spawn scattered photon
+          const scatAngle = (Math.random() - 0.5) * 1.5;
+          particles.push({
+            x: p.x,
+            y: p.y,
+            vx: Math.cos(scatAngle) * 3.0,
+            vy: Math.sin(scatAngle) * 3.0,
+            type: 'scat_photon',
+            life: 30
+          });
+
+          // 2. Spawn recoil electron track
+          let energy = 1000; // default (keV)
+          if (selectedBeam === '6mv') {
+            // broad distribution, some very high energy, many slow
+            energy = Math.random() < 0.4 ? 40 + Math.random() * 80 : 150 + Math.random() * 1000;
+          } else if (selectedBeam === 'co60') {
+            energy = 300 + Math.random() * 750;
+          } else {
+            // 150 kvp
+            energy = 15 + Math.random() * 100;
+          }
+
+          generateElectronTrack(p.x, p.y, energy);
+        } else if (p.x > 210) {
+          p.active = false;
+          particles.splice(i, 1);
+        }
+      } else {
+        // Scattered photon decaying
+        p.x += p.vx;
+        p.y += p.vy;
+        p.life--;
+        if (p.life <= 0) {
+          particles.splice(i, 1);
+        }
+      }
+    }
+
+    // Animate recoil electron track propagation
+    tracks.forEach(t => {
+      if (t.progress < t.points.length) {
+        t.progress += 0.5;
+      } else {
+        t.alpha -= 0.02;
+      }
+    });
+    tracks = tracks.filter(t => t.alpha > 0);
+  }
+
+  function generateElectronTrack(sx, sy, energy) {
+    const points = [{ x: sx, y: sy }];
+    
+    // Low energy electron tracks: short range, highly curled
+    // High energy: long, straight
+    const range = Math.min(65, 8 + (energy / 1500) * 80);
+    const steps = Math.ceil(range / 2.5);
+    const scatterAngle = Math.max(0.04, 1.35 * (1 - (energy / 1200)));
+    
+    let x = sx;
+    let y = sy;
+    let angle = (Math.random() - 0.5) * 0.8; // generally forward
+
+    for (let i = 0; i < steps; i++) {
+      angle += (Math.random() - 0.5) * scatterAngle;
+      x += Math.cos(angle) * 2.5;
+      y += Math.sin(angle) * 2.5;
+      points.push({ x, y });
+    }
+
+    tracks.push({
+      points,
+      energy,
+      progress: 0,
+      alpha: 1.0
+    });
+  }
+
+  function draw(step) {
+    ctx.clearRect(0, 0, width, height);
+
+    // Margins for histogram at bottom
+    const mLeft = 32;
+    const mRight = 15;
+    const mTop = 15;
+    const mBottom = 15;
+    const graphWidth = width - mLeft - mRight;
+    const graphHeight = 45; // height of histogram
+    const histTop = height - mBottom - graphHeight;
+
+    // --- DRAW PHYSICAL BCF-60 DETECTOR BLOCK ---
+    ctx.save();
+    ctx.strokeStyle = 'rgba(91, 156, 246, 0.28)';
+    const gradient = ctx.createLinearGradient(40, 0, 185, 0);
+    gradient.addColorStop(0, 'rgba(91, 156, 246, 0.02)');
+    gradient.addColorStop(1, 'rgba(91, 156, 246, 0.08)');
+    ctx.fillStyle = gradient;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.roundRect(40, 15, 140, 100, 4);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = 'rgba(91, 156, 246, 0.4)';
+    ctx.font = '8px DM Mono, monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('BCF-60 Centelleador Plástico', 110, 27);
+    ctx.restore();
+
+    // --- DRAW PARTICLES ---
+    // Incident / scattered photons (dashed lines)
+    ctx.save();
+    ctx.strokeStyle = 'rgba(167, 139, 250, 0.8)';
+    ctx.lineWidth = 1.2;
+    ctx.setLineDash([4, 3]);
+    
+    particles.forEach(p => {
+      if (p.type === 'photon') {
+        ctx.beginPath();
+        ctx.moveTo(p.x - 8, p.y);
+        ctx.lineTo(p.x, p.y);
+        ctx.stroke();
+      } else {
+        // Scattered photon
+        ctx.strokeStyle = `rgba(167, 139, 250, ${p.life / 30 * 0.55})`;
+        ctx.beginPath();
+        const startX = p.x - p.vx * 2;
+        const startY = p.y - p.vy * 2;
+        ctx.moveTo(startX, startY);
+        ctx.lineTo(p.x, p.y);
+        ctx.stroke();
+      }
+    });
+    ctx.restore();
+
+    // Electron recoil tracks
+    tracks.forEach(t => {
+      const isLow = t.energy < 125;
+      
+      // Determine color based on energy and hover state
+      let color = 'rgba(91, 156, 246, '; // default blue
+      if (isLow) {
+        color = 'rgba(232, 85, 85, '; // default red
+      }
+      
+      let thickness = isLow ? 1.4 : 1.8;
+      let opacity = t.alpha;
+
+      // Glow matching hover states
+      if (hoveredRegion === 'low' && isLow) {
+        color = 'rgba(255, 100, 100, ';
+        thickness = 2.5;
+        opacity = Math.min(1.0, t.alpha + 0.3);
+      } else if (hoveredRegion === 'high' && !isLow) {
+        color = 'rgba(100, 255, 230, ';
+        thickness = 3.0;
+        opacity = Math.min(1.0, t.alpha + 0.3);
+      }
+
+      ctx.save();
+      ctx.strokeStyle = color + opacity + ')';
+      ctx.lineWidth = thickness;
+      ctx.beginPath();
+      
+      const limit = Math.min(t.points.length, Math.floor(t.progress));
+      for (let i = 0; i < limit; i++) {
+        const pt = t.points[i];
+        if (i === 0) ctx.moveTo(pt.x, pt.y);
+        else ctx.lineTo(pt.x, pt.y);
+      }
+      ctx.stroke();
+      ctx.restore();
+    });
+
+    // --- DRAW HISTOGRAM SPECTRA ---
+    // Draw boundary background
+    ctx.fillStyle = '#0a0d0f';
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.roundRect(mLeft, histTop, graphWidth, graphHeight, 4);
+    ctx.fill();
+    ctx.stroke();
+
+    // Draw coordinate markers on histogram
+    ctx.strokeStyle = 'rgba(255,255,255,0.03)';
+    for (let x_m = mLeft + graphWidth/5; x_m < width - mRight; x_m += graphWidth/5) {
+      ctx.beginPath(); ctx.moveTo(x_m, histTop); ctx.lineTo(x_m, histTop + graphHeight); ctx.stroke();
+    }
+
+    // Mathematical representation of distributions
+    // orthovoltage: y = exp(-E/60)
+    // co60: y = Compton distribution (low peak + Compton edge at 900 keV)
+    // 6mv: combination of exponential low energy (scatter) + broad Compton continuum
+    const maxE = 1500; // keV
+    
+    function getSpecY(energy_v) {
+      if (selectedBeam === '150kv') {
+        if (energy_v > 180) return 0;
+        return Math.exp(-energy_v / 42) * 0.92;
+      } else if (selectedBeam === 'co60') {
+        if (energy_v > 1050) return 0;
+        // compton edge spike around 900
+        const comptonEdge = Math.exp(-Math.pow(energy_v - 850, 2) / 6000) * 0.55;
+        const lowCont = Math.exp(-energy_v / 300) * 0.28;
+        const flatVal = (energy_v < 900) ? 0.18 * (energy_v / 900) : 0;
+        return comptonEdge + lowCont + flatVal;
+      } else {
+        // 6mv: combination of high cascade peak + broad tail
+        const cascadePeak = Math.exp(-energy_v / 85) * 0.72;
+        const broadPeak = Math.exp(-Math.pow(energy_v - 350, 2) / 180000) * 0.26;
+        const highTail = Math.exp(-energy_v / 700) * 0.12;
+        return cascadePeak + broadPeak + highTail;
+      }
+    }
+
+    // Draw distribution bars
+    const barWidth = 2;
+    for (let px = mLeft + 1; px < width - mRight; px += barWidth + 1) {
+      const eV = ((px - mLeft) / graphWidth) * maxE;
+      const val = getSpecY(eV);
+      const barH = val * (graphHeight - 8);
+
+      const isLow = eV < 125;
+      
+      // Hover color mapping
+      let barColor = isLow ? 'rgba(232, 85, 85, 0.45)' : 'rgba(91, 156, 246, 0.45)';
+      if (hoveredRegion === 'low' && isLow) {
+        barColor = 'rgba(255, 100, 100, 0.9)';
+      } else if (hoveredRegion === 'high' && !isLow) {
+        barColor = 'rgba(100, 255, 230, 0.9)';
+      }
+
+      ctx.fillStyle = barColor;
+      ctx.fillRect(px, height - mBottom - barH - 2, barWidth, barH);
+    }
+
+    // Draw vertical threshold line (125 keV)
+    const thresholdX = mLeft + (125 / maxE) * graphWidth;
+    ctx.save();
+    ctx.strokeStyle = 'rgba(240, 168, 50, 0.6)';
+    ctx.setLineDash([3, 3]);
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.moveTo(thresholdX, histTop - 3);
+    ctx.lineTo(thresholdX, height - mBottom);
+    ctx.stroke();
+
+    // Threshold text
+    ctx.fillStyle = 'rgba(240, 168, 50, 0.85)';
+    ctx.font = '8px DM Mono, monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('125 keV (Umbral Quenching)', thresholdX, histTop - 6);
+    ctx.restore();
+
+    // Hist labels
+    ctx.fillStyle = 'var(--text3)';
+    ctx.font = '8px DM Mono, monospace';
+    ctx.textAlign = 'left';
+    ctx.fillText('0 keV', mLeft + 2, height - 5);
+    ctx.textAlign = 'right';
+    ctx.fillText('1500 keV', width - mRight - 2, height - 5);
+    ctx.textAlign = 'center';
+    ctx.fillText('Espectro de Energía Recuento (E_sec)', mLeft + graphWidth/2, height - 5);
+  }
+
+  function animate() {
+    const step = (typeof currentStep !== 'undefined') ? currentStep : 1;
+    updateSimulationState(step);
+    updatePhysics();
+    draw(step);
+    requestAnimationFrame(animate);
+  }
+
+  animate();
+})();
+</script>
+</body>
+</html>

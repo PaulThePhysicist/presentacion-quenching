@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quenching en detectores de centelleo plástico - Estado del Arte y Conexiones</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div id="deck">
+
+<div class="slide" id="slide-23">
+  <div class="slide-num">23 / 24</div>
+  <div class="slide-eyebrow">Capítulo 9 · Conclusiones y camino a seguir</div>
+  <h2 class="slide-title">Estado del Arte y <em>Conexiones</em></h2>
+  <p class="slide-subtitle">Las piezas del rompecabezas físico están dispersas; MDSIM1 es el puente de unión.</p>
+
+
+  <div class="two-col stretch">
+    <div class="col-stretch" style="gap: 12px;">
+      <div class="card card-teal reveal-item card-stretch" data-step="1">
+        <div class="card-label">Herramientas Teóricas Disponibles</div>
+        <ul class="nice" style="font-size: 14px; gap: 4px;">
+          <li><strong>Modelo de Birks (1951):</strong> El estándar analítico semiempírico de saturación.</li>
+          <li><strong>Extensión de Valdes Santurio:</strong> Integración espectral con poder de frenado restringido.</li>
+          <li><strong>Modelo FRET (Ogawa 2018):</strong> Simulación estocástica a escala nanométrica.</li>
+        </ul>
+      </div>
+
+      <div class="card card-amber reveal-item card-stretch" data-step="2">
+        <div class="card-label">Datos de Referencia Clínicos</div>
+        <ul class="nice" style="font-size: 14px; gap: 4px;">
+          <li><strong>Gingras et al. (2025):</strong> Curvas detalladas de $P_{\text{scint}}$ y $k_{\text{ioq}}$ en fotones MV.</li>
+          <li><strong>Bauer et al. (2026):</strong> Linealidad y factores de salida en electrones.</li>
+          <li><strong>Valdes Santurio (2019):</strong> Variaciones espectrales en kV y MV.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="col-stretch" style="gap: 12px;">
+      <div class="card card-purple reveal-item card-stretch" style="padding: 16px;">
+        <div class="card-label" style="color: var(--purple); text-transform: uppercase; letter-spacing: 0.05em; font-size: 10px; font-family: var(--mono); margin-bottom: 6px;">La Conexión Metodológica</div>
+        <p style="font-size: 16px; color: var(--text); line-height: 1.5; font-weight: 500; margin-bottom: 8px;">
+          Lo que falta en la literatura es una plataforma unificada que integre y valide de forma cruzada estas herramientas.
+        </p>
+        <p style="font-size: 14.5px; color: var(--text2); line-height: 1.5;">
+          <strong>MDSIM1</strong> responde a esto implementando el modelado espectral de dosis y quenching en <strong>Geant4</strong>, validado contra el estado del arte y aplicándolo de forma directa a la caracterización del material de Blue Physics.
+        </p>
+      </div>
+      
+      <div class="callout reveal-item" data-step="4" style="font-size: 13.5px;">
+        <strong>Conclusión:</strong> Al unificar simulación teórica y datos clínicos, MDSIM1 permite la validación de diseños de dosímetros plásticos con rigor metrológico.
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<div id="nav">
+  <button id="btn-prev">←</button>
+  <div class="nav-dots" id="nav-dots"></div>
+  <span id="nav-counter"></span>
+  <button id="btn-next">→</button>
+</div>
+
+<script src="navigation.js"></script>
+</body>
+</html>

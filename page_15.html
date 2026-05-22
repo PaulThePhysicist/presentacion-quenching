@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quenching en detectores de centelleo plástico - Gingras 2025 y Formalismo Extendido</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div id="deck">
+
+<div class="slide" id="slide-15">
+  <div class="slide-num">15 / 24</div>
+  <div class="slide-eyebrow">Capítulo 6 · El hallazgo de Gingras</div>
+  <h2 class="slide-title">Gingras 2025 y el <em>Formalismo Extendido</em></h2>
+  <p class="slide-subtitle">La caracterización más rigurosa de los factores de perturbación de un PSD comercial.</p>
+
+
+  <div class="two-col stretch">
+    <div class="col-stretch" style="gap: 12px;">
+      <div class="card card-teal reveal-item card-stretch" data-step="1">
+        <div class="card-label">El Detector PRB-0002</div>
+        <p style="font-size: 15px; color: var(--text2); line-height: 1.5;">
+          El trabajo clínico y teórico se enfoca en el detector comercial <strong>PRB-0002</strong> (plataforma Hyperscint RP-200 de Medscint), el cual utiliza una fibra de centelleo plástico <strong>BCF-60</strong>.
+        </p>
+      </div>
+
+      <div class="card card-amber reveal-item card-stretch" data-step="2">
+        <div class="card-label">Simulación de Alta Fidelidad</div>
+        <p style="font-size: 15px; color: var(--text2); line-height: 1.5;">
+          Los autores simularon la geometría tridimensional detallada del detector real en el código Monte Carlo <strong>EGSnrc</strong>, permitiendo aislar con precisión cada componente del factor de corrección.
+        </p>
+      </div>
+      
+      <div class="callout reveal-item" data-step="3" style="font-size: 14px;">
+        <strong>Importante:</strong> Este desglose analítico por separado a través de simulaciones Monte Carlo permite entender qué efectos físicos controlan la respuesta del detector en lugar de tratarlo como una caja negra.
+      </div>
+    </div>
+
+    <div class="reveal-item col-stretch" data-step="4" style="gap: 12px;">
+      <div class="card card-stretch" style="padding: 14px;">
+        <div class="card-label">Descomposición del Factor de Corrección</div>
+        <p style="font-size: 14.5px; color: var(--text2); line-height: 1.45; margin-bottom: 8px;">
+          Extiende el formalismo del TRS-483 para relacionar la dosis absorbida en agua con la lectura del detector ($M_Q$):
+        </p>
+        <div class="eq-block" style="font-size: 20px; padding: 10px; margin: 6px 0; text-align: center;">
+          $$k = k_{\text{vol}} \cdot P_{\text{scint}} \cdot P_{\text{wall}} \cdot k_{\text{ioq}}$$
+        </div>
+        <ul class="nice" style="font-size: 13.5px; gap: 4px; margin-top: 6px;">
+          <li><strong style="color: var(--teal);">$k_{\text{vol}}$:</strong> Corrección por promediado volumétrico.</li>
+          <li><strong style="color: var(--amber);">$P_{\text{scint}}$:</strong> Perturbación por la composición química del centelleador.</li>
+          <li><strong style="color: var(--purple);">$P_{\text{wall}}$:</strong> Perturbación por materiales no activos del ensamblaje (vaina, fibra).</li>
+          <li><strong style="color: var(--red);">$k_{\text{ioq}}$:</strong> Factor de corrección por quenching de ionización.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<div id="nav">
+  <button id="btn-prev">←</button>
+  <div class="nav-dots" id="nav-dots"></div>
+  <span id="nav-counter"></span>
+  <button id="btn-next">→</button>
+</div>
+
+<script src="navigation.js"></script>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quenching en detectores de centelleo plástico - Los Dos Factores Opuestos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div id="deck">
+
+<div class="slide" id="slide-16">
+  <div class="slide-num">16 / 24</div>
+  <div class="slide-eyebrow">Capítulo 6 · El hallazgo de Gingras</div>
+  <h2 class="slide-title">Los Dos Factores <em>Opuestos</em></h2>
+  <p class="slide-subtitle">Definición física y comportamiento individual de los dos parámetros clave.</p>
+  <div class="persona-row">
+    <span class="persona-tag pt-marcos">Fundamento Teórico</span>
+    <span class="persona-tag pt-camilo">Técnico / Monte Carlo</span>
+  </div>
+
+  <div class="two-col stretch">
+    <div class="col-stretch" style="gap: 12px;">
+      <div class="card card-teal reveal-item card-stretch" data-step="1">
+        <div class="card-label">P_scint · Perturbación Material</div>
+        <p style="font-size: 15px; color: var(--text2); line-height: 1.5; margin-bottom: 8px;">
+          Es la relación entre la dosis absorbida en un volumen equivalente de agua y la dosis en el volumen físico del centelleador:
+        </p>
+        <div class="eq-block" style="font-size: 18px; padding: 10px; margin: 6px 0; text-align: center;">
+          $$P_{\text{scint}} = \frac{D_{\text{agua}}}{D_{\text{scint}}}$$
+        </div>
+        <p style="font-size: 13.5px; color: var(--text3); line-height: 1.45; margin-top: 6px;">
+          Varía de forma dinámica según el campo y la profundidad del medio. Refleja la diferencia de coeficientes de atenuación y dispersión de electrones entre el plástico y el agua. Puede ser mayor o menor a 1.000.
+        </p>
+      </div>
+    </div>
+
+    <div class="col-stretch" style="gap: 12px;">
+      <div class="card card-red reveal-item card-stretch" data-step="2">
+        <div class="card-label">k_ioq · Corrección por Quenching</div>
+        <p style="font-size: 15px; color: var(--text2); line-height: 1.5; margin-bottom: 8px;">
+          Es el factor que corrige la pérdida de eficiencia del centelleador debida al quenching de ionización en las zonas de alta densidad de ionización:
+        </p>
+        <div class="eq-block" style="font-size: 18px; padding: 10px; margin: 6px 0; text-align: center;">
+          $$k_{\text{ioq}} = \frac{L_{\text{ideal}}}{L_{\text{real}}}$$
+        </div>
+        <p style="font-size: 13.5px; color: var(--text3); line-height: 1.45; margin-top: 6px;">
+          Es <strong>siempre mayor o igual a 1.000</strong>, ya que el quenching disipa parte de la energía depositada como calor, reduciendo la luz total producida por el detector.
+        </p>
+      </div>
+
+      <div class="callout reveal-item" data-step="3" style="font-size: 14px;">
+        <strong>El supuesto histórico:</strong> Se creía que al ser el PSD casi agua-equivalente, tanto $P_{\text{scint}}$ como $k_{\text{ioq}}$ eran aproximadamente 1.000 y podían ignorarse.
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<div id="nav">
+  <button id="btn-prev">←</button>
+  <div class="nav-dots" id="nav-dots"></div>
+  <span id="nav-counter"></span>
+  <button id="btn-next">→</button>
+</div>
+
+<script src="navigation.js"></script>
+</body>
+</html>

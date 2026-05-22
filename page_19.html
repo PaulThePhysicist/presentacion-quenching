@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quenching en detectores de centelleo plástico - La Contribución de MDSIM1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div id="deck">
+
+<div class="slide" id="slide-19">
+  <div class="slide-num">19 / 24</div>
+  <div class="slide-eyebrow">Capítulo 7 · La contribución de MDSIM1</div>
+  <h2 class="slide-title">La Contribución de <em>MDSIM1</em></h2>
+  <p class="slide-subtitle">Convertir un hallazgo accidental en un criterio sistemático de diseño.</p>
+  <div class="persona-row">
+    <span class="persona-tag pt-camilo">Implementación Monte Carlo</span>
+    <span class="persona-tag pt-marcos">Fundamento Teórico</span>
+  </div>
+
+  <div class="two-col stretch">
+    <div class="col-stretch" style="gap: 12px;">
+      <div class="card card-purple reveal-item card-stretch" data-step="1">
+        <div class="card-label">Más allá de la Replicación</div>
+        <p style="font-size: 15px; color: var(--text2); line-height: 1.55;">
+          El objetivo de <strong>MDSIM1</strong> no es simplemente reproducir localmente los cálculos analíticos de Gingras, sino sistematizar el análisis para poder evaluar cualquier combinación de polímero y dopante antes de la fabricación.
+        </p>
+      </div>
+      
+      <div class="card card-teal reveal-item card-stretch" data-step="2">
+        <div class="card-label">Mapear el Comportamiento Clínico</div>
+        <p style="font-size: 15px; color: var(--text2); line-height: 1.55;">
+          Permite evaluar el desempeño del detector bajo distintos tamaños de campo, profundidades y energías, asegurando la consistencia física del modelado de atenuación y quenching.
+        </p>
+      </div>
+    </div>
+
+    <div class="col-stretch" style="gap: 12px;">
+      <div class="card card-teal reveal-item card-stretch" style="padding: 16px;">
+        <div class="card-label" style="font-family: var(--mono); font-size: 11px; text-transform: uppercase; color: var(--teal); margin-bottom: 6px;">La Métrica Central</div>
+        <div class="eq-block" style="font-size: 22.5px; padding: 10px; margin: 8px 0; text-align: center;">
+          $$C_{\text{material}} = P_{\text{scint}} \cdot k_{\text{ioq}}$$
+        </div>
+        <ul class="nice" style="font-size: 13.5px; gap: 6px; margin-top: 6px;">
+          <li>
+            <strong style="color: var(--teal);">$C_{\text{material}} \approx 1$:</strong> El detector es <strong>auto-corregido</strong> en todo rango de condiciones clínicas. Diseño óptimo.
+          </li>
+          <li>
+            <strong style="color: var(--red);">$C_{\text{material}} \neq 1$:</strong> Requiere factores de corrección explícitos según el tamaño del campo y la calidad del haz.
+          </li>
+        </ul>
+      </div>
+      
+      <div class="callout reveal-item" data-step="4" style="font-size: 13.5px;">
+        <strong>Ventaja competitiva:</strong> Simular primero, encontrar la formulación auto-corregida químicamente, y fabricar después.
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<div id="nav">
+  <button id="btn-prev">←</button>
+  <div class="nav-dots" id="nav-dots"></div>
+  <span id="nav-counter"></span>
+  <button id="btn-next">→</button>
+</div>
+
+<script src="navigation.js"></script>
+</body>
+</html>

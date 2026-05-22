@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quenching en detectores de centelleo plástico - Dependencia de Campo y Calidad</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+</head>
+<body>
+
+<div id="deck">
+
+<div class="slide" id="slide-14">
+  <div class="slide-num">14 / 24</div>
+  <div class="slide-eyebrow">Capítulo 5 · El espectro que nadie miraba</div>
+  <h2 class="slide-title">Dependencia de Campo y <em>Calidad</em></h2>
+  <p class="slide-subtitle">La fracción de quenching no es una constante; varía sensiblemente según la configuración clínica.</p>
+  <div class="persona-row">
+    <span class="persona-tag pt-mc">Contexto Clínico</span>
+  </div>
+
+  <div class="two-col stretch">
+    <div class="col-stretch" style="gap: 12px;">
+      <div class="card card-teal reveal-item card-stretch" data-step="1">
+        <div class="card-label">Variabilidad con el Tamaño de Campo</div>
+        <p style="font-size: 15px; color: var(--text2); line-height: 1.5;">
+          Al agrandar el campo, la cantidad de radiación dispersa de baja energía que incide en el detector crece. Esto aumenta la población de electrones lentos por debajo del umbral de quenching. **$k_{\text{ioq}}$ varía un 0.6% entre campos de $0.5\times0.5\text{ cm}^2$ y $10\times10\text{ cm}^2$.**
+        </p>
+      </div>
+
+      <div class="card card-amber reveal-item card-stretch" data-step="2">
+        <div class="card-label">Variabilidad con la Calidad de Haz</div>
+        <p style="font-size: 15px; color: var(--text2); line-height: 1.5;">
+          La energía del haz de fotones determina directamente el espectro del depósito de energía secundario. **$k_{\text{ioq}}$ varía un 2.0% entre 4 MV y 15 MV.**
+        </p>
+      </div>
+
+      <div class="callout reveal-item" data-step="3" style="font-size: 14px;">
+        <strong>Implicancia clínica:</strong> El efecto del tamaño de campo (~0.6%) está dentro de la incertidumbre típica de medida, pero la dependencia con la calidad (~2%) ya no es despreciable si se persigue trazabilidad metrológica exacta.
+      </div>
+    </div>
+
+    <!-- Gráfica interactiva de k_ioq -->
+    <div class="reveal-item col-stretch" data-step="4" style="display: flex; flex-direction: column; gap: 10px;">
+      <div class="card card-stretch" style="padding: 10px 14px; display: flex; flex-direction: column; justify-content: space-between;">
+        <div class="ctrl-row" style="margin: 0 0 10px 0; justify-content: flex-start; gap: 8px;">
+          <span class="ctrl-label" style="font-size: 12.5px; font-family: var(--mono);">Eje X:</span>
+          <button id="btn-kioq" onclick="showKioq()" style="background: var(--teal-dim); border: 1px solid rgba(45,212,176,0.3); border-radius: 6px; color: var(--teal); font-size: 12.5px; padding: 4px 10px; cursor: pointer; font-family: var(--mono); font-weight: 500;">k_ioq vs campo</button>
+          <button id="btn-kq" onclick="showKq()" style="background: var(--bg3); border: 1px solid var(--border); border-radius: 6px; color: var(--text2); font-size: 12.5px; padding: 4px 10px; cursor: pointer; font-family: var(--mono); font-weight: 500;">k_ioq vs calidad</button>
+        </div>
+        
+        <div class="canvas-stretch-wrapper" style="border: none; background: transparent; padding: 0;">
+          <canvas id="specChart"></canvas>
+        </div>
+        
+        <div style="font-size: 11px; color: var(--text3); font-family: var(--mono); margin-top: 6px; text-align: center;">
+          Datos: Valdes Santurio &amp; Andersen (2019) · BCF-60, EGSnrc, TrueBeam
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<div id="nav">
+  <button id="btn-prev">←</button>
+  <div class="nav-dots" id="nav-dots"></div>
+  <span id="nav-counter"></span>
+  <button id="btn-next">→</button>
+</div>
+
+<script src="navigation.js"></script>
+<script>
+Chart.defaults.color = '#dcd9d4';
+Chart.defaults.font.family = "'DM Mono', monospace";
+Chart.defaults.font.size = 11;
+const gridColor = 'rgba(255,255,255,0.05)';
+
+const fields = [0.6, 1, 1.5, 2, 3, 4, 5, 6, 8, 10];
+const fieldL = ['0.6','1','1.5','2','3','4','5','6','8','10'];
+const kioqVals = [0.9936, 0.9940, 0.9944, 0.9947, 0.9952, 0.9956, 0.9959, 0.9961, 0.9964, 0.9966];
+const qualities = ['4 MV','6 MV','10 MV','15 MV'];
+const kioqQuals = [0.9944, 0.9960, 0.9972, 0.9984];
+
+let specChart;
+const specCtx = document.getElementById('specChart');
+if (specCtx) {
+  specChart = new Chart(specCtx, {
+    type: 'line',
+    data: {
+      labels: fieldL,
+      datasets: [{ label: 'k_ioq', data: kioqVals, borderColor: '#f0a832', backgroundColor: 'rgba(240,168,50,0.08)', fill: true, borderWidth: 2.5, pointRadius: 4, pointBackgroundColor: '#f0a832', tension: 0.3 }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => `k_ioq = ${c.parsed.y.toFixed(4)}` } } },
+      scales: {
+        x: { title: { display: true, text: 'Tamaño de campo (cm)' }, grid: { color: gridColor } },
+        y: { title: { display: true, text: 'k_ioq' }, min: 0.991, max: 1.001, grid: { color: gridColor }, ticks: { callback: v => v.toFixed(3) } }
+      }
+    },
+    plugins: [{
+      id: 'unitL',
+      afterDraw(c) {
+        const { ctx, chartArea: { left, right }, scales: { y } } = c;
+        const y1 = y.getPixelForValue(1.000);
+        ctx.save(); ctx.strokeStyle = 'rgba(255,255,255,0.15)'; ctx.lineWidth = 1; ctx.setLineDash([5,4]);
+        ctx.beginPath(); ctx.moveTo(left, y1); ctx.lineTo(right, y1); ctx.stroke();
+        ctx.setLineDash([]); ctx.fillStyle = '#9a9692'; ctx.font = '9px DM Mono, monospace';
+        ctx.fillText('1.000 (sin quenching)', left+4, y1-5); ctx.restore();
+      }
+    }]
+  });
+}
+
+function showKioq() {
+  if (!specChart) return;
+  specChart.data.labels = fieldL;
+  specChart.data.datasets[0].data = kioqVals;
+  specChart.options.scales.x.title.text = 'Tamaño de campo (cm)';
+  specChart.update();
+  document.getElementById('btn-kioq').style.background = 'var(--teal-dim)';
+  document.getElementById('btn-kioq').style.color = 'var(--teal)';
+  document.getElementById('btn-kioq').style.borderColor = 'rgba(45,212,176,0.3)';
+  document.getElementById('btn-kq').style.background = 'var(--bg3)';
+  document.getElementById('btn-kq').style.color = 'var(--text2)';
+  document.getElementById('btn-kq').style.borderColor = 'var(--border)';
+}
+
+function showKq() {
+  if (!specChart) return;
+  specChart.data.labels = qualities;
+  specChart.data.datasets[0].data = kioqQuals;
+  specChart.options.scales.x.title.text = 'Calidad de haz';
+  specChart.update();
+  document.getElementById('btn-kq').style.background = 'var(--amber-dim)';
+  document.getElementById('btn-kq').style.color = 'var(--amber)';
+  document.getElementById('btn-kq').style.borderColor = 'rgba(240,168,50,0.3)';
+  document.getElementById('btn-kioq').style.background = 'var(--bg3)';
+  document.getElementById('btn-kioq').style.color = 'var(--text2)';
+  document.getElementById('btn-kioq').style.borderColor = 'var(--border)';
+}
+</script>
+</body>
+</html>
