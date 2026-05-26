@@ -109,12 +109,21 @@ const btnPrev = document.getElementById('btn-prev');
 const btnNext = document.getElementById('btn-next');
 const counter = document.getElementById('nav-counter');
 
+function updateNavButtons() {
+  const isMobile = window.innerWidth <= 768;
+  if (btnPrev) {
+    btnPrev.textContent = isMobile ? '←' : '↑';
+  }
+  if (btnNext) {
+    btnNext.textContent = isMobile ? '→' : '↓';
+  }
+}
+
 if (counter) {
   counter.textContent = `${currentPageIndex + 1}/${totalPages}`;
 }
 
 if (btnPrev) {
-  btnPrev.textContent = '↑';
   if (currentPageIndex === 0) {
     btnPrev.disabled = true;
   } else {
@@ -123,13 +132,15 @@ if (btnPrev) {
 }
 
 if (btnNext) {
-  btnNext.textContent = '↓';
   if (currentPageIndex === totalPages - 1) {
     btnNext.disabled = true;
   } else {
     btnNext.onclick = () => window.location.href = getPageUrl(currentPageIndex + 1) + '?dir=next';
   }
 }
+
+updateNavButtons();
+window.addEventListener('resize', updateNavButtons);
 
 // Help modal injection
 const helpModal = document.createElement('div');
@@ -428,41 +439,8 @@ window.addEventListener('touchend', e => {
   const diffX = touchStartX - touchEndX;
 
   const threshold = 50;
-  if (Math.abs(diffY) > Math.abs(diffX)) {
-    // Vertical swipe
-    if (Math.abs(diffY) > threshold) {
-      const activeSlide = document.querySelector('.slide.active');
-      const isAtBottom = activeSlide ? (activeSlide.scrollHeight - activeSlide.scrollTop <= activeSlide.clientHeight + 10) : true;
-      const isAtTop = activeSlide ? (activeSlide.scrollTop <= 10) : true;
-
-      if (diffY > 0) {
-        // Swiped up -> scroll down -> next step / page
-        if (currentStep < maxSteps) {
-          lastTouchTime = now;
-          setStep(currentStep + 1);
-        } else {
-          // If the slide is scrollable and not at bottom, let it scroll naturally (do nothing here)
-          if (isAtBottom) {
-            lastTouchTime = now;
-            if (currentPageIndex < totalPages - 1) {
-              window.location.href = getPageUrl(currentPageIndex + 1) + '?dir=next';
-            }
-          }
-        }
-      } else {
-        // Swiped down -> scroll up -> prev step / page
-        if (isAtTop) {
-          lastTouchTime = now;
-          if (currentStep > 0) {
-            setStep(currentStep - 1);
-          } else if (currentPageIndex > 0) {
-            window.location.href = getPageUrl(currentPageIndex - 1) + '?dir=prev';
-          }
-        }
-      }
-    }
-  } else {
-    // Horizontal swipe (always transition page / step immediately)
+  // ONLY navigate/step on horizontal swipes to avoid accidental transitions while scrolling vertically
+  if (Math.abs(diffX) > Math.abs(diffY)) {
     if (Math.abs(diffX) > threshold) {
       lastTouchTime = now;
       if (diffX > 0) {
@@ -550,9 +528,9 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   }
   
-  // Load Projector preference
+  // Load Projector preference (only if not on mobile)
   const projPref = localStorage.getItem('projector-mode');
-  if (projPref === 'true') {
+  if (projPref === 'true' && window.innerWidth > 768) {
     document.body.classList.add('projector-mode');
     const btn = document.getElementById('btn-projector');
     if (btn) {
